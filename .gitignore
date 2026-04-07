@@ -1,0 +1,4 @@
+secerts/*
+.DS_Store
+terraform/*
+nixos/*

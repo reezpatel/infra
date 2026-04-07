@@ -1,0 +1,13 @@
+{
+  "languages": {
+    "Nix": {
+      "formatter": {
+        "external": {
+          "command": "alejandra",
+          "arguments": ["--"]
+        }
+      }
+    }
+  },
+  "file_scan_exclusions": ["*.lock", ".git", ".DS_Store"]
+}
