@@ -29,6 +29,9 @@ in {
 
       self.nixosModules.jellyfin
       self.nixosModules.stash
+      self.nixosModules.forgejo
+      # self.nixosModules.postgresql
+      self.nixosModules.transmission
 
       {
         nixpkgs.config.allowUnfree = true;

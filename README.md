@@ -54,6 +54,7 @@ If you want to understand the repo fast, read it in this order:
 | Packages and home-manager bundles | Shell, editor, terminal, Git, and CLI UX | [`nix/modules/packages`](./nix/modules/packages) |
 | Host compositions | Actual machines and their storage/service roles | [`nix/modules/hosts`](./nix/modules/hosts) |
 | Deploy entrypoints | Thin wrappers around `nh` for switch/build/test flows | [`scripts/deploy_macos.sh`](./scripts/deploy_macos.sh), [`scripts/deploy_remote.sh`](./scripts/deploy_remote.sh) |
+| Task helpers | Small local operator utilities | [`Justfile`](./Justfile), [`scripts/scram_sha_256.py`](./scripts/scram_sha_256.py) |
 | Secrets | Encrypted payloads and recipient mapping | [`secerts/`](./secerts) |
 | Editor config | Neovim config linked into home-manager out-of-store | [`dotfiles/nvim`](./dotfiles/nvim) |
 | Extra experiments | Supplemental Nix snippets and Terraform bits | [`supplemental/`](./supplemental), [`terraform/`](./terraform) |
@@ -101,13 +102,14 @@ That gives the repo a nice split:
 
 ```text
 .
+|-- Justfile
 |-- README.md
 |-- dotfiles/
 |   `-- nvim/
 |-- nix/
 |   |-- flake.nix
 |   |-- flake.lock
-|   |-- Justfile
+|   |-- Justfile.backup
 |   `-- modules/
 |       |-- core/
 |       |-- hosts/
@@ -121,7 +123,8 @@ That gives the repo a nice split:
 |       `-- services/
 |-- scripts/
 |   |-- deploy_macos.sh
-|   `-- deploy_remote.sh
+|   |-- deploy_remote.sh
+|   `-- scram_sha_256.py
 |-- secerts/
 |-- supplemental/
 `-- terraform/
@@ -130,9 +133,11 @@ That gives the repo a nice split:
 
 ### Top-level intent
 
+- [`Justfile`](./Justfile) is the current lightweight task surface for local operator helpers.
 - [`nix/`](./nix) is the actual product.
 - [`scripts/`](./scripts) is the operator interface.
 - [`secerts/`](./secerts) is the encrypted state that lets services boot correctly.
+- [`nix/Justfile.backup`](./nix/Justfile.backup) is an archived copy of the older, much larger task runner.
 - [`dotfiles/`](./dotfiles) only shows up where a tool is intentionally managed out-of-store, most notably Neovim.
 - [`supplemental/`](./supplemental) looks like a scratchpad/reference area for additional Nix snippets.
 - [`terraform/`](./terraform) is adjacent infrastructure work, not part of the main flake deployment path.
@@ -150,19 +155,14 @@ These are the currently exported host names observed from `nix eval ./nix#...`.
 | `ace` | `aarch64-darwin` | active | Primary workstation | `nix-darwin`, `home-manager`, Homebrew, Ghostty, Opencode, Neovim, Git, tmux |
 | `divine` | `x86_64-linux` | active | GPU and storage node | NVIDIA/CUDA stack, `ollama`, Samba, `mergerfs`, `mdadm` RAID1, NFS exports |
 | `muse` | `x86_64-linux` | active | Storage/archive box | NVIDIA stack, Samba, `mergerfs`, `snapraid` |
-| `vixen` | `x86_64-linux` | active | Media server | NVIDIA stack, Samba, Jellyfin, Stash, CUDA ffmpeg wrapper, `mergerfs`, `snapraid` |
+| `trinity` | `x86_64-linux` | active | Storage and tunnel node | NVIDIA stack, Samba, `mergerfs`, `snapraid`, AutoSSH tunnels |
+| `vixen` | `x86_64-linux` | active | Media and app node | NVIDIA stack, Samba, Jellyfin, Stash, Forgejo, Transmission, `mergerfs`, `snapraid` |
 | `rpi1` | `aarch64-linux` | active | Raspberry Pi utility node | Home Assistant, RPi boot tweaks, shared shell/user config |
 | `rpi2` | placeholder output | placeholder | Reserved slot | Empty host file today |
 | `rpi3` | placeholder output | placeholder | Reserved slot | Empty host file today |
 | `rpi4` | placeholder output | placeholder | Reserved slot | Empty host file today |
 | `rpi5` | placeholder output | placeholder | Reserved slot | Empty host file today |
 | `buttercup` | placeholder output | placeholder | Legacy or in-progress host | Comes from [`nix/modules/hosts/mac/mac_luffy.nix`](./nix/modules/hosts/mac/mac_luffy.nix), but currently defines an empty NixOS config |
-
-### Present In The Working Tree But Not Yet Exported
-
-| Host | State | Notes |
-| --- | --- | --- |
-| `trinity` | local work in progress | A full server definition exists under [`nix/modules/hosts/server/trinity`](./nix/modules/hosts/server/trinity), including `snapraid`, Samba, and `autossh` tunnels, but it is not currently part of exported flake outputs because the files are still untracked in git |
 
 ### Machine Notes
 
@@ -197,12 +197,22 @@ This machine is a classic storage box:
 
 #### `vixen`
 
-This is the media-heavy node:
+This is the media-heavy application node:
 
 - Samba for network file access
 - Jellyfin with NVENC transcoding
 - Stash with encrypted credentials and optional CUDA ffmpeg wrapper
+- Forgejo bound to `0.0.0.0:9965` with encrypted admin credentials
+- Transmission with mergefs-backed state and downloads directories
 - `snapraid` plus `mergerfs` for the media pool
+
+#### `trinity`
+
+This is a storage-plus-connectivity node:
+
+- Samba on top of a `snapraid` + `mergerfs` pool
+- AutoSSH tunnels for external PostgreSQL endpoints on ports `5421` and `5433`
+- same broad storage layout as `muse`, but with tunnel services layered on top
 
 #### `rpi1`
 
@@ -269,6 +279,7 @@ The deploy script currently knows about:
 
 | Host | IP |
 | --- | --- |
+| `trinity` | `192.168.2.2` |
 | `rpi1` | `192.168.2.80` |
 | `rpi2` | `192.168.2.81` |
 | `rpi3` | `192.168.2.82` |
@@ -281,7 +292,7 @@ The deploy script currently knows about:
 Notably absent:
 
 - `ace`, which is handled by the Darwin script
-- `trinity`, which exists locally but is not yet wired into the deploy script
+- `buttercup`, which is only a placeholder flake output today and is not part of the remote deploy path
 
 ### Direct Commands Without The Wrapper Scripts
 
@@ -369,9 +380,12 @@ The flake currently exports these reusable `home-manager` modules:
 | --- | --- | --- |
 | [`services/home_assistant.nix`](./nix/modules/services/home_assistant.nix) | Home Assistant base setup | `rpi1` |
 | [`services/ollama.nix`](./nix/modules/services/ollama.nix) | local LLM endpoint using `ollama-cuda` | `divine` |
-| [`services/samba.nix`](./nix/modules/services/samba.nix) | SMB share with macOS-friendly `fruit` tuning and password bootstrapping | `divine`, `muse`, `vixen`, local `trinity` |
+| [`services/samba.nix`](./nix/modules/services/samba.nix) | SMB share with macOS-friendly `fruit` tuning and password bootstrapping | `divine`, `muse`, `vixen`, `trinity` |
+| [`programs/forgejo.nix`](./nix/modules/programs/forgejo.nix) | self-hosted Forgejo with encrypted admin bootstrap and mergefs-backed state | `vixen` |
 | [`programs/jellyfin.nix`](./nix/modules/programs/jellyfin.nix) | GPU-accelerated Jellyfin service | `vixen` |
+| [`programs/postgres.nix`](./nix/modules/programs/postgres.nix) | PostgreSQL module with SCRAM-backed user example | exported module, not currently enabled on an exported host |
 | [`programs/stash.nix`](./nix/modules/programs/stash.nix) | Stash service, secret wiring, and optional CUDA ffmpeg wrapper | `vixen` |
+| [`programs/transmission.nix`](./nix/modules/programs/transmission.nix) | Transmission daemon with mergefs-backed config and download paths | `vixen` |
 
 ### Package Bundles
 
@@ -390,8 +404,8 @@ This repo has a clear opinionated storage story for Linux servers:
 | --- | --- |
 | `divine` | `mdadm` RAID1 SSD mirror + dedicated NVMe + `mergerfs` over HDDs + NFS exports |
 | `muse` | multiple data disks + `snapraid` parity + `mergerfs` pool |
-| `vixen` | media disks + `snapraid` parity + `mergerfs` pool + GPU media workloads |
-| local `trinity` | same broad pattern as `muse`, plus persistent AutoSSH tunnels |
+| `trinity` | same broad pattern as `muse`, plus persistent AutoSSH tunnels |
+| `vixen` | media disks + `snapraid` parity + `mergerfs` pool + GPU media workloads + app state under `/mnt/mergefs/programs` |
 
 That combination is practical for homelab storage:
 
@@ -453,6 +467,26 @@ Example:
 ./scripts/deploy_remote.sh muse build
 ```
 
+### `scram_sha_256.py`
+
+File: [`scripts/scram_sha_256.py`](./scripts/scram_sha_256.py)
+
+Purpose:
+
+- generate a PostgreSQL-style `SCRAM-SHA-256` password string from a plain-text input
+
+Behavior:
+
+- uses a `nix-shell` shebang with `python3.withPackages (ps: [ ps.scramp ])`
+- accepts a single password argument
+- prints a ready-to-paste `SCRAM-SHA-256...` string
+
+Example:
+
+```bash
+./scripts/scram_sha_256.py 'secure_password123!'
+```
+
 ### Why These Scripts Matter
 
 They encode the operational assumptions of the repo:
@@ -474,6 +508,8 @@ Encrypted secrets live in [`secerts/`](./secerts).
 Current secret files:
 
 - `dev-rsa.age`
+- `forgejo-password.age`
+- `forgejo-runner-token.age`
 - `ppd-rsa.age`
 - `private-func.age`
 - `samba-password.age`
@@ -488,6 +524,8 @@ Recipients are declared in [`secerts/secrets.nix`](./secerts/secrets.nix).
 | Secret | Consumed by | Purpose |
 | --- | --- | --- |
 | `private-func.age` | [`packages/zsh.nix`](./nix/modules/packages/zsh.nix) | sources private shell functions when present |
+| `forgejo-password.age` | [`programs/forgejo.nix`](./nix/modules/programs/forgejo.nix) | keeps the Forgejo admin user's local password in sync during service startup |
+| `forgejo-runner-token.age` | [`programs/forgejo.nix`](./nix/modules/programs/forgejo.nix) | reserved for the Forgejo actions runner wiring currently commented out in the module |
 | `samba-password.age` | [`services/samba.nix`](./nix/modules/services/samba.nix) | bootstraps the Samba account password |
 | `stash-jwt-key.age` | [`programs/stash.nix`](./nix/modules/programs/stash.nix) | JWT signing key |
 | `stash-session-key.age` | [`programs/stash.nix`](./nix/modules/programs/stash.nix) | session store key |
@@ -505,28 +543,17 @@ The repo already includes `agenix` as a flake input and also adds the package in
 
 ---
 
-## `nix/Justfile`
+## `Justfile`
 
-[`nix/Justfile`](./nix/Justfile) exists as a task runner and maintenance shelf.
+[`Justfile`](./Justfile) is now intentionally minimal.
 
-Useful current categories include:
+It currently exposes a single helper:
 
-- flake maintenance like `test`, `up`, `upp`, `gc`, `fmt`
-- system inspection helpers like `history`, `verify-store`, `gcroot`
-- generic utility commands and Git helpers
+- `just scram '<password>'` which delegates to [`scripts/scram_sha_256.py`](./scripts/scram_sha_256.py)
 
-At the same time, it clearly carries older operational history:
+That small scope is deliberate. It keeps the active task surface focused on one concrete local need without pulling the older infra notebook into the default operator path.
 
-- many recipes target `colmena`/KubeVirt/K3s workflows
-- several recipes reference `utils.nu`, which is not present in the repo today
-- one macOS recipe references `scripts/darwin_set_proxy.py`, which is also not present
-
-So the practical reading is:
-
-- `scripts/` reflects the current deploy path
-- `nix/Justfile` is part current toolbox, part historical notebook
-
-That is not a problem, but it is useful to know before treating it as the single source of truth.
+The previous larger task runner is preserved as [`nix/Justfile.backup`](./nix/Justfile.backup). Treat that file as historical reference, not the current entrypoint.
 
 ---
 
@@ -540,6 +567,7 @@ A lot of polish in this repo is not at the host level but in the day-to-day user
 - `ghostty` configured as the preferred terminal on the workstation
 - `nvim` linked to [`dotfiles/nvim`](./dotfiles/nvim) instead of being baked into the store
 - `opencode` wired to a local Ollama-compatible endpoint on the LAN
+- a tiny root `Justfile` for generating SCRAM hashes without remembering the underlying Python invocation
 
 This makes the repo more than a homelab bootstrap. It is also a personal workstation profile.
 
@@ -549,12 +577,13 @@ This makes the repo more than a homelab bootstrap. It is also a personal worksta
 
 This repo is strong, but it is also visibly in motion. A few facts are worth calling out directly:
 
-- `trinity` exists in the working tree but is not currently exported by the flake because its files are still untracked.
-- `deploy_remote.sh` does not yet know about `trinity`.
+- `deploy_remote.sh` now knows about `trinity`, but the deploy surface is still intentionally explicit and static: each host/IP pair is hard-coded in the script.
 - `deploy_remote.sh` still performs an `rsync` to the remote host even though the active `nh` path is driven from the local flake path; that suggests an unfinished transition between two deployment styles.
+- `vixen` now carries more than media workloads: the current working tree wires in Forgejo and Transmission, and keeps a PostgreSQL module nearby but not enabled.
 - `rpi2` through `rpi5` are placeholder outputs with empty host files.
 - [`nix/modules/hosts/mac/mac_luffy.nix`](./nix/modules/hosts/mac/mac_luffy.nix) currently exports an empty NixOS configuration named `buttercup`, which is probably transitional.
-- `nix/Justfile` mixes current commands with older infrastructure paths and a few missing helper files.
+- the active `Justfile` is intentionally tiny; the old broad `nix/Justfile` workflow has been moved to [`nix/Justfile.backup`](./nix/Justfile.backup).
+- `forgejo-runner-token.age` is already present in the secret set, but the runner block inside [`programs/forgejo.nix`](./nix/modules/programs/forgejo.nix) is currently commented out.
 - the active secrets directory is named `secerts/`, so documentation and scripts should use that exact path unless the directory is renamed intentionally later.
 
 None of that makes the repo weak. It just means this is a living operator repo, not a polished public template.
@@ -595,6 +624,12 @@ nix eval --json ./nix#nixosConfigurations --apply builtins.attrNames
 
 # build a remote host without switching
 ./scripts/deploy_remote.sh vixen build
+
+# generate a SCRAM-SHA-256 string
+just scram 'secure_password123!'
+
+# or call the helper directly
+./scripts/scram_sha_256.py 'secure_password123!'
 ```
 
 ---

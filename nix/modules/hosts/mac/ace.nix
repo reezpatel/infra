@@ -43,7 +43,7 @@ in {
           backupFileExtension = "before-hm";
 
           users.reezpatel = {...}: {
-            age.secrets.private-func.file = ../../../secerts/private-func.age;
+            age.secrets.private-func.file = ../../../../secerts/private-func.age;
 
             home = {
               stateVersion = "26.05";

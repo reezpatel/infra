@@ -13,6 +13,8 @@ in {
   "stash-jwt-key.age".publicKeys = all;
   "stash-session-key.age".publicKeys = all;
   "stash-password.age".publicKeys = all;
+  "forgejo-runner-token.age".publicKeys = all;
+  "forgejo-password.age".publicKeys = all;
 
   "armored-secret.age" = {
     publicKeys = all;
