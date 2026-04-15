@@ -1,47 +1,48 @@
-{...}: {
-  flake.homeModules.zsh = {
-    lib,
-    pkgs,
-    config,
-    ...
-  }: {
-    programs.carapace = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-
-    programs.zsh = {
-      enable = true;
-      enableCompletion = true;
-      completionInit = "autoload -U compinit && compinit -u";
-      autosuggestion.enable = true;
-      syntaxHighlighting = {
+{ ... }:
+{
+  flake.homeModules.zsh =
+    {
+      lib,
+      pkgs,
+      config,
+      ...
+    }:
+    {
+      programs.carapace = {
         enable = true;
-        highlighters = [
-          "main"
-          "brackets"
-          "pattern"
-          "regexp"
-          "cursor"
-          "line"
-        ];
+        enableZshIntegration = true;
       };
 
-      # antidote = {
-      #   enable = true;
-      #   plugins = [
-      #     "zsh-users/zsh-autosuggestions"
-      #     "zsh-users/zsh-syntax-highlighting"
-      #   ];
-      # };
+      programs.zsh = {
+        enable = true;
+        completionInit = "autoload -U compinit && compinit -i";
+        autosuggestion.enable = true;
+        syntaxHighlighting = {
+          enable = true;
+          highlighters = [
+            "main"
+            "brackets"
+            "pattern"
+            "regexp"
+            "cursor"
+            "line"
+          ];
+        };
 
-      initContent =
-        ''
+        # antidote = {
+        #   enable = true;
+        #   plugins = [
+        #     "zsh-users/zsh-autosuggestions"
+        #     "zsh-users/zsh-syntax-highlighting"
+        #   ];
+        # };
+
+        initContent = ''
           SPACESHIP_PROMPT_ASYNC=false
           source ${pkgs.spaceship-prompt}/lib/spaceship-prompt/spaceship.zsh
           source ${pkgs.autoenv}/share/autoenv/activate.sh
         ''
-        + lib.optionalString (lib.hasAttrByPath ["age" "secrets" "private-func"] config) ''
+        + lib.optionalString (lib.hasAttrByPath [ "age" "secrets" "private-func" ] config) ''
           [[ -f ${config.age.secrets.private-func.path} ]] && source ${config.age.secrets.private-func.path}
         ''
         + ''
@@ -74,6 +75,6 @@
 
           eval "$(git wt --init zsh)"
         '';
+      };
     };
-  };
 }
