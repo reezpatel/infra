@@ -13,6 +13,7 @@
     programs.zsh = {
       enable = true;
       enableCompletion = true;
+      completionInit = "autoload -U compinit && compinit -u";
       autosuggestion.enable = true;
       syntaxHighlighting = {
         enable = true;
@@ -41,7 +42,7 @@
           source ${pkgs.autoenv}/share/autoenv/activate.sh
         ''
         + lib.optionalString (lib.hasAttrByPath ["age" "secrets" "private-func"] config) ''
-          source ${config.age.secrets.private-func.path}
+          [[ -f ${config.age.secrets.private-func.path} ]] && source ${config.age.secrets.private-func.path}
         ''
         + ''
 

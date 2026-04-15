@@ -5,7 +5,7 @@
 }: let
   system = "aarch64-darwin";
 in {
-  flake.darwinConfigurations.ace = inputs.darwin.lib.darwinSystem {
+  flake.darwinConfigurations.luffy = inputs.darwin.lib.darwinSystem {
     inherit system;
 
     modules = [
@@ -102,6 +102,7 @@ in {
           "whatsapp"
           "zed"
           "zoom"
+          "proton-pass"
         ];
       })
     ];
