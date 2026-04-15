@@ -64,12 +64,20 @@ in {
       }
 
       (
-        {pkgs, ...}: {
+        {pkgs, config, lib, ...}: {
           environment.systemPackages = with pkgs; [
             mergerfs
             mdadm
             lsof
+            uv
+			      gcc
+			      gnumake
+			      git
+			      pkg-config
+			      stdenv.cc.cc.lib
+						ffmpeg
           ];
+
         }
       )
 

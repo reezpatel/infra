@@ -1,9 +1,5 @@
 {...}: {
-  moduleRegistry.nixos.postgresql = {
-    config,
-    pkgs,
-    ...
-  }: {
+  moduleRegistry.nixos.postgresql = {pkgs, ...}: {
     config.services.postgresql = {
       enable = true;
       enableTCPIP = true;

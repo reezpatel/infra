@@ -64,8 +64,8 @@
         }
         // lib.optionalAttrs config.stash.forceCuda {
           LD_LIBRARY_PATH = lib.makeLibraryPath [
-            pkgs.cudaPackages.cudatoolkit
-            pkgs.cudaPackages.cuda_nvcc
+            pkgs.cudaPackages_13_0.cudatoolkit
+            pkgs.cudaPackages_13_0.cuda_nvcc
             "/run/opengl-driver/lib"
           ];
         };
