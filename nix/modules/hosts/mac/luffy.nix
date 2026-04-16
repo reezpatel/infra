@@ -13,6 +13,7 @@ in
     modules = [
       inputs.nix-homebrew.darwinModules.nix-homebrew
       inputs.home-manager.darwinModules.home-manager
+      inputs.agenix.darwinModules.default
 
       self.darwinModules.config
       self.darwinModules.macosConfig
@@ -112,6 +113,7 @@ in
             "zoom"
             "proton-pass"
             "ticktick"
+            "leapp"
           ];
         }
       )
