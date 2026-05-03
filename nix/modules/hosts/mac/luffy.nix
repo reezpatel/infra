@@ -2,11 +2,9 @@
   inputs,
   self,
   ...
-}:
-let
+}: let
   system = "aarch64-darwin";
-in
-{
+in {
   flake.darwinConfigurations.luffy = inputs.darwin.lib.darwinSystem {
     inherit system;
 
@@ -27,8 +25,7 @@ in
       ./_auto_ssh.nix
 
       (
-        { pkgs, ... }:
-        {
+        {pkgs, ...}: {
           nixpkgs.config.allowUnfree = true;
 
           username = "reezpatel";
@@ -49,28 +46,27 @@ in
             useUserPackages = true;
             backupFileExtension = "before-hm";
 
-            users.reezpatel =
-              { ... }:
-              {
-                age.secrets.private-func.file = ../../../../secerts/private-func.age;
+            users.reezpatel = {...}: {
+              age.secrets.private-func.file = ../../../../secerts/private-func.age;
 
-                home = {
-                  stateVersion = "26.05";
-                };
-
-                imports = [
-                  inputs.agenix.homeManagerModules.default
-                  self.homeModules.zsh
-                  self.homeModules.tmux
-                  self.homeModules.vim
-                  self.homeModules.nvim
-                  self.homeModules.git
-                  self.homeModules.autojump
-                  self.homeModules.opencode
-                  self.homeModules.ghostty
-                  self.homeModules.fastfetch
-                ];
+              home = {
+                stateVersion = "26.05";
               };
+
+              imports = [
+                inputs.agenix.homeManagerModules.default
+                self.homeModules.zsh
+                self.homeModules.tmux
+                self.homeModules.vim
+                self.homeModules.nvim
+                self.homeModules.git
+                self.homeModules.autojump
+                self.homeModules.opencode
+                self.homeModules.ghostty
+                self.homeModules.zed
+                self.homeModules.fastfetch
+              ];
+            };
           };
 
           environment.systemPackages = with pkgs; [
@@ -87,8 +83,8 @@ in
             igraph
           ];
 
-          homebrew.masApps = { };
-          homebrew.brews = [ ];
+          homebrew.masApps = {};
+          homebrew.brews = [];
           homebrew.casks = [
             "1password"
             "alt-tab"

@@ -5,15 +5,25 @@ let
   vixen = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH7s63dj6iFQWPXx7fue8u20uBGhNPuQa42BkOAfHV5A";
   divine = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH9ksh2iBB268LT9xO88448WRKcAd7GzPb3Zc02tQKAv";
   luffy = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC7AvUYoeuj82EzveXi06zzDRgBiJujjpVbx+QIbPtfI";
+  slayer = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIOG1dd9Q7e5QCDmRFa3DWIVqZ9Be1Qb9eVRuhmvTIxy";
+
+  rpi1 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDmkHvuXuPmQDnsmGrPRF03iDHRKU7nL4Me8G3189b9o";
+  rpi2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKDOKB6C/gz8j0HTmNCvww2K7eigZ3kdAxMtQktaRIZd";
+
+  helix = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL5EeGOFsjhfKM0Lp2XKHXrT1EvOT7fU8w0UCKT49/HN";
+
   all = [
     user1
     system1
     vixen
     divine
     luffy
+    slayer
+    rpi1
+    rpi2
+    helix
   ];
-in
-{
+in {
   "dev-rsa.age".publicKeys = all;
   "ppd-rsa.age".publicKeys = all;
   "private-func.age".publicKeys = all;
@@ -23,6 +33,10 @@ in
   "stash-password.age".publicKeys = all;
   "forgejo-runner-token.age".publicKeys = all;
   "forgejo-password.age".publicKeys = all;
+  "frp-token.age".publicKeys = all;
+  "headscale-auth-key.age".publicKeys = all;
+  "webdav-password.age".publicKeys = all;
+  "opencode-auth.age".publicKeys = [user1 helix];
 
   "armored-secret.age" = {
     publicKeys = all;

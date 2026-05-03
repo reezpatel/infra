@@ -8,7 +8,14 @@
     ffmpegPackage = pkgs.ffmpeg-full;
 
     ffmpeg-cuda = pkgs.writeShellScriptBin "ffmpeg" ''
-      exec ${ffmpegPackage}/bin/ffmpeg -hwaccel cuda -hwaccel_output_format cuda "$@"
+      for arg in "$@"; do
+        case "$arg" in
+          *.jpg|*.jpeg|*.png|*.gif|*.webp)
+            exec ${ffmpegPackage}/bin/ffmpeg "$@"
+            ;;
+        esac
+      done
+      exec ${ffmpegPackage}/bin/ffmpeg -hwaccel cuda "$@"
     '';
 
     stash-bin = pkgs.stdenv.mkDerivation {
@@ -46,17 +53,32 @@
 
       systemd.tmpfiles.rules = [
         "L /data - - - - /mnt/mergefs/media/others/private/adult"
-        "d /mnt/mergefs/programs/stash/config    0750 stash stash -"
-        "d /mnt/mergefs/programs/stash/generated 0750 stash stash -"
-        "d /mnt/mergefs/programs/stash/cache     0750 stash stash -"
-        "d /mnt/mergefs/programs/stash/blob      0750 stash stash -"
-        "d /mnt/mergefs/programs/stash/plugins   0750 stash stash -"
-        "d /mnt/mergefs/programs/stash/scrapers  0750 stash stash -"
-        "d /mnt/mergefs/programs/stash/metadata  0750 stash stash -"
+        "d /mnt/mergefs/programs/stash/config    0750 stash media -"
+        "d /mnt/mergefs/programs/stash/generated 0750 stash media -"
+        "d /mnt/mergefs/programs/stash/cache     0750 stash media -"
+        "d /mnt/mergefs/programs/stash/blob      0750 stash media -"
+        "d /mnt/mergefs/programs/stash/plugins   0750 stash media -"
+        "d /mnt/mergefs/programs/stash/scrapers  0750 stash media -"
+        "d /mnt/mergefs/programs/stash/metadata  0750 stash media -"
         "d /mnt/mergefs/media/others/private/adult 2775 ${config.username} media -"
       ];
 
       systemd.services.stash.path = lib.optional config.stash.forceCuda ffmpeg-cuda;
+
+      systemd.services.stash.preStart = lib.mkAfter ''
+        config=/mnt/mergefs/programs/stash/config/config.yml
+        tmp=$(mktemp "$config.XXXXXX")
+        ${pkgs.gnused}/bin/sed \
+          -e 's|^ffmpeg_path:.*|ffmpeg_path: ${
+          if config.stash.forceCuda
+          then "${ffmpeg-cuda}/bin/ffmpeg"
+          else "${ffmpegPackage}/bin/ffmpeg"
+        }|' \
+          -e 's|^ffprobe_path:.*|ffprobe_path: ${ffmpegPackage}/bin/ffprobe|' \
+          -e '/^ffmpeg:/,/^[^[:space:]]/ s|^    hardware_acceleration:.*|    hardware_acceleration: false|' \
+          "$config" > "$tmp"
+        mv "$tmp" "$config"
+      '';
 
       systemd.services.stash.environment =
         {
@@ -105,6 +127,10 @@
             then "${ffmpeg-cuda}/bin/ffmpeg"
             else "${ffmpegPackage}/bin/ffmpeg";
           ffprobe_path = "${ffmpegPackage}/bin/ffprobe";
+
+          ffmpeg = {
+            hardware_acceleration = false;
+          };
 
           generated = "/mnt/mergefs/programs/stash/generated";
           cache = "/mnt/mergefs/programs/stash/cache";

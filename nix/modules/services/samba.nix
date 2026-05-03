@@ -69,10 +69,10 @@
           "valid users" = config.username;
           "force user" = config.username;
           "force group" = "media";
-          "create mask" = "0664";
-          "directory mask" = "0775";
-          "force create mode" = "0664";
-          "force directory mode" = "0775";
+          "create mask" = "0777";
+          "directory mask" = "0777";
+          "force create mode" = "0777";
+          "force directory mode" = "0777";
           "delete readonly" = "yes";
 
           # macOS extended attributes & spotlight

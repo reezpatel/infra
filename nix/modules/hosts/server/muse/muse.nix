@@ -26,6 +26,8 @@ in {
       self.nixosModules.advancedPackages
 
       self.nixosModules.samba
+      self.nixosModules.tailscale
+      self.nixosModules.kde
 
       {
         nixpkgs.config.allowUnfree = true;
@@ -57,6 +59,7 @@ in {
               self.homeModules.git
               self.homeModules.autojump
               self.homeModules.fastfetch
+              self.homeModules.rustdesk
             ];
           };
         };

@@ -2,11 +2,9 @@
   inputs,
   self,
   ...
-}:
-let
+}: let
   system = "aarch64-darwin";
-in
-{
+in {
   flake.darwinConfigurations.ace = inputs.darwin.lib.darwinSystem {
     inherit system;
 
@@ -24,8 +22,7 @@ in
       self.darwinModules.advancedPackages
 
       (
-        { pkgs, ... }:
-        {
+        {pkgs, ...}: {
           nixpkgs.config.allowUnfree = true;
 
           username = "reezpatel";
@@ -39,6 +36,7 @@ in
             OPENCODE_DISABLE_CLAUDE_CODE = "1";
             # TODO: Move to files
             OPENCODE_TUI_CONFIG = "/Users/reezpatel/.config/opencode/tui.json";
+            LIBRARY_PATH = "${pkgs.libiconv}/lib";
           };
 
           home-manager = {
@@ -46,28 +44,28 @@ in
             useUserPackages = true;
             backupFileExtension = "before-hm";
 
-            users.reezpatel =
-              { ... }:
-              {
-                age.secrets.private-func.file = ../../../../secerts/private-func.age;
+            users.reezpatel = {...}: {
+              age.secrets.private-func.file = ../../../../secerts/private-func.age;
 
-                home = {
-                  stateVersion = "26.05";
-                };
-
-                imports = [
-                  inputs.agenix.homeManagerModules.default
-                  self.homeModules.zsh
-                  self.homeModules.tmux
-                  self.homeModules.vim
-                  self.homeModules.nvim
-                  self.homeModules.git
-                  self.homeModules.autojump
-                  self.homeModules.opencode
-                  self.homeModules.ghostty
-                  self.homeModules.fastfetch
-                ];
+              home = {
+                stateVersion = "26.05";
               };
+
+              imports = [
+                inputs.agenix.homeManagerModules.default
+                self.homeModules.zsh
+                self.homeModules.tmux
+                self.homeModules.vim
+                self.homeModules.nvim
+                self.homeModules.git
+                self.homeModules.autojump
+                self.homeModules.opencode
+                self.homeModules.ghostty
+                self.homeModules.zed
+                self.homeModules.fastfetch
+                self.homeModules.rustdesk
+              ];
+            };
           };
 
           environment.systemPackages = with pkgs; [
@@ -82,26 +80,32 @@ in
             gh
             git-wt
             igraph
+            clang-tools
+            arduino-cli
+            arduino-language-server
+            openjdk
+            rustc
+            cargo
+            sqld
           ];
 
-          homebrew.masApps = { };
-          homebrew.brews = [ ];
+          homebrew.masApps = {};
+          homebrew.brews = [
+            "mole"
+          ];
           homebrew.casks = [
-            "1password"
             "alt-tab"
             "bartender"
             "beekeeper-studio"
-            "bruno"
             "free-download-manager"
             "ghostty"
             "google-chrome"
             "insomnia"
-            "lens"
             "meetingbar"
             "obsidian"
-            "postman"
             "raycast"
             "rectangle-pro"
+            "rustdesk"
             "slack"
             "visual-studio-code"
             "vlc"
@@ -109,6 +113,7 @@ in
             "zed"
             "zoom"
             "proton-pass"
+            "tailscale"
           ];
         }
       )

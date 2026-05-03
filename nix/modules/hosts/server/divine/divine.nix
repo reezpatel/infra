@@ -27,6 +27,8 @@ in {
 
       self.nixosModules.samba
       self.nixosModules.ollama
+      self.nixosModules.tailscale
+      self.nixosModules.kde
 
       {
         nixpkgs.config.allowUnfree = true;
@@ -58,26 +60,31 @@ in {
               self.homeModules.git
               self.homeModules.autojump
               self.homeModules.fastfetch
+              self.homeModules.rustdesk
             ];
           };
         };
       }
 
       (
-        {pkgs, config, lib, ...}: {
+        {
+          pkgs,
+          config,
+          lib,
+          ...
+        }: {
           environment.systemPackages = with pkgs; [
             mergerfs
             mdadm
             lsof
             uv
-			      gcc
-			      gnumake
-			      git
-			      pkg-config
-			      stdenv.cc.cc.lib
-						ffmpeg
+            gcc
+            gnumake
+            git
+            pkg-config
+            stdenv.cc.cc.lib
+            ffmpeg
           ];
-
         }
       )
 

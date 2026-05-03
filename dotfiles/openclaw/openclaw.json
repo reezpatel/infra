@@ -1,0 +1,16 @@
+{
+  "gateway": {
+    "port": 18789
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "~/.openclaw/workspace",
+      "model": {
+        "primary": "opencode/claude-opus-4-6"
+      },
+      "sandbox": {
+        "mode": "non-main"
+      }
+    }
+  }
+}

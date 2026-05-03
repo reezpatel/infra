@@ -205,6 +205,8 @@ This is the media-heavy application node:
 - Forgejo bound to `0.0.0.0:9965` with encrypted admin credentials
 - Transmission with mergefs-backed state and downloads directories
 - `snapraid` plus `mergerfs` for the media pool
+- WebDAV at `http://vixen.ts.coupletruffle.com:8097` (tailscale only)
+  - Tabs/bookmarks backup: `files/backup/`
 
 #### `trinity`
 

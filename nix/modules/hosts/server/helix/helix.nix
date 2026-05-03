@@ -5,7 +5,7 @@
 }: let
   system = "x86_64-linux";
 in {
-  flake.nixosConfigurations.trinity = inputs.nixpkgs.lib.nixosSystem {
+  flake.nixosConfigurations.helix = inputs.nixpkgs.lib.nixosSystem {
     inherit system;
 
     modules = [
@@ -22,34 +22,22 @@ in {
       self.nixosModules.commonPackages
       self.nixosModules.advancedPackages
 
-      self.nixosModules.samba
       self.nixosModules.tailscale
+      self.nixosModules.kde
+      self.nixosModules.helium
 
       {
         nixpkgs.config.allowUnfree = true;
 
         username = "reezpatel";
-        hostname = "trinity";
-        services.rustdesk-server = {
-          enable = true;
-          openFirewall = true;
-          signal = {
-            relayHosts = ["trinity"];
-            extraArgs = [
-              "-k"
-              "_"
-            ];
-          };
-          relay.extraArgs = [
-            "-k"
-            "_"
-          ];
-        };
+        hostname = "helix";
         authorizedKeys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINulqFShpHuaL3ngPQ9/tvxYNwYbsNEAsImMEMi7CKq8 reezpatel@Reezs-MacBook-Pro.local"
         ];
 
         system.stateVersion = "26.05";
+
+        systemd.services.NetworkManager-wait-online.enable = false;
 
         home-manager = {
           useGlobalPkgs = true;
@@ -69,6 +57,9 @@ in {
               self.homeModules.nvim
               self.homeModules.git
               self.homeModules.autojump
+              self.homeModules.opencode
+              self.homeModules.zed
+              self.homeModules.ghostty
             ];
           };
         };

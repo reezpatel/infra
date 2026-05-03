@@ -1,0 +1,329 @@
+{
+  "cli_default_open_behavior": "existing_window",
+  "outline_panel": {
+    "dock": "left"
+  },
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "git_panel": {
+    "dock": "left"
+  },
+  "agent": {
+    "dock": "right",
+    "default_profile": "write",
+    "default_model": {
+      "provider": "ollama",
+      "model": "qwen3:8b",
+      "enable_thinking": true
+    },
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "language_models": {
+    "ollama": {
+      "api_url": "http://192.168.2.5:11434"
+    }
+  },
+  "agent_servers": {
+    "codex-acp": {
+      "favorite_config_option_values": {
+        "mode": [
+          "auto"
+        ]
+      },
+      "type": "registry"
+    },
+    "gemini": {
+      "type": "registry"
+    },
+    "kilo": {
+      "type": "registry"
+    },
+    "opencode": {
+      "type": "registry"
+    },
+    "claude-acp": {
+      "type": "registry",
+      "favorite_config_option_values": {
+        "model": [
+          "sonnet[1m]"
+        ]
+      }
+    }
+  },
+  "ssh_connections": [
+    {
+      "host": "192.168.2.6",
+      "username": "reezpatel",
+      "args": [],
+      "projects": []
+    },
+    {
+      "host": "192.168.2.5",
+      "username": "reezpatel",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/home/reezpatel"
+          ]
+        },
+        {
+          "paths": [
+            "/mnt/nvme1/Wan2.2/./"
+          ]
+        }
+      ]
+    }
+  ],
+  "code_actions_on_format": {
+    "source.fixAll.eslint": true
+  },
+  "show_edit_predictions": true,
+  "use_system_window_tabs": false,
+  "tabs": {
+    "file_icons": true,
+    "git_status": true
+  },
+  "title_bar": {
+    "show_menus": false,
+    "show_user_picture": true,
+    "show_branch_icon": true
+  },
+  "seed_search_query_from_cursor": "selection",
+  "use_smartcase_search": true,
+  "prettier": {
+    "allowed": true
+  },
+  "allow_rewrap": "in_selections",
+  "soft_wrap": "editor_width",
+  "hard_tabs": true,
+  "use_system_prompts": false,
+  "use_system_path_prompts": false,
+  "on_last_window_closed": "quit_app",
+  "when_closing_with_no_tabs": "close_window",
+  "preview_tabs": {
+    "enabled": true
+  },
+  "autosave": "on_focus_change",
+  "relative_line_numbers": "enabled",
+  "vertical_scroll_margin": 1000,
+  "gutter": {
+    "line_numbers": true,
+    "min_line_number_digits": 2
+  },
+  "minimap": {
+    "show": "never"
+  },
+  "file_types": {
+    "svelte": [
+      "*.svx"
+    ],
+    "atlas-schema-postgresql": [
+      "*.hcl"
+    ]
+  },
+  "base_keymap": "VSCode",
+  "vim_mode": true,
+  "icon_theme": {
+    "mode": "light",
+    "light": "VSCode Icons for Zed (Light)",
+    "dark": "VSCode Icons for Zed (Light)"
+  },
+  "ui_font_size": 16,
+  "ui_font_features": {},
+  "ui_font_family": ".SystemUIFont",
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "Tokyo Night"
+  },
+  "theme_overrides": {
+    "Tokyo Night": {
+      "title_bar.background": "#15141C",
+      "panel.background": "#101117",
+      "tab.active_background": "#ffffff10",
+      "text": "#ffffffcc",
+      "ghost_element.selected": "#1f1f2b",
+      "ghost_element.hover": "#1a1923",
+      "element.selected": "#1f1f2b",
+      "element.hover": "#1a1923",
+      "syntax": {
+        "comment": {
+          "font_style": "italic"
+        },
+        "comment.doc": {
+          "font_style": "italic"
+        }
+      }
+    }
+  },
+  "buffer_font_family": "JetBrainsMono Nerd Font",
+  "buffer_font_weight": 250,
+  "buffer_font_size": 14,
+  "buffer_line_height": {
+    "custom": 1.7
+  },
+  "edit_predictions": {
+    "disabled_globs": [
+      "**/build/*",
+      "**/dist/*",
+      "**/.env*",
+      "**/*.pem",
+      "**/*.key",
+      "**/*.cert",
+      "**/*.crt",
+      "**/.dev.vars",
+      "**/secrets.yml"
+    ],
+    "mode": "eager"
+  },
+  "toolbar": {
+    "code_actions": true
+  },
+  "project_panel": {
+    "dock": "left",
+    "auto_open": {
+      "on_drop": false,
+      "on_paste": false
+    },
+    "indent_size": 20
+  },
+  "lsp": {
+    "vtsls": {
+      "settings": {
+        "javascript": {
+          "updateImportsOnFileMove": {
+            "enabled": "always"
+          },
+          "inlayHints": {
+            "parameterNames": {
+              "enabled": "all",
+              "suppressWhenArgumentMatchesName": false
+            },
+            "parameterTypes": {
+              "enabled": true
+            },
+            "variableTypes": {
+              "enabled": true,
+              "suppressWhenTypeMatchesName": true
+            },
+            "propertyDeclarationTypes": {
+              "enabled": true
+            },
+            "functionLikeReturnTypes": {
+              "enabled": true
+            },
+            "enumMemberValues": {
+              "enabled": true
+            }
+          }
+        },
+        "typescript": {
+          "updateImportsOnFileMove": {
+            "enabled": "always"
+          },
+          "inlayHints": {
+            "parameterNames": {
+              "enabled": "all",
+              "suppressWhenArgumentMatchesName": false
+            },
+            "parameterTypes": {
+              "enabled": true
+            },
+            "variableTypes": {
+              "enabled": true,
+              "suppressWhenTypeMatchesName": true
+            },
+            "propertyDeclarationTypes": {
+              "enabled": true
+            },
+            "functionLikeReturnTypes": {
+              "enabled": true
+            },
+            "enumMemberValues": {
+              "enabled": true
+            },
+            "jsx": {
+              "enabled": true
+            }
+          }
+        }
+      }
+    },
+    "tailwindcss-language-server": {
+      "settings": {
+        "experimental": {
+          "classRegex": [
+            "\\.className\\s*[+]?=\\s*['\"]([^'\"]*)['\"]",
+            "\\.setAttributeNS\\(.*,\\s*['\"]class['\"],\\s*['\"]([^'\"]*)['\"]",
+            "\\.setAttribute\\(['\"]class['\"],\\s*['\"]([^'\"]*)['\"]",
+            "\\.classList\\.add\\(['\"]([^'\"]*)['\"]",
+            "\\.classList\\.remove\\(['\"]([^'\"]*)['\"]",
+            "\\.classList\\.toggle\\(['\"]([^'\"]*)['\"]",
+            "\\.classList\\.contains\\(['\"]([^'\"]*)['\"]",
+            "\\.classList\\.replace\\(\\s*['\"]([^'\"]*)['\"]",
+            "\\.classList\\.replace\\([^,)]+,\\s*['\"]([^'\"]*)['\"]"
+          ]
+        }
+      }
+    },
+    "eslint": {
+      "settings": {
+        "nodePath": "${workspaceFolder}/node_modules"
+      }
+    }
+  },
+  "languages": {
+    "TypeScript": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true
+      },
+      "format_on_save": "on"
+    },
+    "TSX": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true
+      },
+      "format_on_save": "on"
+    },
+    "JavaScript": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true
+      },
+      "format_on_save": "on"
+    },
+    "Nix": {
+      "formatter": {
+        "external": {
+          "command": "nixfmt",
+          "arguments": []
+        }
+      }
+    }
+  },
+  "formatter": [
+    {
+      "code_action": "source.fixAll.eslint"
+    },
+    {
+      "external": {
+        "command": "prettier",
+        "arguments": [
+          "--stdin-filepath",
+          "{buffer_path}"
+        ]
+      }
+    }
+  ],
+  "bottom_dock_layout": "left_aligned",
+  "auto_signature_help": true,
+  "file_scan_exclusions": [
+    ".wt",
+    ".nx",
+    ".git",
+    "build",
+    "coverage"
+  ]
+}

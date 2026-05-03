@@ -1,8 +1,47 @@
 {...}: {
-  flake.homeModules.ghostty = {pkgs, ...}: {
+  flake.homeModules.ghostty = {
+    lib,
+    pkgs,
+    ...
+  }: let
+    isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+    ghostty =
+      if isDarwin
+      then null
+      else
+        pkgs.stdenvNoCC.mkDerivation {
+          pname = "ghostty-software-gl";
+          inherit (pkgs.ghostty) version;
+
+          dontUnpack = true;
+
+          nativeBuildInputs = [
+            pkgs.makeWrapper
+          ];
+
+          installPhase = ''
+            runHook preInstall
+
+            mkdir -p "$out/bin"
+            makeWrapper ${lib.getExe pkgs.ghostty} "$out/bin/ghostty" \
+              --set LIBGL_ALWAYS_SOFTWARE 1 \
+              --set MESA_GL_VERSION_OVERRIDE 4.5 \
+              --set MESA_GLSL_VERSION_OVERRIDE 450 \
+              --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [pkgs.libglvnd pkgs.mesa]}
+
+            cp -rs ${pkgs.ghostty}/share "$out/share"
+
+            runHook postInstall
+          '';
+
+          meta = pkgs.ghostty.meta;
+        };
+  in {
+    xdg.configFile."ghostty/config".onChange = lib.mkIf (!isDarwin) (lib.mkForce "");
+
     programs.ghostty = {
       enable = true;
-      package = if pkgs.stdenv.hostPlatform.isDarwin then null else pkgs.ghostty;
+      package = ghostty;
 
       settings = {
         font-family = "JetBrainsMonoNL NFM Regular";

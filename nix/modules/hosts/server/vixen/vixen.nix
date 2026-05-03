@@ -26,12 +26,16 @@ in {
       self.nixosModules.advancedPackages
 
       self.nixosModules.samba
+      self.nixosModules.tailscale
+      self.nixosModules.webdav
+      self.nixosModules.rcloneSync
 
       self.nixosModules.jellyfin
       self.nixosModules.stash
       self.nixosModules.forgejo
       # self.nixosModules.postgresql
       self.nixosModules.transmission
+      self.nixosModules.waha
 
       {
         nixpkgs.config.allowUnfree = true;
@@ -39,6 +43,28 @@ in {
         username = "reezpatel";
         hostname = "vixen";
         stash.forceCuda = true;
+
+        services.rcloneSync = {
+          enable = true;
+          source = "/mnt/mergefs";
+          interval = "*-*-* 00/6:00:00";
+          snapshotRetention = "30d";
+          targets = [
+            {
+              name = "divine";
+              host = "divine";
+              user = "root";
+              path = "/mnt/mergefs";
+            }
+            {
+              name = "muse";
+              host = "muse";
+              user = "root";
+              path = "/mnt/mergefs";
+            }
+          ];
+        };
+
         authorizedKeys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINulqFShpHuaL3ngPQ9/tvxYNwYbsNEAsImMEMi7CKq8 reezpatel@Reezs-MacBook-Pro.local"
         ];

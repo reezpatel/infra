@@ -10,6 +10,7 @@ in {
 
     modules = [
       inputs.home-manager.nixosModules.home-manager
+      inputs.agenix.nixosModules.default
 
       self.nixosModules.config
       self.nixosModules.system
@@ -19,6 +20,7 @@ in {
 
       self.nixosModules.commonPackages
       self.nixosModules.rpi
+      self.nixosModules.tailscale
 
       {
         nixpkgs.config.allowUnfree = true;
