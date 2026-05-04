@@ -8,12 +8,14 @@
       enable = true;
       defaultEditor = true;
       extraPackages = with pkgs; [
-
       ];
     };
 
     xdg.configFile = {
-      "nvim".source = config.lib.file.mkOutOfStoreSymlink "/Users/reezpatel/infra/dotfiles/nvim";
+      "nvim".source =
+        if pkgs.stdenv.isDarwin
+        then config.lib.file.mkOutOfStoreSymlink "/Users/reezpatel/infra/dotfiles/nvim"
+        else ../../../dotfiles/nvim;
     };
   };
 }

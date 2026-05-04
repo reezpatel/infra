@@ -31,6 +31,7 @@ in {
       self.nixosModules.rcloneSync
 
       self.nixosModules.jellyfin
+      self.nixosModules.immich
       self.nixosModules.stash
       self.nixosModules.forgejo
       # self.nixosModules.postgresql
@@ -42,6 +43,7 @@ in {
 
         username = "reezpatel";
         hostname = "vixen";
+        nvidiaGpu.enableCuda = false;
         stash.forceCuda = true;
 
         services.rcloneSync = {

@@ -1,4 +1,51 @@
-{...}: {
+{...}: let
+  mkStashBin = pkgs:
+    pkgs.stdenv.mkDerivation rec {
+      pname = "stash";
+      version = "0.31.1";
+
+      src = pkgs.fetchurl {
+        url = "https://github.com/stashapp/stash/releases/download/v${version}/stash-linux";
+        hash = "sha256-X3E5Grx866/VuS97MlCWJzDIvj5/EvI/2YAph4slaMA=";
+      };
+
+      dontUnpack = true;
+
+      installPhase = ''
+        mkdir -p $out/bin
+        cp $src $out/bin/stash
+        chmod +x $out/bin/stash
+      '';
+
+      meta = {
+        description = "Organizer for adult media";
+        homepage = "https://github.com/stashapp/stash";
+        license = pkgs.lib.licenses.agpl3Only;
+        mainProgram = "stash";
+        platforms = pkgs.lib.platforms.linux;
+      };
+
+      passthru.updateScript = [
+        "nix-update"
+        "--flake"
+        "--system"
+        "x86_64-linux"
+        "--version-regex"
+        "v([0-9].*)"
+        "stash-bin"
+      ];
+    };
+in {
+  perSystem = {
+    lib,
+    pkgs,
+    ...
+  }: {
+    packages = lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
+      stash-bin = mkStashBin pkgs;
+    };
+  };
+
   moduleRegistry.nixos.stash = {
     config,
     pkgs,
@@ -17,24 +64,7 @@
       done
       exec ${ffmpegPackage}/bin/ffmpeg -hwaccel cuda "$@"
     '';
-
-    stash-bin = pkgs.stdenv.mkDerivation {
-      pname = "stash";
-      version = "0.31.0";
-
-      src = pkgs.fetchurl {
-        url = "https://github.com/stashapp/stash/releases/download/v0.31.0/stash-linux";
-        hash = "sha256-KPsvA07+HGAsskZ1y5Q1Mcts8t3eSgTYFtl1oOD/w+I=";
-      };
-
-      dontUnpack = true;
-
-      installPhase = ''
-        mkdir -p $out/bin
-        cp $src $out/bin/stash
-        chmod +x $out/bin/stash
-      '';
-    };
+    stash-bin = mkStashBin pkgs;
   in {
     options.stash.forceCuda = lib.mkOption {
       type = lib.types.bool;
