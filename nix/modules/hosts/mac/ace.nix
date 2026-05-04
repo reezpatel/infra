@@ -48,6 +48,8 @@ in {
               age.secrets.private-func.file = ../../../../secerts/private-func.age;
 
               home = {
+                username = "reezpatel";
+                homeDirectory = "/Users/reezpatel";
                 stateVersion = "26.05";
               };
 

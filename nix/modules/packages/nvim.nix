@@ -7,8 +7,7 @@
     programs.neovim = {
       enable = true;
       defaultEditor = true;
-      extraPackages = with pkgs; [
-      ];
+      extraLuaConfig = "";
     };
 
     xdg.configFile = {
