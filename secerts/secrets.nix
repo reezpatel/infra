@@ -15,6 +15,7 @@ let
   rpi5 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG1Cvn5MJCIRlirTQR3Yv+KlquhPS6zEvPGsm7EB225X";
 
   helix = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL5EeGOFsjhfKM0Lp2XKHXrT1EvOT7fU8w0UCKT49/HN";
+  ace = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOfv3oPAe0bdMnsugwBFkLPXgmIZDcluTcQjid6yOb+x";
 
   all = [
     user1
@@ -30,6 +31,7 @@ let
     rpi4
     rpi5
     helix
+    ace
   ];
 in {
   "dev-rsa.age".publicKeys = all;
