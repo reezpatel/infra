@@ -7,7 +7,8 @@
     programs.neovim = {
       enable = true;
       defaultEditor = true;
-      extraLuaConfig = "";
+      sideloadInitLua = true;
+      initLua = "";
     };
 
     xdg.configFile = {
