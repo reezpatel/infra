@@ -1,6 +1,8 @@
 { pkgs, config, ... }:
 
 {
+  age.identityPaths = [ "/Users/reezpatel/.ssh/id_ed25519" ];
+
   age.secrets.dev_rsa.file = ../../../../secerts/dev-rsa.age;
   age.secrets.ppd_rsa.file = ../../../../secerts/ppd-rsa.age;
 
