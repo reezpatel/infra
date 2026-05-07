@@ -2,9 +2,11 @@
   inputs,
   self,
   ...
-}: let
+}:
+let
   system = "aarch64-linux";
-in {
+in
+{
   flake.nixosConfigurations.rpi3 = inputs.nixpkgs.lib.nixosSystem {
     inherit system;
 
@@ -20,6 +22,7 @@ in {
       self.nixosModules.commonPackages
       self.nixosModules.rpi
       self.nixosModules.tailscale
+      self.nixosModules.monitoringClient
 
       {
         nixpkgs.config.allowUnfree = true;
@@ -45,20 +48,22 @@ in {
           useUserPackages = true;
           backupFileExtension = "before-hm";
 
-          users.reezpatel = {...}: {
-            home = {
-              stateVersion = "26.05";
+          users.reezpatel =
+            { ... }:
+            {
+              home = {
+                stateVersion = "26.05";
+              };
+
+              imports = [
+                inputs.agenix.homeManagerModules.default
+
+                self.homeModules.zsh
+                self.homeModules.vim
+                self.homeModules.git
+                self.homeModules.autojump
+              ];
             };
-
-            imports = [
-              inputs.agenix.homeManagerModules.default
-
-              self.homeModules.zsh
-              self.homeModules.vim
-              self.homeModules.git
-              self.homeModules.autojump
-            ];
-          };
         };
       }
     ];

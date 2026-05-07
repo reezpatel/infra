@@ -2,9 +2,11 @@
   inputs,
   self,
   ...
-}: let
+}:
+let
   system = "x86_64-linux";
-in {
+in
+{
   flake.nixosConfigurations.divine = inputs.nixpkgs.lib.nixosSystem {
     inherit system;
 
@@ -28,6 +30,7 @@ in {
       self.nixosModules.samba
       self.nixosModules.ollama
       self.nixosModules.tailscale
+      self.nixosModules.monitoringClient
       self.nixosModules.kde
 
       {
@@ -46,23 +49,25 @@ in {
           useUserPackages = true;
           backupFileExtension = "before-hm";
 
-          users.reezpatel = {...}: {
-            home = {
-              stateVersion = "26.05";
-            };
+          users.reezpatel =
+            { ... }:
+            {
+              home = {
+                stateVersion = "26.05";
+              };
 
-            imports = [
-              inputs.agenix.homeManagerModules.default
-              self.homeModules.zsh
-              self.homeModules.tmux
-              self.homeModules.vim
-              self.homeModules.nvim
-              self.homeModules.git
-              self.homeModules.autojump
-              self.homeModules.fastfetch
-              self.homeModules.rustdesk
-            ];
-          };
+              imports = [
+                inputs.agenix.homeManagerModules.default
+                self.homeModules.zsh
+                self.homeModules.tmux
+                self.homeModules.vim
+                self.homeModules.nvim
+                self.homeModules.git
+                self.homeModules.autojump
+                self.homeModules.fastfetch
+                self.homeModules.rustdesk
+              ];
+            };
         };
       }
 
@@ -72,7 +77,8 @@ in {
           config,
           lib,
           ...
-        }: {
+        }:
+        {
           environment.systemPackages = with pkgs; [
             mergerfs
             mdadm
@@ -88,33 +94,45 @@ in {
         }
       )
 
-      ({lib, ...}: {
-        # Assemble mdadm RAID arrays at boot
-        boot.swraid.enable = true;
-        boot.swraid.mdadmConf = ''
-          MAILADDR root
-        '';
-
-        fileSystems."/mnt/ssd" = lib.mkForce {
-          device = "/dev/md/raid1-ssd1";
-          fsType = "xfs";
-          options = ["noatime" "nofail"];
-        };
-
-        services.nfs.server = {
-          enable = true;
-          exports = ''
-            /mnt/ssd    192.168.0.0/16(rw,sync,no_subtree_check,no_root_squash)
-            /mnt/nvme1  192.168.0.0/16(rw,sync,no_subtree_check,no_root_squash)
+      (
+        { lib, ... }:
+        {
+          # Assemble mdadm RAID arrays at boot
+          boot.swraid.enable = true;
+          boot.swraid.mdadmConf = ''
+            MAILADDR root
           '';
-        };
 
-        # NFS server should wait for mounts
-        systemd.services.nfs-server = {
-          after = ["mnt-ssd.mount" "mnt-nvme1.mount"];
-          wants = ["mnt-ssd.mount" "mnt-nvme1.mount"];
-        };
-      })
+          fileSystems."/mnt/ssd" = lib.mkForce {
+            device = "/dev/md/raid1-ssd1";
+            fsType = "xfs";
+            options = [
+              "noatime"
+              "nofail"
+            ];
+          };
+
+          services.nfs.server = {
+            enable = true;
+            exports = ''
+              /mnt/ssd    192.168.0.0/16(rw,sync,no_subtree_check,no_root_squash)
+              /mnt/nvme1  192.168.0.0/16(rw,sync,no_subtree_check,no_root_squash)
+            '';
+          };
+
+          # NFS server should wait for mounts
+          systemd.services.nfs-server = {
+            after = [
+              "mnt-ssd.mount"
+              "mnt-nvme1.mount"
+            ];
+            wants = [
+              "mnt-ssd.mount"
+              "mnt-nvme1.mount"
+            ];
+          };
+        }
+      )
 
       {
         fileSystems."/mnt/mergefs" = {

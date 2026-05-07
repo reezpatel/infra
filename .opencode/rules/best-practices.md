@@ -84,3 +84,6 @@ just update-package example x86_64-linux
 - Prefer systemd timers over cron.
 - For remote sync jobs, use explicit source/target paths, exclude backup/snapshot directories from the main sync, and document required SSH keys.
 - For long-running services, define restart behavior, state directories, users, firewall ports, and health/status commands where relevant.
+
+
+DONT ADD COMMENTS UNLESS ITS REALLY REQUIRED

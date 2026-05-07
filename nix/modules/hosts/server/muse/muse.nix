@@ -2,9 +2,11 @@
   inputs,
   self,
   ...
-}: let
+}:
+let
   system = "x86_64-linux";
-in {
+in
+{
   flake.nixosConfigurations.muse = inputs.nixpkgs.lib.nixosSystem {
     inherit system;
 
@@ -27,6 +29,7 @@ in {
 
       self.nixosModules.samba
       self.nixosModules.tailscale
+      self.nixosModules.monitoringClient
       self.nixosModules.kde
 
       {
@@ -45,28 +48,31 @@ in {
           useUserPackages = true;
           backupFileExtension = "before-hm";
 
-          users.reezpatel = {...}: {
-            home = {
-              stateVersion = "26.05";
-            };
+          users.reezpatel =
+            { ... }:
+            {
+              home = {
+                stateVersion = "26.05";
+              };
 
-            imports = [
-              inputs.agenix.homeManagerModules.default
-              self.homeModules.zsh
-              self.homeModules.tmux
-              self.homeModules.vim
-              self.homeModules.nvim
-              self.homeModules.git
-              self.homeModules.autojump
-              self.homeModules.fastfetch
-              self.homeModules.rustdesk
-            ];
-          };
+              imports = [
+                inputs.agenix.homeManagerModules.default
+                self.homeModules.zsh
+                self.homeModules.tmux
+                self.homeModules.vim
+                self.homeModules.nvim
+                self.homeModules.git
+                self.homeModules.autojump
+                self.homeModules.fastfetch
+                self.homeModules.rustdesk
+              ];
+            };
         };
       }
 
       (
-        {pkgs, ...}: {
+        { pkgs, ... }:
+        {
           environment.systemPackages = with pkgs; [
             mergerfs
             snapraid

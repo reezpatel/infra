@@ -125,6 +125,9 @@ deploy: deploy-trinity deploy-vixen deploy-divine deploy-muse deploy-helix deplo
 deploy-trinity action="switch":
   ./scripts/deploy_remote.sh trinity "{{action}}"
 
+switch-trinity-current:
+  ssh -t reezpatel@192.168.2.2 'sudo NIXOS_NO_CHECK=1 /nix/var/nix/profiles/system/bin/switch-to-configuration switch'
+
 deploy-vixen action="switch":
   ./scripts/deploy_remote.sh vixen "{{action}}"
 

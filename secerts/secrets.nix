@@ -14,7 +14,6 @@ let
   rpi4 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILAqkWdBFrOWfh8TDHfuMcQg/SfNBEHc1YGbQoiWsHLz";
   rpi5 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG1Cvn5MJCIRlirTQR3Yv+KlquhPS6zEvPGsm7EB225X";
 
-  helix = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL5EeGOFsjhfKM0Lp2XKHXrT1EvOT7fU8w0UCKT49/HN";
   ace = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOfv3oPAe0bdMnsugwBFkLPXgmIZDcluTcQjid6yOb+x";
 
   all = [
@@ -30,7 +29,6 @@ let
     rpi3
     rpi4
     rpi5
-    helix
     ace
   ];
 in {
@@ -46,7 +44,18 @@ in {
   "frp-token.age".publicKeys = all;
   "headscale-auth-key.age".publicKeys = all;
   "webdav-password.age".publicKeys = all;
-  "opencode-auth.age".publicKeys = [user1 helix];
+  "opencode-auth.age".publicKeys = [
+    user1
+  ];
+
+  "grafana-secret-key.age".publicKeys = all;
+  "grafana-admin-password.age".publicKeys = all;
+  "home-assistant-token.age".publicKeys = all;
+  "jellyfin-api-key.age".publicKeys = all;
+  "rustdesk-id-ed25519.age".publicKeys = [
+    user1
+    trinity
+  ];
 
   "armored-secret.age" = {
     publicKeys = all;

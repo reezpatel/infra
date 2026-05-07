@@ -5,6 +5,7 @@
     ...
   }: let
     server = "trinity";
+    publicKey = "oMKZ6elB20ObNQsFypJ3Pff4qDmrCR2wIppm3vw0I74=";
     clientConfig = ''
       rendezvous_server = '${server}:21116'
       nat_type = 1
@@ -13,7 +14,7 @@
       [options]
       custom-rendezvous-server = '${server}'
       relay-server = '${server}'
-      key = ""
+      key = "${publicKey}"
     '';
   in {
     home.packages = lib.mkIf pkgs.stdenv.isLinux [
