@@ -47,6 +47,7 @@ in {
             backupFileExtension = "before-hm";
 
             users.reezpatel = {...}: {
+              age.identityPaths = [ "/Users/reezpatel/.ssh/id_ed25519" ];
               age.secrets.private-func.file = ../../../../secerts/private-func.age;
 
               home = {

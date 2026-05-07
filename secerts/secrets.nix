@@ -44,21 +44,11 @@ in {
   "frp-token.age".publicKeys = all;
   "headscale-auth-key.age".publicKeys = all;
   "webdav-password.age".publicKeys = all;
-  "opencode-auth.age".publicKeys = [
-    user1
-  ];
+  "opencode-auth.age".publicKeys = all;
 
   "grafana-secret-key.age".publicKeys = all;
   "grafana-admin-password.age".publicKeys = all;
   "home-assistant-token.age".publicKeys = all;
   "jellyfin-api-key.age".publicKeys = all;
-  "rustdesk-id-ed25519.age".publicKeys = [
-    user1
-    trinity
-  ];
-
-  "armored-secret.age" = {
-    publicKeys = all;
-    armor = true;
-  };
+  "rustdesk-id-ed25519.age".publicKeys = all;
 }
