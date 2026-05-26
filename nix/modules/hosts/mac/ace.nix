@@ -96,6 +96,7 @@ in {
             "mole"
           ];
           homebrew.casks = [
+            "kicad"
             "alt-tab"
             "bartender"
             "beekeeper-studio"
@@ -105,6 +106,7 @@ in {
             "insomnia"
             "meetingbar"
             "obsidian"
+            "parsec"
             "raycast"
             "rectangle-pro"
             "rustdesk"

@@ -93,6 +93,27 @@ in {
         "d /mnt/mergefs/media/others/private/adult 2775 ${config.username} media -"
       ];
 
+      systemd.services.stash-media-permissions = {
+        description = "Normalize Stash media permissions";
+        wantedBy = ["multi-user.target"];
+        before = ["stash.service"];
+        path = [
+          pkgs.coreutils
+          pkgs.findutils
+        ];
+        serviceConfig = {
+          Type = "oneshot";
+          User = "root";
+        };
+        script = ''
+          media=/mnt/mergefs/media/others/private/adult
+          find "$media" -type d ! -perm -020 -exec chmod g+rwx {} +
+          find "$media" -type f ! -perm -020 -exec chmod g+rw {} +
+        '';
+      };
+
+      systemd.services.stash.wants = ["stash-media-permissions.service"];
+      systemd.services.stash.after = ["stash-media-permissions.service"];
       systemd.services.stash.path = lib.optional config.stash.forceCuda ffmpeg-cuda;
 
       systemd.services.stash.preStart = lib.mkAfter ''

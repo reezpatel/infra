@@ -73,6 +73,8 @@
           "directory mask" = "0777";
           "force create mode" = "0777";
           "force directory mode" = "0777";
+          "force security mode" = "0660";
+          "force directory security mode" = "0770";
           "delete readonly" = "yes";
 
           # macOS extended attributes & spotlight

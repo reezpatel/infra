@@ -23,6 +23,7 @@ in
       self.nixosModules.shellFunctions
 
       self.nixosModules.commonPackages
+      self.nixosModules.parsec
       self.nixosModules.headscale
       self.nixosModules.tailscale
       self.nixosModules.monitoringClient

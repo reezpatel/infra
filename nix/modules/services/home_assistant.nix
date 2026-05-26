@@ -8,6 +8,7 @@
         extraComponents = [
           "analytics"
           "apple_tv"
+          "flux_led"
           "wiz"
           "google_translate"
           "met"

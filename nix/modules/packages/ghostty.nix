@@ -63,6 +63,7 @@
         quick-terminal-autohide = false;
 
         keybind = [
+          "shift+enter=text:\\n"
           "super+enter=unbind"
           "alt+left=unbind"
           "alt+right=unbind"

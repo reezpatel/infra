@@ -26,6 +26,7 @@ in
 
       self.nixosModules.commonPackages
       self.nixosModules.advancedPackages
+      self.nixosModules.parsec
 
       self.nixosModules.samba
       self.nixosModules.tailscale

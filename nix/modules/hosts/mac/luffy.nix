@@ -101,6 +101,7 @@ in {
             "lens"
             "meetingbar"
             "obsidian"
+            "parsec"
             "postman"
             "raycast"
             "rectangle-pro"
