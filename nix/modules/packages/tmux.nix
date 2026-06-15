@@ -7,7 +7,7 @@
         owner = "jaclu";
         repo = "tmux-menus";
         rev = "main";
-        hash = "sha256-pqm2CFnaOdi9fpU85uoQoA/V3925liqwElcd/N7LAtQ=";
+        hash = "sha256-4kPz069vfeetIKym+W7fMpbZ4RTIMAw5R2Towke561M=";
       };
     };
     power-zoom = pkgs.tmuxPlugins.mkTmuxPlugin {

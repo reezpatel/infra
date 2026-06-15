@@ -33,6 +33,7 @@ in {
 
           environment.variables = {
             OLLAMA_HOST = "192.168.2.5";
+            DOCKER_HOST = "tcp://192.168.2.5:2375";
             OPENCODE_DISABLE_CLAUDE_CODE = "1";
             # TODO: Move to files
             OPENCODE_TUI_CONFIG = "/Users/reezpatel/.config/opencode/tui.json";
@@ -46,6 +47,7 @@ in {
 
             users.reezpatel = {...}: {
               age.secrets.private-func.file = ../../../../secerts/private-func.age;
+              age.secrets.secrets.file = ../../../../secerts/secrets.age;
 
               home = {
                 username = "reezpatel";
@@ -89,6 +91,10 @@ in {
             rustc
             cargo
             sqld
+            openspec
+            antigravity
+            docker-compose
+            docker
           ];
 
           homebrew.masApps = {};
@@ -97,6 +103,7 @@ in {
           ];
           homebrew.casks = [
             "kicad"
+            "edouard-claude/tap/snip"
             "alt-tab"
             "bartender"
             "beekeeper-studio"
@@ -117,7 +124,7 @@ in {
             "zed"
             "zoom"
             "proton-pass"
-            "tailscale"
+            "tailscale-app"
           ];
         }
       )

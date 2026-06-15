@@ -105,8 +105,57 @@ in
       }
 
       (
-        { pkgs, ... }:
         {
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
+        {
+          virtualisation.docker = {
+            enable = true;
+            enableOnBoot = true;
+            autoPrune.enable = true;
+          };
+
+          virtualisation.oci-containers = {
+            backend = "docker";
+            containers.opencode-monitor = {
+              image = "ghcr.io/reezpatel/opencode-monitor:latest";
+              autoStart = true;
+              volumes = [
+                "/mnt/mergefs/containers/opencode-monitor:/data"
+              ];
+            };
+          };
+
+          systemd.services.opencode-monitor-state-dir = {
+            description = "Prepare OpenCode monitor container directories";
+            after = [ "mnt-mergefs.mount" ];
+            requires = [ "mnt-mergefs.mount" ];
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+              User = "root";
+            };
+            script = ''
+              ${pkgs.coreutils}/bin/install -d -m 0750 -o ${config.username} -g users \
+                ${lib.escapeShellArg "/mnt/mergefs/containers/opencode-monitor"}
+            '';
+          };
+
+          systemd.services.docker-opencode-monitor = {
+            after = [
+              "mnt-mergefs.mount"
+              "opencode-monitor-state-dir.service"
+            ];
+            requires = [
+              "mnt-mergefs.mount"
+              "opencode-monitor-state-dir.service"
+            ];
+          };
+
           environment.systemPackages = with pkgs; [
             mergerfs
             snapraid

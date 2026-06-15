@@ -1,0 +1,12 @@
+{
+  "$schema": "https://opencode.ai/tui.json",
+  "keybinds": {
+    "leader": "ctrl+b"
+  },
+  "plugin": [
+    // "@slkiser/opencode-quota"
+
+    "/Users/reezpatel/Workspace/personal/external/opencode-quota"
+  ],
+  "theme": "tokyonight"
+}

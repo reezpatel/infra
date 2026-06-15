@@ -2,51 +2,18 @@
   flake.homeModules.opencode = {
     config,
     lib,
+    pkgs,
     ...
   }: {
     age.secrets.opencode-auth.file = ../../../secerts/opencode-auth.age;
 
     programs.opencode = {
       enable = true;
-
-      settings = {
-        autoupdate = false;
-        compaction = {
-          auto = true;
-          prune = true;
-          reserved = 10000;
-        };
-        plugin = [
-          "opencode-gemini-auth@latest"
-          "@ex-machina/opencode-anthropic-auth"
-        ];
-        provider = {
-          ollama = {
-            npm = "@ai-sdk/openai-compatible";
-            name = "Ollama (local)";
-            options = {
-              baseURL = "http://192.168.2.5:11434/v1";
-            };
-            models = {
-              "qwen3:8b" = {
-                name = "qwen3:8b";
-              };
-              "deepseek-r1:8b" = {
-                name = "deepseek-r1:8b";
-              };
-            };
-          };
-        };
-      };
+      package = pkgs.callPackage ../../pkgs/opencode.nix {};
     };
 
-    xdg.configFile."opencode/tui.json".text = builtins.toJSON {
-      "$schema" = "https://opencode.ai/tui.json";
-      keybinds = {
-        leader = "ctrl+b";
-      };
-      theme = "tokyonight";
-    };
+    xdg.configFile."opencode".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/infra/dotfiles/opencode";
 
     home.activation.seedOpencodeAuth = lib.hm.dag.entryAfter ["writeBoundary"] ''
       auth_file="${config.home.homeDirectory}/.local/share/opencode/auth.json"

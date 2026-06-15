@@ -1,0 +1,22 @@
+{
+  "enabledProviders": "auto",
+  "enableToast": false,
+  "tuiSidebarPanel": {
+    "enabled": true
+  },
+  "tuiCompactStatus": {
+    "enabled": true,
+    "homeBottom": true,
+    "sessionPrompt": true,
+    "suppressWhenNativeProviderQuota": true
+  },
+  "maintainerAnnouncements": {
+    "enabled": false,
+    "home": false
+  },
+  "anthropicBinaryPath": "/run/current-system/sw/bin/claude",
+  "googleModels": ["G3PRO", "G3FLASH", "G3IMAGE"],
+  "showSessionTokens": false,
+  "formatStyle": "singleWindow",
+  "percentDisplayMode": "remaining"
+}

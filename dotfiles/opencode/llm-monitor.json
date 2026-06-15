@@ -1,0 +1,20 @@
+{
+  "role": "local",
+  "db": {
+    "path": "~/.config/opencode"
+  },
+  "quota_collector": {
+    "enabled": true,
+    "auth_files": ["~/.local/share/opencode/auth.json"],
+    "providers": "auto"
+  },
+  "custom": {
+    "ollama-cloud": {
+      "cookie": "YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0-IFgyNTUxOSBCbHUrdTNLRHp0RjdEVEJ6cGpmM0Y2TmcwdTNBYWo5NTE2MC8rT0hXTlM4CitrZWhYR3VpYjBQb0lZSmd5Y1BOc0IrQnIzNnRLSDNwcFBqQTNVaFB2SjAKLS0tIEJZU1gzY1dFMC9NcGVTTi9PSjNGQlFCUUs2ZXNSNExxSHdkVTJCS2NGV0UKterZ1-8Si33MVDG9JXST5l2WUxXrMaXiQfByRQQCvb2mLDnvY9034h8NzlblaF7hy9IORHCucGKe-6v_QcdrZ__z01CiqUWJ0gVd22WJ88O-k7pKCSBC_J-XJMRfJ2Sp0eCgZFwkMj6k_oWSwUApVIUZEIgKoMNJydG9Gn6-noueTPLlJ3Zq-yWTHA=="
+    },
+    "opencode_go": {
+      "workspace_id": "wrk_01KRMVMX0QBVM1R4AXCYD2Q78R",
+      "auth_cookie": "Fe26.2**4857d3794e8b0763f0c0c11ce20f1bd603bd79d3cad5ef0a6b7d74c30240c134*VCH7zK37qo1mjhlF4QlBIg*TlNHettybDWn-1xKFCd-EGkegj8cMymkMzEm4ZiTxBm8V0FJlRQGt1dzbMK4o5jtcDKNfvCsGmwnjDZEkN9E2IlWKaQ_iBcaxOmlYsXx-vCzsfR4T7PxijLybicit_Qg10TFfORWBd33kc_hO_4N-b_7Rq13GtuJC8tNqZ6Cuj4UCn1i6dWXHyZrca0R92Nv1MWytFb1YA3Kxy4hxqrBicc_jMZLp-aKDh-Welt2A2XdbN3QB1FeY2FtokKH1MSSnEFHdrKnCSM4y9c1mKQ6amQqGCwCNPkyaIXB1nA9eKTtEaex6YL_z2AlvrOKEqcF*1812394885685*7e72710c4852c6d9fb325118a42fd4379c29f9f03d9b3e9be263bbc17d54e666*JIL21W4fpYOyFpM-tUNy95bDn1ar38PpWwQCB4_FQQ4"
+    }
+  }
+}

@@ -51,4 +51,5 @@ in {
   "home-assistant-token.age".publicKeys = all;
   "jellyfin-api-key.age".publicKeys = all;
   "rustdesk-id-ed25519.age".publicKeys = all;
+  "secrets.age".publicKeys = all;
 }

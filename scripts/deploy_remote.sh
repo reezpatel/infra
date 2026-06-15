@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 #
 FLAKE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-REMOTE_FLAKE="infra-nixos"
+REMOTE_FLAKE="infra"
+OLD_REMOTE_FLAKE="infra-nixos"
 
 declare -A HOSTS=(
   [trinity]="192.168.2.2"
@@ -53,8 +54,16 @@ HOST_IP="${HOSTS[$HOSTNAME]}"
 echo "==> Deploying ${HOSTNAME} → ${USERNAME}@${HOST_IP} (${ACTION})"
 
 echo "==> Syncing infra..."
+ssh "${USERNAME}@${HOST_IP}" "if [ -e /infra-nixos ]; then sudo rm -rf /infra-nixos; fi; if [ -e ~/${OLD_REMOTE_FLAKE} ]; then rm -rf ~/${OLD_REMOTE_FLAKE}; fi"
 ssh "${USERNAME}@${HOST_IP}" "mkdir -p ~/${REMOTE_FLAKE}"
-rsync -az --progress --delete --exclude='.git' --exclude='.terraform' --exclude='result*' "${FLAKE_DIR}/" "${USERNAME}@${HOST_IP}:${REMOTE_FLAKE}/"
+rsync -az --progress --delete \
+  --exclude-from="${FLAKE_DIR}/.gitignore" \
+  --exclude='.git' \
+  --exclude='.terraform' \
+  --exclude='dotfiles/opencode/node_modules' \
+  --exclude='result*' \
+  "${FLAKE_DIR}/" \
+  "${USERNAME}@${HOST_IP}:${REMOTE_FLAKE}/"
 
 echo "==> Running NixOS ${ACTION} on remote host..."
 # ssh -t "reezpatel@${HOST_IP}" "

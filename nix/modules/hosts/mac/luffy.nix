@@ -36,6 +36,7 @@ in {
 
           environment.variables = {
             OLLAMA_HOST = "192.168.2.5";
+            DOCKER_HOST = "tcp://192.168.2.5:2375";
             OPENCODE_DISABLE_CLAUDE_CODE = "1";
             # TODO: Move to files
             OPENCODE_TUI_CONFIG = "/Users/reezpatel/.config/opencode/tui.json";
@@ -92,6 +93,7 @@ in {
           homebrew.brews = [];
           homebrew.casks = [
             "1password"
+            "edouard-claude/tap/snip"
             "alt-tab"
             "bartender"
             "beekeeper-studio"

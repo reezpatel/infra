@@ -7,18 +7,18 @@
     sources = {
       x86_64-linux = {
         debArch = "amd64";
-        hash = "sha256-7H1Jj/Dpa1s0L5vtkENJ9NIRW1H9lyyXDZrb4fta5vo=";
+        hash = "sha256-HwO3aM0E1u0V2kHcQSBsqHmRENkPfVEeBZWJdPZ/SKk=";
       };
       aarch64-linux = {
         debArch = "arm64";
-        hash = "sha256-fCp4c3qF6vE8HOmLVtFi+PPJBFc+ryZSN8apd43yYns=";
+        hash = "sha256-kVJqHPd0tNihoMKzpstGvFW2fbsL9Uc0IjZkD45yuhI=";
       };
     };
     source = sources.${pkgs.stdenv.hostPlatform.system} or null;
     isSupported = source != null;
     helium = pkgs.stdenv.mkDerivation rec {
       pname = "helium";
-      version = "0.11.7.1";
+      version = "0.13.3.1";
 
       src = pkgs.fetchurl {
         url = "https://pkg.helium.computer/deb/pool/main/h/helium-bin/helium-bin_${version}-1_${source.debArch}.deb";

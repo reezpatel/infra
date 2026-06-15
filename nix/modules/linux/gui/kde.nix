@@ -59,6 +59,7 @@
       kdePackages.kpipewire
       kdePackages.krdc
       kdePackages.krfb
+      kdePackages.kscreen
       kdePackages.ksystemlog
       kdePackages.okular
       kdePackages.plasma-browser-integration

@@ -18,11 +18,13 @@
             config.username
           ];
           substituters = [
+            "https://noctalia.cachix.org"
             "https://nix-community.cachix.org"
             "https://cache.nixos.org"
             "https://cache.flox.dev"
           ];
           trusted-public-keys = [
+            "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
             "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
             "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
           ];

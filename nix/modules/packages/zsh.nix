@@ -36,12 +36,15 @@
 
       initContent =
         ''
-          SPACESHIP_PROMPT_ASYNC=false
+          SPACESHIP_PROMPT_ASYNC=true
           source ${pkgs.spaceship-prompt}/lib/spaceship-prompt/spaceship.zsh
           source ${pkgs.autoenv}/share/autoenv/activate.sh
         ''
         + lib.optionalString (lib.hasAttrByPath ["age" "secrets" "private-func"] config) ''
           [[ -f ${config.age.secrets.private-func.path} ]] && source ${config.age.secrets.private-func.path}
+        ''
+        + lib.optionalString (lib.hasAttrByPath ["age" "secrets" "secrets"] config) ''
+          [[ -f ${config.age.secrets.secrets.path} ]] && source ${config.age.secrets.secrets.path}
         ''
         + ''
 

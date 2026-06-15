@@ -25,6 +25,10 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
+    homebrew-edouard-claude-tap = {
+      url = "github:edouard-claude/homebrew-tap";
+      flake = false;
+    };
 
     disko = {
       url = "github:nix-community/disko";
@@ -36,6 +40,26 @@
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
     agenix.url = "github:ryantm/agenix";
+
+    noctalia = {
+      url = "github:noctalia-dev/noctalia/legacy-v4";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    antigravity-nix = {
+      url = "github:jacopone/antigravity-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    codex-cli-nix = {
+      url = "github:sadjow/codex-cli-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # outputs = inputs:

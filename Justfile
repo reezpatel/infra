@@ -11,7 +11,7 @@ default:
 scram password:
   ./scripts/scram_sha_256.py "{{password}}"
 
-update: update-flake update-packages
+update: update-flake update-packages update-helium
 
 update-flake:
   #!/usr/bin/env bash
@@ -65,6 +65,9 @@ update-packages:
     esac
     nix-update --flake --system "$system" --option extra-platforms "$system" "${args[@]}" "$attr"
   done <<< "$packages"
+
+update-helium:
+  ./scripts/update_helium.py
 
 update-package attr system="x86_64-linux":
   #!/usr/bin/env bash

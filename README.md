@@ -340,7 +340,7 @@ What [`scripts/deploy_remote.sh`](./scripts/deploy_remote.sh) does:
 
 1. resolves the repo root
 2. validates the hostname against a hard-coded host/IP map
-3. creates `~/infra-nixos` on the target host
+3. removes the old `~/infra-nixos` checkout if present and creates `~/infra` on the target host
 4. `rsync`s the repo to the target, excluding `.git`, `.terraform`, and `result*`
 5. runs `nh os <action> "$FLAKE_DIR/nix#<hostname>"` with both `--target-host` and `--build-host` set to the remote machine
 
