@@ -8,6 +8,9 @@
       ...
     }:
     {
+      nixpkgs.config.allowUnfree = true;
+      nixpkgs.config.segger-jlink.acceptLicense = true;
+
       nix = {
         enable = if pkgs.stdenv.hostPlatform.isDarwin then false else true;
         package = pkgs.nix;
@@ -38,6 +41,7 @@
 
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = false;
+      boot.loader.systemd-boot.configurationLimit = 5;
 
       networking.networkmanager.enable = true;
       networking.firewall.enable = false;

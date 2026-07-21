@@ -5,6 +5,7 @@
     ...
   }: let
     openclaw = pkgs.openclaw.overrideAttrs (old: {
+      pnpmDepsHash = "sha256-fCjggRmkpNGj7m5kc2MwA+lEGErAhMS9rFDTx7Uubiw=";
       meta =
         old.meta
         // {

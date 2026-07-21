@@ -30,6 +30,7 @@ in {
         hostname = "rpi1";
         authorizedKeys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINulqFShpHuaL3ngPQ9/tvxYNwYbsNEAsImMEMi7CKq8 reezpatel@Reezs-MacBook-Pro.local"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGK+XhnFOsJjoHqNmJ/NMyASsCsz7bkFoj3UpEP0hVQc reezpatel@divine"
         ];
 
         fileSystems = {

@@ -55,6 +55,12 @@
           fi
 
           bindkey '^[^M' autosuggest-execute
+          bindkey '^A' beginning-of-line
+          bindkey '^E' end-of-line
+          bindkey '^U' backward-kill-line
+          bindkey '^W' backward-kill-word
+          bindkey '^[b' backward-word
+          bindkey '^[f' forward-word
           zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
           export TERM=xterm-256color

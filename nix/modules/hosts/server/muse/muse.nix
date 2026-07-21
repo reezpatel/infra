@@ -2,11 +2,9 @@
   inputs,
   self,
   ...
-}:
-let
+}: let
   system = "x86_64-linux";
-in
-{
+in {
   flake.nixosConfigurations.muse = inputs.nixpkgs.lib.nixosSystem {
     inherit system;
 
@@ -40,6 +38,7 @@ in
         hostname = "muse";
         authorizedKeys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINulqFShpHuaL3ngPQ9/tvxYNwYbsNEAsImMEMi7CKq8 reezpatel@Reezs-MacBook-Pro.local"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGK+XhnFOsJjoHqNmJ/NMyASsCsz7bkFoj3UpEP0hVQc reezpatel@divine"
         ];
 
         system.stateVersion = "26.05";
@@ -49,31 +48,27 @@ in
           useUserPackages = true;
           backupFileExtension = "before-hm";
 
-          users.reezpatel =
-            { ... }:
-            {
-              home = {
-                stateVersion = "26.05";
-              };
-
-              imports = [
-                inputs.agenix.homeManagerModules.default
-                self.homeModules.zsh
-                self.homeModules.tmux
-                self.homeModules.vim
-                self.homeModules.nvim
-                self.homeModules.git
-                self.homeModules.autojump
-                self.homeModules.fastfetch
-                self.homeModules.rustdesk
-              ];
+          users.reezpatel = {...}: {
+            home = {
+              stateVersion = "26.05";
             };
+
+            imports = [
+              inputs.agenix.homeManagerModules.default
+              self.homeModules.zsh
+              self.homeModules.tmux
+              self.homeModules.vim
+              self.homeModules.nvim
+              self.homeModules.git
+              self.homeModules.autojump
+              self.homeModules.fastfetch
+            ];
+          };
         };
       }
 
       (
-        { pkgs, ... }:
-        {
+        {pkgs, ...}: {
           environment.systemPackages = with pkgs; [
             mergerfs
             snapraid

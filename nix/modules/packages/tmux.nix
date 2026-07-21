@@ -17,7 +17,7 @@
         owner = "jaclu";
         repo = "tmux-power-zoom";
         rev = "main";
-        hash = "sha256-3nogJO/kpFb5ruzBfSsZbrnGcmy+uFWlxBZn3KkuSmo=";
+        hash = "sha256-fpsCR0TciaVB5NKFgVKpBFaPdr38b2r6QCh8P3hdXUg=";
       };
     };
   in {

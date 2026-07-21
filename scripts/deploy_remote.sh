@@ -15,7 +15,7 @@ declare -A HOSTS=(
   [rpi3]="192.168.2.82"
   [rpi4]="192.168.2.83"
   [rpi5]="192.168.2.84"
-  [slayer]="168.144.27.142"
+  [slayer]="147.93.171.18"
 )
 
 USERNAME="reezpatel"
@@ -61,6 +61,7 @@ rsync -az --progress --delete \
   --exclude='.git' \
   --exclude='.terraform' \
   --exclude='dotfiles/opencode/node_modules' \
+  --exclude='.opencode/nnode_modules' \
   --exclude='result*' \
   "${FLAKE_DIR}/" \
   "${USERNAME}@${HOST_IP}:${REMOTE_FLAKE}/"

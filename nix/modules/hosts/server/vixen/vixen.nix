@@ -2,11 +2,9 @@
   inputs,
   self,
   ...
-}:
-let
+}: let
   system = "x86_64-linux";
-in
-{
+in {
   flake.nixosConfigurations.vixen = inputs.nixpkgs.lib.nixosSystem {
     inherit system;
 
@@ -47,7 +45,7 @@ in
 
         username = "reezpatel";
         hostname = "vixen";
-        nvidiaGpu.enableCuda = false;
+        nvidiaGpu.enableCuda = true;
         stash.forceCuda = true;
 
         services.rcloneSync = {
@@ -73,6 +71,7 @@ in
 
         authorizedKeys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINulqFShpHuaL3ngPQ9/tvxYNwYbsNEAsImMEMi7CKq8 reezpatel@Reezs-MacBook-Pro.local"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGK+XhnFOsJjoHqNmJ/NMyASsCsz7bkFoj3UpEP0hVQc reezpatel@divine"
         ];
 
         system.stateVersion = "26.05";
@@ -82,25 +81,22 @@ in
           useUserPackages = true;
           backupFileExtension = "before-hm";
 
-          users.reezpatel =
-            { ... }:
-            {
-              home = {
-                stateVersion = "26.05";
-              };
-
-              imports = [
-                inputs.agenix.homeManagerModules.default
-                self.homeModules.zsh
-                self.homeModules.tmux
-                self.homeModules.vim
-                self.homeModules.nvim
-                self.homeModules.git
-                self.homeModules.autojump
-                self.homeModules.fastfetch
-                self.homeModules.rustdesk
-              ];
+          users.reezpatel = {...}: {
+            home = {
+              stateVersion = "26.05";
             };
+
+            imports = [
+              inputs.agenix.homeManagerModules.default
+              self.homeModules.zsh
+              self.homeModules.tmux
+              self.homeModules.vim
+              self.homeModules.nvim
+              self.homeModules.git
+              self.homeModules.autojump
+              self.homeModules.fastfetch
+            ];
+          };
         };
       }
 
@@ -110,51 +106,50 @@ in
           lib,
           pkgs,
           ...
-        }:
-        {
+        }: {
           virtualisation.docker = {
             enable = true;
             enableOnBoot = true;
             autoPrune.enable = true;
           };
 
-          virtualisation.oci-containers = {
-            backend = "docker";
-            containers.opencode-monitor = {
-              image = "ghcr.io/reezpatel/opencode-monitor:latest";
-              autoStart = true;
-              volumes = [
-                "/mnt/mergefs/containers/opencode-monitor:/data"
-              ];
-            };
-          };
+          # virtualisation.oci-containers = {
+          #   backend = "docker";
+          #   containers.opencode-monitor = {
+          #     image = "ghcr.io/reezpatel/opencode-monitor:latest";
+          #     autoStart = true;
+          #     volumes = [
+          #       "/mnt/mergefs/containers/opencode-monitor:/data"
+          #     ];
+          #   };
+          # };
 
-          systemd.services.opencode-monitor-state-dir = {
-            description = "Prepare OpenCode monitor container directories";
-            after = [ "mnt-mergefs.mount" ];
-            requires = [ "mnt-mergefs.mount" ];
-            wantedBy = [ "multi-user.target" ];
-            serviceConfig = {
-              Type = "oneshot";
-              RemainAfterExit = true;
-              User = "root";
-            };
-            script = ''
-              ${pkgs.coreutils}/bin/install -d -m 0750 -o ${config.username} -g users \
-                ${lib.escapeShellArg "/mnt/mergefs/containers/opencode-monitor"}
-            '';
-          };
+          # systemd.services.opencode-monitor-state-dir = {
+          #   description = "Prepare OpenCode monitor container directories";
+          #   after = ["mnt-mergefs.mount"];
+          #   requires = ["mnt-mergefs.mount"];
+          #   wantedBy = ["multi-user.target"];
+          #   serviceConfig = {
+          #     Type = "oneshot";
+          #     RemainAfterExit = true;
+          #     User = "root";
+          #   };
+          #   script = ''
+          #     ${pkgs.coreutils}/bin/install -d -m 0750 -o ${config.username} -g users \
+          #       ${lib.escapeShellArg "/mnt/mergefs/containers/opencode-monitor"}
+          #   '';
+          # };
 
-          systemd.services.docker-opencode-monitor = {
-            after = [
-              "mnt-mergefs.mount"
-              "opencode-monitor-state-dir.service"
-            ];
-            requires = [
-              "mnt-mergefs.mount"
-              "opencode-monitor-state-dir.service"
-            ];
-          };
+          # systemd.services.docker-opencode-monitor = {
+          #   after = [
+          #     "mnt-mergefs.mount"
+          #     "opencode-monitor-state-dir.service"
+          #   ];
+          #   requires = [
+          #     "mnt-mergefs.mount"
+          #     "opencode-monitor-state-dir.service"
+          #   ];
+          # };
 
           environment.systemPackages = with pkgs; [
             mergerfs

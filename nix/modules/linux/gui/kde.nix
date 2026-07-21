@@ -50,7 +50,6 @@
 
     environment.systemPackages = with pkgs; [
       kdePackages.ark
-      kdePackages.dolphin
       kdePackages.filelight
       kdePackages.kate
       kdePackages.kcalc
