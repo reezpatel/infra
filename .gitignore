@@ -2,3 +2,4 @@
 terraform/*
 nixos/*
 .claude
+.logs/*

@@ -9,7 +9,6 @@
   "plugin": [
     "opencode-antigravity-auth@latest",
     "@ex-machina/opencode-anthropic-auth@latest",
-    "@spoons-and-mirrors/subtask2@latest",
     "opentmux@latest",
     // "@slkiser/opencode-quota@latest"
     "/Users/reezpatel/Workspace/personal/external/opencode-quota",

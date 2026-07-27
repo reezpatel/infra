@@ -18,6 +18,7 @@
   <a href="#nix-layout">Nix Layout</a> |
   <a href="#scripts">Scripts</a> |
   <a href="#secrets">Secrets</a> |
+  <a href="#headscale-enrollment">Headscale Enrollment</a> |
   <a href="#reality-check">Reality Check</a>
 </p>
 
@@ -662,6 +663,84 @@ agenix -e secerts/private-func.age
 ```
 
 The repo already includes `agenix` as a flake input and also adds the package in the advanced package bundle.
+
+---
+
+## Headscale Enrollment
+
+All Linux hosts enroll into a self-hosted Tailscale mesh coordinated by Headscale on `slayer`. This section is the operational runbook for bringing the mesh up on a fresh deployment and for rotating the enrollment key.
+
+### How Clients Reach The Server
+
+The wiring is a single shared URL string:
+
+- [`services/headscale.nix`](./nix/modules/services/headscale.nix) sets `server_url = "https://hs.coupletruffle.com"` behind nginx with ACME TLS.
+- [`services/tailscale.nix`](./nix/modules/services/tailscale.nix) sets `--login-server=https://hs.coupletruffle.com` and reads the auth key from `headscale-auth-key.age`.
+- Public DNS resolves `hs.coupletruffle.com` to `slayer`'s public IP; nginx terminates TLS and proxies to headscale on `127.0.0.1:8085`.
+- The headscale CLI talks to the server over the unix socket `/run/headscale/headscale.sock` (via `/etc/headscale/config.yaml`), so root on `slayer` can drive it without a network flag.
+
+Because every Linux host imports the same `tailscale` module and the same shared secret, the preauth key must be created **reusable** so all machines can enroll from one secret.
+
+### Generating The Preauth Key (on `slayer`, as root)
+
+```bash
+sudo headscale users create default
+
+# reusable = every host shares the one secret; long expiration; NOT ephemeral
+sudo headscale preauthkeys create --user default --reusable --expiration 87600h
+
+# confirm reusable=true
+sudo headscale preauthkeys list --user default
+```
+
+Copy the `tskey-...` value that `preauthkeys create` prints.
+
+### Rotating The Secret
+
+From any machine whose SSH key is listed under `all` in [`secerts/secrets.nix`](./secerts/secrets.nix):
+
+```bash
+agenix -e secerts/headscale-auth-key.age
+# paste ONLY the tskey-... value (no trailing newline), save, quit
+```
+
+This re-encrypts for every recipient, so all hosts can decrypt the rotated key.
+
+### Deploying To Clients
+
+The NixOS `tailscale` module auto-runs `tailscale up --auth-key ...` using `authKeyFile` on first boot. After rotating the secret:
+
+```bash
+./scripts/deploy_remote.sh <hostname> switch
+sudo systemctl restart tailscaled   # if a node is already up, re-trigger enrollment
+```
+
+Repeat per host, or deploy the whole fleet:
+
+```bash
+just deploy
+```
+
+### Verifying
+
+```bash
+sudo headscale nodes list          # on slayer
+tailscale status                   # on any client
+```
+
+### Optional: API Key For The Web UI
+
+The Headscale web UI at `https://hs.coupletruffle.com/web/` needs an **API key** (separate from the preauth key above). Generate one and paste it into the UI login along with the server URL `https://hs.coupletruffle.com`:
+
+```bash
+sudo headscale apikeys create --expiration 87600h
+```
+
+### Gotchas
+
+- **Bootstrap ordering on `slayer`:** it runs both headscale and tailscale. On first boot ACME issuance + nginx + headscale take a moment to come up; `tailscaled` retries until the control plane answers, so no systemd ordering change is needed.
+- **Single-use keys break the shared-secret model:** a key created without `--reusable` lets only the first machine to boot enroll. Keep `--reusable` on the shared key.
+- **Metrics exposure:** `metrics_listen_addr = "0.0.0.0:9090"` in [`headscale.nix`](./nix/modules/services/headscale.nix) is reachable on `slayer`'s public IP. Monitoring scrapes it over the mesh at `100.64.0.5:9090`. Bind to `127.0.0.1:9090` if public exposure is unwanted.
 
 ---
 

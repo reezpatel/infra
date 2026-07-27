@@ -1,10 +1,46 @@
 [
   {
-    "context": "Workspace",
-    "bindings": {}
+    "context": "Editor",
+    "bindings": {
+      "ctrl-v": "editor::Paste",
+      "ctrl-c": "editor::Copy",
+      "ctrl-a": "editor::SelectAll",
+      "ctrl-down": "editor::MoveToEnd",
+      "ctrl-f": "buffer_search::Deploy",
+      "ctrl-left": "editor::MoveToPreviousWordStart",
+      "ctrl-right": "editor::MoveToNextWordEnd",
+      "ctrl-s": "workspace::Save",
+      "ctrl-shift-right": "editor::SelectToNextWordEnd",
+      "ctrl-shift-z": "editor::Redo",
+      "ctrl-up": "editor::MoveToBeginning",
+      "ctrl-w": "pane::CloseActiveItem",
+      "ctrl-x": "editor::Cut",
+      "ctrl-z": "editor::Undo",
+      "end": "editor::MoveToEndOfLine",
+      "home": "editor::MoveToBeginningOfLine",
+      "shift-end": "editor::SelectToEndOfLine",
+      "shift-home": "editor::SelectToBeginningOfLine"
+    }
   },
   {
-    "context": "Editor && vim_mode == insert",
-    "bindings": {}
+    "bindings": {
+      "ctrl-c": "editor::Copy",
+      "ctrl-left": "editor::MoveToBeginningOfLine",
+      "ctrl-right": "editor::MoveToEndOfLine",
+      "ctrl-s": "workspace::Save",
+      "ctrl-shift-left": "editor::SelectToBeginningOfLine",
+      "ctrl-shift-right": "editor::SelectToEndOfLine",
+      "ctrl-v": "editor::Paste",
+      "ctrl-x": "editor::Cut",
+      "end": "editor::MoveToEndOfLine",
+      "home": "editor::MoveToBeginningOfLine",
+      "shift-end": "editor::SelectToEndOfLine",
+      "shift-home": "editor::SelectToBeginningOfLine"
+    },
+    "context": "Editor && vim_mode == insert"
+  },
+  {
+    "bindings": {},
+    "context": "Workspace"
   }
 ]

@@ -159,7 +159,7 @@ deploy-rpi5 action="switch":
   ./scripts/deploy_remote.sh rpi5 "{{action}}"
 
 deploy-slayer action="switch":
-  ./scripts/deploy_remote.sh slayer "{{action}}"
+  NIXOS_NO_CHECK=1 ./scripts/deploy_remote.sh slayer "{{action}}"
 
 deploy-mac host="ace":
   ./scripts/deploy_macos.sh "{{host}}"

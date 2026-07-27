@@ -88,23 +88,23 @@ in
         user = config.username;
 
         hardwareAcceleration = {
-          enable = true;
+          enable = false;
           type = "nvenc";
           device = "/dev/nvidia0";
         };
 
         transcoding = {
-          enableHardwareEncoding = true;
+          enableHardwareEncoding = false;
           hardwareDecodingCodecs = {
-            h264 = true;
-            hevc = true;
-            hevc10bit = true;
-            vp9 = true;
-            av1 = true;
+            h264 = false;
+            hevc = false;
+            hevc10bit = false;
+            vp9 = false;
+            av1 = false;
           };
           hardwareEncodingCodecs = {
-            hevc = true;
-            av1 = true;
+            hevc = false;
+            av1 = false;
           };
         };
       };

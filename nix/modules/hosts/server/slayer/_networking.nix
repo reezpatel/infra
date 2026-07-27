@@ -1,57 +1,43 @@
 {lib, ...}: {
-  # This file was populated at runtime with the networking
-  # details gathered from the active system.
+  # Networking config for Contabo VPS - static IP setup
   networking = {
     nameservers = [
       "8.8.8.8"
+      "1.1.1.1"
     ];
-    defaultGateway = "168.144.16.1";
+    defaultGateway = {
+      address = "147.93.171.1";
+      interface = "ens18";
+    };
     dhcpcd.enable = false;
+    useDHCP = false;
     usePredictableInterfaceNames = lib.mkForce false;
     interfaces = {
-      eth0 = {
+      ens18 = {
         ipv4.addresses = [
           {
-            address = "168.144.27.142";
-            prefixLength = 20;
-          }
-          {
-            address = "10.47.0.5";
-            prefixLength = 16;
-          }
-        ];
-        ipv6.addresses = [
-          {
-            address = "fe80::2c2a:dcff:fe69:b687";
-            prefixLength = 64;
+            address = "147.93.171.18";
+            prefixLength = 32;
           }
         ];
         ipv4.routes = [
           {
-            address = "168.144.16.1";
+            address = "147.93.171.1";
             prefixLength = 32;
-          }
-        ];
-        ipv6.routes = [];
-      };
-      eth1 = {
-        ipv4.addresses = [
-          {
-            address = "10.122.0.2";
-            prefixLength = 20;
           }
         ];
         ipv6.addresses = [
           {
-            address = "fe80::dc8e:e9ff:feb4:908c";
+            address = "fe80::250:56ff:fe65:6c7e";
             prefixLength = 64;
           }
         ];
+        ipv6.routes = [];
       };
     };
   };
+
   services.udev.extraRules = ''
-    ATTR{address}=="2e:2a:dc:69:b6:87", NAME="eth0"
-    ATTR{address}=="de:8e:e9:b4:90:8c", NAME="eth1"
+    ATTR{address}=="00:50:56:65:6c:7e", NAME="ens18"
   '';
 }

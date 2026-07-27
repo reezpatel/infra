@@ -39,7 +39,7 @@
         [
           nvtopPackages.full
           pciutils
-          linuxPackages.perf
+          perf
           ninja
           pkgs.libGL
         ]
