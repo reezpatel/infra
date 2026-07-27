@@ -40,6 +40,7 @@ in {
       self.nixosModules.gui_common
       self.nixosModules.windows-apps
       self.nixosModules.gaming
+      self.nixosModules.kicad
       self.nixosModules.mac-keyboard
 
       {
@@ -60,6 +61,7 @@ in {
         macKeyboard.enable = true;
         windowsApps.enable = true;
         gaming.enable = true;
+        kicad.enable = true;
         services.upower.enable = true;
         services.power-profiles-daemon.enable = true;
         services.hardware.bolt.enable = true;
@@ -119,6 +121,7 @@ in {
               self.homeModules.antigravity
               self.homeModules.zed
               self.homeModules.ghostty
+              self.homeModules.kitty
               self.homeModules.clipboard
             ];
 
@@ -360,6 +363,10 @@ in {
             # sigrok fx2lafw logic analyzers (e.g. Saleae clones)
             SUBSYSTEMS=="usb", ATTRS{idVendor}=="0925", ATTRS{idProduct}=="3881", MODE="0660", GROUP="users"
             ATTRS{idVendor}=="0925", ATTRS{idProduct}=="3881", MODE="0660", GROUP="users"
+
+            # Seeed Studio devices (all XIAO boards, CMSIS-DAP debuggers)
+            ACTION=="add|change", SUBSYSTEM=="usb",    ATTR{idVendor}=="2886", MODE="0660", GROUP="dialout", TAG+="uaccess"
+            ACTION=="add|change", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2886", MODE="0660", GROUP="dialout", TAG+="uaccess"
           '';
 
           environment.systemPackages = with pkgs; [

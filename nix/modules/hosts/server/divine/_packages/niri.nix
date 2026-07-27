@@ -51,7 +51,7 @@ inputs: {pkgs, ...}: {
       "Ctrl+Alt+Super+Space".action.toggle-overview = [];
       "Mod+Shift+Q".action.close-window = [];
       "Mod+Shift+E".action.quit = [];
-      "Mod+Shift+1".action.spawn = ["ndrop" "--focus" "--class" "com.mitchellh.ghostty" "ghostty"];
+      "Mod+Shift+1".action.spawn = ["ndrop" "--focus" "--class" "kitty" "kitty"];
       "Mod+Shift+2".action.spawn = ["ndrop" "--focus" "--class" "dev.zed.Zed" "zeditor"];
       "Mod+Shift+3".action.spawn = ["ndrop" "--focus" "helium"];
       "Mod+Shift+4".action.spawn-sh = "filename=\"$HOME/Pictures/screenshot-$(date +%Y-%m-%d-%H%M%S).png\" && grim -g \"$(slurp)\" \"$filename\" && wl-copy < \"$filename\" && notify-send \"Screenshot saved\" \"$(basename \"$filename\")\"";
@@ -65,7 +65,7 @@ inputs: {pkgs, ...}: {
       "Ctrl+Alt+Super+Right".action.focus-column-right = [];
       "Ctrl+Alt+Super+Up".action.focus-window-up = [];
       "Ctrl+Alt+Super+Down".action.focus-window-down = [];
-      "Ctrl+Alt+Super+T".action.spawn = ["ndrop" "--focus" "--class" "com.mitchellh.ghostty" "ghostty"];
+      "Ctrl+Alt+Super+T".action.spawn = ["ndrop" "--focus" "--class" "kitty" "kitty"];
       "Ctrl+Alt+Super+Shift+Left".action.move-column-left = [];
       "Ctrl+Alt+Super+Shift+Right".action.move-column-right = [];
       "Ctrl+Alt+Super+Shift+Up".action.move-window-up = [];
