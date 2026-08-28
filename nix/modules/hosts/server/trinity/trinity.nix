@@ -2,9 +2,11 @@
   inputs,
   self,
   ...
-}: let
+}:
+let
   system = "x86_64-linux";
-in {
+in
+{
   flake.nixosConfigurations.trinity = inputs.nixpkgs.lib.nixosSystem {
     inherit system;
 
@@ -25,6 +27,7 @@ in {
 
       self.nixosModules.samba
       self.nixosModules.tailscale
+      self.nixosModules.twodb
 
       self.nixosModules.monitoringServer
       self.nixosModules.monitoringClient
@@ -34,7 +37,8 @@ in {
           config,
           pkgs,
           ...
-        }: {
+        }:
+        {
           nixpkgs.config.allowUnfree = true;
 
           username = "reezpatel";
@@ -52,7 +56,7 @@ in {
             useUserPackages = true;
             backupFileExtension = "before-hm";
 
-            users.reezpatel = {...}: {
+            users.reezpatel = { ... }: {
               home = {
                 stateVersion = "26.05";
               };

@@ -91,7 +91,14 @@
           }
           {
             job_name = "postgres";
-            static_configs = [ { targets = [ "vixen:9187" ]; } ];
+            static_configs = [
+              {
+                targets = [
+                  "vixen:9187"
+                  "slayer:9187"
+                ];
+              }
+            ];
             relabel_configs = instanceRelabel;
           }
           {

@@ -632,6 +632,9 @@ Current secret files:
 - `stash-jwt-key.age`
 - `stash-session-key.age`
 - `stash-password.age`
+- `twodb-postgres-password.age`
+- `twodb-garage-rpc-secret.age`
+- `twodb-s3-keys.age`
 - `webdav-password.age`
 
 Recipients are declared in [`secerts/secrets.nix`](./secerts/secrets.nix).
@@ -653,6 +656,8 @@ Recipients are declared in [`secerts/secrets.nix`](./secerts/secrets.nix).
 | `ppd-rsa.age` | [`hosts/mac/_auto_ssh.nix`](./nix/modules/hosts/mac/_auto_ssh.nix) | SSH key for AutoSSH ppd tunnel on `luffy` |
 | `frp-token.age` | reserved | FRP token, not currently wired to an active host module |
 | `opencode-auth.age` | reserved | Opencode auth token |
+a| `twodb-garage-rpc-secret.age` | [`programs/twodb.nix`](./nix/modules/programs/twodb.nix) | Garage cluster RPC secret rendered into `garage.toml` |
+| `twodb-s3-keys.age` | [`programs/twodb.nix`](./nix/modules/programs/twodb.nix) | two lines: Garage S3 access key id + secret key, provisioned via `--default-bucket` |
 
 ### Typical Secret Workflow
 

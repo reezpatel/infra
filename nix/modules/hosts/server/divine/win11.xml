@@ -1,0 +1,177 @@
+<!--
+  Windows 11 VM for dynamic GPU handover on "divine" (+ USB passthrough
+  for mouse/keyboard/speaker).
+
+  Define with:
+    virsh define /path/to/win11.xml
+
+  IMPORTANT: the PCI <hostdev> entries (GPU) use managed='no'. Binding/
+  unbinding is done by the libvirt hook installed by the gpu_handover
+  NixOS module (/var/lib/libvirt/hooks/qemu.d/50-gpu-handover). Do NOT
+  change those to managed='yes', or libvirt and the hook will fight over
+  the devices. (USB hostdevs need no hook - libvirt auto-attaches them.)
+
+  Before defining:
+    1. Create the disk:  mkdir -p /mnt/ssd/windows
+                         qemu-img create -f qcow2 /mnt/ssd/windows/win11.qcow2 256G
+    2. Point the first <cdrom> at a Windows 11 ISO in /mnt/ssd/windows/.
+    3. Adjust memory / vcpu / cpu topology to taste.
+
+  During installation the SPICE display is used. Afterwards, remove the
+  <graphics>+<video> section - Windows then renders on the RTX 3090 and
+  outputs to the monitor plugged into it (the host niri session is stopped
+  while the VM runs and auto-restarts on VM shutdown via greetd).
+-->
+<domain type='kvm'>
+  <name>win11</name>
+  <memory unit='GiB'>64</memory>
+  <currentMemory unit='GiB'>64</currentMemory>
+  <memoryBacking>
+    <hugepages/>
+    <nosharepages/>
+    <locked/>
+  </memoryBacking>
+  <vcpu placement='static'>16</vcpu>
+  <os>
+    <type arch='x86_64' machine='q35'>hvm</type>
+    <!-- Secure Boot ON with Microsoft Win11 keys pre-enrolled into the
+         NVRAM template (/mnt/ssd/windows/OVMF_VARS.secboot.fd, built with
+         virt-fw-vars, profiles: microsoft-db win11, microsoft-kek all).
+         Required by Win11 setup and by some anti-cheat systems. -->
+    <loader readonly='yes' secure='yes' type='pflash' format='raw'>/run/libvirt/nix-ovmf/edk2-x86_64-secure-code.fd</loader>
+    <nvram template='/mnt/ssd/windows/OVMF_VARS.secboot.fd' templateFormat='raw' format='raw'>/var/lib/libvirt/qemu/nvram/win11_VARS.fd</nvram>
+    <boot dev='hd'/>
+    <boot dev='cdrom'/>
+    <bootmenu enable='yes'/>
+    <smbios mode='host'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <hyperv mode='custom'>
+      <relaxed state='on'/>
+      <vapic state='on'/>
+      <spinlocks state='on' retries='8191'/>
+      <vpindex state='on'/>
+      <runtime state='on'/>
+      <synic state='on'/>
+      <stimer state='on'/>
+      <frequencies state='on'/>
+      <tlbflush state='on'/>
+      <ipi state='on'/>
+    </hyperv>
+    <!-- hide the hypervisor from nvidia (error 43) -->
+    <kvm>
+      <hidden state='on'/>
+    </kvm>
+    <vmport state='off'/>
+    <smm state='on'/>
+    <ioapic driver='kvm'/>
+  </features>
+  <cpu mode='host-passthrough' check='none' migratable='off'>
+    <!-- adjust cores/threads to your CPU (e.g. 8c/16t below) -->
+    <topology sockets='1' dies='1' clusters='1' cores='8' threads='2'/>
+    <cache mode='passthrough'/>
+  </cpu>
+  <clock offset='localtime'>
+    <timer name='rtc' tickpolicy='catchup'/>
+    <timer name='pit' tickpolicy='delay'/>
+    <timer name='hpet' present='no'/>
+    <timer name='hypervclock' present='yes'/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <pm>
+    <suspend-to-mem enabled='no'/>
+    <suspend-to-disk enabled='no'/>
+  </pm>
+  <devices>
+    <emulator>/run/libvirt/nix-emulators/qemu-system-x86_64</emulator>
+
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2' cache='none' io='native' discard='unmap'/>
+      <source file='/mnt/ssd/windows/win11.qcow2'/>
+      <target dev='vda' bus='virtio'/>
+    </disk>
+
+    <!-- Windows installer ISO tray (empty). To reinstall, attach with:
+         virsh change-media win11 sda /mnt/ssd/windows/Win11.iso (add flags: config, live, force)
+         The virtio CD below stays attached (drivers). -->
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <target dev='sda' bus='sata'/>
+      <readonly/>
+    </disk>
+
+    <!-- virtio drivers (provided by the gpu_handover module) -->
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/etc/virtio/virtio-win.iso'/>
+      <target dev='sdb' bus='sata'/>
+      <readonly/>
+    </disk>
+
+    <interface type='network'>
+      <source network='default'/>
+      <model type='virtio'/>
+    </interface>
+
+    <!-- Win11 requirement: emulated TPM 2.0 (swtpm is enabled in the module) -->
+    <tpm model='tpm-crb'>
+      <backend type='emulator' version='2.0'/>
+    </tpm>
+
+    <rng model='virtio'>
+      <backend model='random'>/dev/urandom</backend>
+    </rng>
+
+    <memballoon model='none'/>
+
+    <!-- No virtual display: the passed RTX 3090 is the only console
+         (installer and desktop both render on it via UEFI GOP / nvidia
+         driver, output on the physical monitor). -->
+
+    <!-- RTX 3090 (verify addresses with lspci) -->
+    <hostdev mode='subsystem' type='pci' managed='no'>
+      <source>
+        <address domain='0x0000' bus='0x01' slot='0x00' function='0x0' multifunction='on'/>
+      </source>
+    </hostdev>
+    <hostdev mode='subsystem' type='pci' managed='no'>
+      <source>
+        <address domain='0x0000' bus='0x01' slot='0x00' function='0x1'/>
+      </source>
+    </hostdev>
+
+    <!-- USB devices: grabbed by the VM on start, returned to the host on
+         shutdown. IDs from `lsusb`. -->
+
+    <!-- Mouse: Logitech Unifying Receiver (Bus 003 Device 010).
+         NOTE: one unifying receiver can pair several Logitech devices -
+         if the keyboard is also Logitech on this receiver, this one
+         hostdev covers both and the Telink entry below isn't needed. -->
+    <hostdev mode='subsystem' type='usb'>
+      <source>
+        <vendor id='0x046d'/>
+        <product id='0xc52b'/>
+      </source>
+    </hostdev>
+
+    <!-- Keyboard: Telink IQUNIX 2.4GHz dongle (Bus 003 Device 008) -->
+    <hostdev mode='subsystem' type='usb'>
+      <source>
+        <vendor id='0x320f'/>
+        <product id='0x5088'/>
+      </source>
+    </hostdev>
+
+    <!-- Speakers: Creative Pebble Pro (Bus 003 Device 020) -->
+    <hostdev mode='subsystem' type='usb'>
+      <source>
+        <vendor id='0x041e'/>
+        <product id='0x3287'/>
+      </source>
+    </hostdev>
+  </devices>
+</domain>

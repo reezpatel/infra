@@ -31,7 +31,8 @@ let
     rpi5
     ace
   ];
-in {
+in
+{
   "dev-rsa.age".publicKeys = all;
   "ppd-rsa.age".publicKeys = all;
   "private-func.age".publicKeys = all;
@@ -45,6 +46,10 @@ in {
   "headscale-auth-key.age".publicKeys = all;
   "webdav-password.age".publicKeys = all;
   "opencode-auth.age".publicKeys = all;
+
+  "twodb-postgres-password.age".publicKeys = all;
+  "twodb-garage-rpc-secret.age".publicKeys = all;
+  "twodb-s3-keys.age".publicKeys = all;
 
   "grafana-secret-key.age".publicKeys = all;
   "grafana-admin-password.age".publicKeys = all;

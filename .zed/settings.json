@@ -7,6 +7,9 @@
           "arguments": ["--"]
         }
       }
+    },
+    "JSON": {
+   		"formatter": "auto"
     }
   },
   "file_scan_exclusions": ["*.lock", ".git", ".DS_Store"]

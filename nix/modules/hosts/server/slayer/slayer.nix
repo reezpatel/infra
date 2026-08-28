@@ -2,9 +2,11 @@
   inputs,
   self,
   ...
-}: let
+}:
+let
   system = "x86_64-linux";
-in {
+in
+{
   flake.nixosConfigurations.slayer = inputs.nixpkgs.lib.nixosSystem {
     inherit system;
 
@@ -25,13 +27,16 @@ in {
       self.nixosModules.headscale
       self.nixosModules.tailscale
       self.nixosModules.monitoringClient
+      self.nixosModules.postgresql
+      self.nixosModules.neo4j
 
       (
         {
           pkgs,
           lib,
           ...
-        }: {
+        }:
+        {
           boot.tmp.cleanOnBoot = true;
           zramSwap.enable = true;
 
@@ -77,7 +82,7 @@ in {
             useUserPackages = true;
             backupFileExtension = "before-hm";
 
-            users.reezpatel = {...}: {
+            users.reezpatel = { ... }: {
               home = {
                 stateVersion = "26.05";
               };
