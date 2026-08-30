@@ -1,5 +1,5 @@
 {...}: {
-  moduleRegistry.nixos.webdav = {
+  flake.modules.nixos.webdav = {
     pkgs,
     config,
     ...
@@ -31,7 +31,12 @@
       group = "users";
 
       virtualHosts.webdav = {
-        listen = [{ip = "*"; port = 8097;}];
+        listen = [
+          {
+            ip = "*";
+            port = 8097;
+          }
+        ];
         documentRoot = "/mnt/mergefs";
         extraConfig = ''
           DAVLockDB /var/lib/httpd/DAVLock

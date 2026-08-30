@@ -1,5 +1,5 @@
 {...}: {
-  moduleRegistry.nixos.samba = {
+  flake.modules.nixos.samba = {
     config,
     pkgs,
     ...

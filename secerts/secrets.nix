@@ -43,9 +43,31 @@ in
   "forgejo-runner-token.age".publicKeys = all;
   "forgejo-password.age".publicKeys = all;
   "frp-token.age".publicKeys = all;
-  "headscale-auth-key.age".publicKeys = all;
   "webdav-password.age".publicKeys = all;
   "opencode-auth.age".publicKeys = all;
+
+  # NetBird (mesh clients + control plane on slayer)
+  "netbird-setup-key.age".publicKeys = all;
+  "netbird-management-encryption-key.age".publicKeys = [
+    user1
+    system1
+    slayer
+  ];
+  "netbird-turn-secret.age".publicKeys = [
+    user1
+    system1
+    slayer
+  ];
+  "netbird-turn-password.age".publicKeys = [
+    user1
+    system1
+    slayer
+  ];
+  "pocket-id-encryption-key.age".publicKeys = [
+    user1
+    system1
+    slayer
+  ];
 
   "twodb-postgres-password.age".publicKeys = all;
   "twodb-garage-rpc-secret.age".publicKeys = all;

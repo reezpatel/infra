@@ -1,5 +1,7 @@
 {...}: {
-  moduleRegistry.nixos.ollama = {pkgs, ...}: {
+  flake.modules.nixos.ollama = {pkgs, ...}: {
+    networking.firewall.allowedTCPPorts = [11434];
+
     services.ollama = {
       enable = true;
       host = "0.0.0.0";

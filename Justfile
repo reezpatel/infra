@@ -116,7 +116,7 @@ kill-builds-on host:
   #!/usr/bin/env bash
   set -euo pipefail
 
-  ssh "reezpatel@{{host}}" '
+  ssh -p 7272 "reezpatel@{{host}}" '
     pkill -TERM -f "nix --extra-experimental-features nix-command flakes build" || true
     sleep 2
     pkill -TERM -f "default-builder.sh" || true
@@ -125,41 +125,41 @@ kill-builds-on host:
 [parallel]
 deploy: deploy-trinity deploy-vixen deploy-divine deploy-muse deploy-helix deploy-rpi1 deploy-rpi2 deploy-rpi3 deploy-rpi4 deploy-rpi5 deploy-slayer
 
-deploy-trinity action="switch":
-  ./scripts/deploy_remote.sh trinity "{{action}}"
+deploy-trinity action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" trinity "{{action}}"
 
 switch-trinity-current:
-  ssh -t reezpatel@192.168.2.2 'sudo NIXOS_NO_CHECK=1 /nix/var/nix/profiles/system/bin/switch-to-configuration switch'
+  ssh -p 7272 -t reezpatel@192.168.2.2 'sudo NIXOS_NO_CHECK=1 /nix/var/nix/profiles/system/bin/switch-to-configuration switch'
 
-deploy-vixen action="switch":
-  ./scripts/deploy_remote.sh vixen "{{action}}"
+deploy-vixen action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" vixen "{{action}}"
 
-deploy-divine action="switch":
-  ./scripts/deploy_remote.sh divine "{{action}}"
+deploy-divine action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" divine "{{action}}"
 
-deploy-muse action="switch":
-  ./scripts/deploy_remote.sh muse "{{action}}"
+deploy-muse action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" muse "{{action}}"
 
-deploy-helix action="switch":
-  ./scripts/deploy_remote.sh helix "{{action}}"
+deploy-helix action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" helix "{{action}}"
 
-deploy-rpi1 action="switch":
-  ./scripts/deploy_remote.sh rpi1 "{{action}}"
+deploy-rpi1 action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" rpi1 "{{action}}"
 
-deploy-rpi2 action="switch":
-  ./scripts/deploy_remote.sh rpi2 "{{action}}"
+deploy-rpi2 action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" rpi2 "{{action}}"
 
-deploy-rpi3 action="switch":
-  ./scripts/deploy_remote.sh rpi3 "{{action}}"
+deploy-rpi3 action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" rpi3 "{{action}}"
 
-deploy-rpi4 action="switch":
-  ./scripts/deploy_remote.sh rpi4 "{{action}}"
+deploy-rpi4 action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" rpi4 "{{action}}"
 
-deploy-rpi5 action="switch":
-  ./scripts/deploy_remote.sh rpi5 "{{action}}"
+deploy-rpi5 action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" rpi5 "{{action}}"
 
-deploy-slayer action="switch":
-  NIXOS_NO_CHECK=1 ./scripts/deploy_remote.sh slayer "{{action}}"
+deploy-slayer action="switch" port="7272":
+  NIXOS_NO_CHECK=1 ./scripts/deploy_remote.sh -p "{{port}}" slayer "{{action}}"
 
 deploy-mac host="ace":
   ./scripts/deploy_macos.sh "{{host}}"

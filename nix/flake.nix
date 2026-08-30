@@ -91,21 +91,24 @@
     };
   };
 
-  # outputs = inputs:
-  #   inputs.flake-parts.lib.mkFlake {inherit inputs;} {
-  #     imports = [(inputs.import-tree ./modules)];
-
-  #     _module.args.rootPath = ./.;
-  #   };
-
-  outputs = inputs:
-    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
+  outputs =
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
 
       imports = [
         inputs.flake-parts.flakeModules.modules
         inputs.home-manager.flakeModules.home-manager
         (inputs.import-tree ./modules)
       ];
+
+      # Expose the evaluated flake-parts option tree at `flake.debug.options`.
+      # Used by nixd (see .zed/settings.json) for option completion in module files.
+      debug = true;
     };
 }

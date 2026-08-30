@@ -1,6 +1,9 @@
 {
+  "format_on_save": "on",
   "languages": {
     "Nix": {
+      "language_servers": ["nixd", "!nil"],
+      "format_on_save": "on",
       "formatter": {
         "external": {
           "command": "alejandra",
@@ -9,7 +12,32 @@
       }
     },
     "JSON": {
-   		"formatter": "auto"
+      "formatter": "auto"
+    }
+  },
+  "lsp": {
+    "nixd": {
+      "settings": {
+        "nixd": {
+          "nixpkgs": {
+            "expr": "import (builtins.getFlake \"/home/reezpatel/infra/nix\").inputs.nixpkgs {}"
+          },
+          "options": {
+            "flake-parts": {
+              "expr": "let flake = builtins.getFlake \"/home/reezpatel/infra/nix\"; in flake.debug.options"
+            },
+            "nixos": {
+              "expr": "(builtins.getFlake \"/home/reezpatel/infra/nix\").nixosConfigurations.divine.options"
+            },
+            "darwin": {
+              "expr": "(builtins.getFlake \"/home/reezpatel/infra/nix\").darwinConfigurations.luffy.options"
+            },
+            "home-manager": {
+              "expr": "(builtins.getFlake \"/home/reezpatel/infra/nix\").nixosConfigurations.divine.options.home-manager.users.type.getSubOptions []"
+            }
+          }
+        }
+      }
     }
   },
   "file_scan_exclusions": ["*.lock", ".git", ".DS_Store"]

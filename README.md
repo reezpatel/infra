@@ -18,7 +18,7 @@
   <a href="#nix-layout">Nix Layout</a> |
   <a href="#scripts">Scripts</a> |
   <a href="#secrets">Secrets</a> |
-  <a href="#headscale-enrollment">Headscale Enrollment</a> |
+  <a href="#netbird-enrollment">NetBird Enrollment</a> |
   <a href="#reality-check">Reality Check</a>
 </p>
 
@@ -33,7 +33,7 @@ This repository is the control plane for a personal environment that mixes:
 - `NixOS` for homelab nodes, cloud VPS, and Raspberry Pis
 - `disko`, `mdadm`, `mergerfs`, and `snapraid` for storage-heavy hosts
 - `agenix` for encrypted secrets
-- `headscale` + `tailscale` for a self-hosted VPN mesh across all hosts
+- `netbird` (self-hosted control plane + clients) for a WireGuard VPN mesh across all hosts
 - thin deployment wrappers in [`scripts/`](./scripts) around `nh`
 
 The center of gravity is [`nix/`](./nix). That is where the flake, reusable modules, and per-host compositions live. [`scripts/`](./scripts) adds the operator workflow on top: one script for Darwin, one script for remote NixOS hosts.
@@ -84,7 +84,7 @@ flowchart LR
     F --> O[rpi1-rpi5]
     G --> P[zsh tmux vim nvim git ghostty opencode zed rustdesk fastfetch openclaw]
 
-    slayer[slayer] -->|headscale| VPN[Tailscale mesh]
+    slayer[slayer] -->|netbird| VPN[NetBird mesh]
     VPN --> all[all hosts]
 ```
 
@@ -169,17 +169,17 @@ These are the currently exported host names observed from `nix eval ./nix#...`.
 | --- | --- | --- | --- | --- |
 | `ace` | `aarch64-darwin` | active | Primary workstation | `nix-darwin`, `home-manager`, Homebrew, Ghostty, Zed, Opencode, Neovim, Git, tmux, RustDesk |
 | `luffy` | `aarch64-darwin` | active | Secondary macOS machine | Same profile as `ace` plus AutoSSH tunnels to AWS RDS endpoints |
-| `divine` | `x86_64-linux` | active | GPU and storage node | NVIDIA/CUDA stack, `ollama`, Samba, `mergerfs`, `mdadm` RAID1, NFS exports, KDE, Tailscale |
-| `muse` | `x86_64-linux` | active | Storage/archive box | NVIDIA stack, Samba, `mergerfs`, `snapraid`, KDE, Tailscale |
-| `trinity` | `x86_64-linux` | active | RustDesk relay node | Samba, RustDesk signal+relay server, Tailscale |
-| `vixen` | `x86_64-linux` | active | Media and app node | NVIDIA stack, Samba, Jellyfin, Stash, Forgejo, Transmission, WAHA, WebDAV, rclone sync, Tailscale |
-| `helix` | `x86_64-linux` | active | Desktop Linux node | KDE Plasma 6, Tailscale, Helium browser, full home-manager profile |
-| `slayer` | `x86_64-linux` | active | Cloud VPS / VPN gateway | Headscale coordination server, Tailscale, minimal footprint |
-| `rpi1` | `aarch64-linux` | active | Raspberry Pi utility node | Home Assistant, RPi boot tweaks, Tailscale, shared shell/user config |
-| `rpi2` | `aarch64-linux` | active | Raspberry Pi node | Base RPi config, Tailscale, OpenClaw gateway service |
-| `rpi3` | `aarch64-linux` | active | Raspberry Pi node | Base RPi config, Tailscale |
-| `rpi4` | `aarch64-linux` | active | Raspberry Pi node | Base RPi config, Tailscale |
-| `rpi5` | `aarch64-linux` | active | Raspberry Pi node | Base RPi config, Tailscale |
+| `divine` | `x86_64-linux` | active | GPU and storage node | NVIDIA/CUDA stack, `ollama`, Samba, `mergerfs`, `mdadm` RAID1, NFS exports, KDE, NetBird |
+| `muse` | `x86_64-linux` | active | Storage/archive box | NVIDIA stack, Samba, `mergerfs`, `snapraid`, KDE, NetBird |
+| `trinity` | `x86_64-linux` | active | RustDesk relay node | Samba, RustDesk signal+relay server, NetBird |
+| `vixen` | `x86_64-linux` | active | Media and app node | NVIDIA stack, Samba, Jellyfin, Stash, Forgejo, Transmission, WAHA, WebDAV, rclone sync, NetBird |
+| `helix` | `x86_64-linux` | active | Desktop Linux node | KDE Plasma 6, NetBird, Helium browser, full home-manager profile |
+| `slayer` | `x86_64-linux` | active | Cloud VPS / VPN gateway | NetBird control plane (management/signal/dashboard/coturn), Pocket ID OIDC, minimal footprint |
+| `rpi1` | `aarch64-linux` | active | Raspberry Pi utility node | Home Assistant, RPi boot tweaks, NetBird, shared shell/user config |
+| `rpi2` | `aarch64-linux` | active | Raspberry Pi node | Base RPi config, NetBird, OpenClaw gateway service |
+| `rpi3` | `aarch64-linux` | active | Raspberry Pi node | Base RPi config, NetBird |
+| `rpi4` | `aarch64-linux` | active | Raspberry Pi node | Base RPi config, NetBird |
+| `rpi5` | `aarch64-linux` | active | Raspberry Pi node | Base RPi config, NetBird |
 | `buttercup` | placeholder output | placeholder | Legacy or in-progress host | Comes from [`nix/modules/hosts/mac/mac_luffy.nix`](./nix/modules/hosts/mac/mac_luffy.nix), but currently defines an empty NixOS config |
 
 ### Machine Notes
@@ -191,7 +191,7 @@ The primary Darwin workstation:
 - uses `nix-homebrew` to manage taps declaratively
 - pulls in `home-manager` modules for shell/editor UX including Zed and RustDesk
 - adds developer toolchain packages: `clang-tools`, `arduino-cli`, `arduino-language-server`, `openjdk`, `rustc`, `cargo`, `sqld`
-- installs GUI apps through Homebrew casks including Tailscale
+- installs GUI apps through Homebrew casks including NetBird (`netbird-ui`)
 - points local AI tooling at `divine` through `OLLAMA_HOST=192.168.2.5`
 
 #### `luffy`
@@ -212,7 +212,7 @@ This is a mixed compute and storage node:
 - NFS exports for `/mnt/ssd` and `/mnt/nvme1`
 - `mergerfs` spanning two HDD mounts under `/mnt/weed/*`
 - KDE Plasma 6 desktop
-- Tailscale via self-hosted Headscale
+- NetBird mesh client (self-hosted control plane on `slayer`)
 
 #### `muse`
 
@@ -223,7 +223,7 @@ This machine is a classic storage box:
 - single parity disk through `snapraid`
 - Samba sharing on top of the merged pool
 - KDE Plasma 6 desktop
-- Tailscale via self-hosted Headscale
+- NetBird mesh client (self-hosted control plane on `slayer`)
 
 #### `vixen`
 
@@ -235,11 +235,11 @@ This is the media-heavy application node:
 - Forgejo bound to `0.0.0.0:9965` with encrypted admin credentials
 - Transmission with mergefs-backed state and downloads directories
 - WAHA (WhatsApp HTTP API) via podman container on port `8834`
-- WebDAV at `http://vixen.ts.coupletruffle.com:8097` (Tailscale only)
+- WebDAV at `http://vixen:8097` (LAN / NetBird mesh only)
   - Tabs/bookmarks backup: `files/backup/`
 - `snapraid` plus `mergerfs` for the media pool
 - rclone sync from `/mnt/mergefs` to both `divine` and `muse` every 6 hours, with 30-day snapshot retention
-- Tailscale via self-hosted Headscale
+- NetBird mesh client (self-hosted control plane on `slayer`)
 
 #### `trinity`
 
@@ -248,7 +248,7 @@ This node has been repurposed from an AutoSSH relay to a RustDesk infrastructure
 - Samba on top of a storage pool
 - RustDesk signal + relay server (replaces the previous AutoSSH tunnel setup)
 - AutoSSH tunnels have been migrated to `luffy` (macOS `launchd` daemons)
-- Tailscale via self-hosted Headscale
+- NetBird mesh client (self-hosted control plane on `slayer`)
 
 #### `helix`
 
@@ -257,15 +257,15 @@ A NixOS desktop environment, currently running under Parallels on `aarch64` hard
 - KDE Plasma 6 with full Wayland/SDDM setup
 - full home-manager profile: zsh, tmux, Neovim, Zed, Ghostty, Git, Opencode
 - Helium browser installed from the official `.deb` package
-- Tailscale via self-hosted Headscale
+- NetBird mesh client (self-hosted control plane on `slayer`)
 
 #### `slayer`
 
 A cloud VPS that acts as the VPN gateway for the entire fleet:
 
-- runs `headscale` (self-hosted Tailscale coordination server) behind nginx with ACME TLS at `hs.coupletruffle.com`
-- serves the Headscale web UI at `/web/`
-- also runs `tailscale` itself to be a peer in the mesh
+- runs the self-hosted NetBird control plane (management API, signal, dashboard, coturn relay) behind nginx with ACME TLS at `nb.coupletruffle.com`
+- runs Pocket ID (passkey-based OIDC provider) at `id.coupletruffle.com` for dashboard/CLI logins
+- also runs the `netbird` client itself to be a peer in the mesh
 - minimal package footprint; no home-manager profile beyond the basics
 - statically configured networking (Vultr/DigitalOcean style)
 
@@ -276,7 +276,7 @@ This is the most configured Pi:
 - generic shared user/system config
 - Pi-compatible bootloader overrides
 - Home Assistant enabled
-- Tailscale via self-hosted Headscale
+- NetBird mesh client (self-hosted control plane on `slayer`)
 
 #### `rpi2`
 
@@ -284,14 +284,14 @@ Previously a placeholder; now a fully configured Pi node:
 
 - base RPi config with home-manager (zsh, vim, git, autojump)
 - OpenClaw gateway service (systemd user service, port `18789`)
-- Tailscale via self-hosted Headscale
+- NetBird mesh client (self-hosted control plane on `slayer`)
 
 #### `rpi3` – `rpi5`
 
 Previously placeholders; now fully configured Pi nodes:
 
 - base RPi config with home-manager (zsh, vim, git, autojump)
-- Tailscale via self-hosted Headscale
+- NetBird mesh client (self-hosted control plane on `slayer`)
 
 ---
 
@@ -472,8 +472,8 @@ The flake currently exports these reusable `home-manager` modules:
 
 | Module | Purpose | Used by |
 | --- | --- | --- |
-| [`services/headscale.nix`](./nix/modules/services/headscale.nix) | Self-hosted Headscale VPN coordination server behind nginx with ACME TLS | `slayer` |
-| [`services/tailscale.nix`](./nix/modules/services/tailscale.nix) | Tailscale client pointing at the self-hosted Headscale server | all Linux hosts |
+| [`features/networking/netbird-server.nix`](./nix/modules/features/networking/netbird-server.nix) | Self-hosted NetBird control plane (management/signal/dashboard/coturn) + Pocket ID OIDC behind nginx with ACME TLS | `slayer` |
+| [`features/networking/netbird-client.nix`](./nix/modules/features/networking/netbird-client.nix) | NetBird mesh client with agenix setup-key enrollment | all Linux hosts |
 | [`services/home_assistant.nix`](./nix/modules/services/home_assistant.nix) | Home Assistant base setup | `rpi1` |
 | [`services/ollama.nix`](./nix/modules/services/ollama.nix) | local LLM endpoint using `ollama-cuda` | `divine` |
 | [`services/samba.nix`](./nix/modules/services/samba.nix) | SMB share with macOS-friendly `fruit` tuning and password bootstrapping | `divine`, `muse`, `vixen`, `trinity` |
@@ -517,12 +517,13 @@ That combination is practical for homelab storage:
 
 ### Networking / VPN Layer
 
-All Linux hosts now participate in a self-hosted Tailscale mesh:
+All Linux hosts now participate in a self-hosted NetBird mesh (WireGuard):
 
-- `slayer` runs `headscale` as the coordination server at `hs.coupletruffle.com`
-- every other Linux host runs `tailscale` pointing at that server
-- DNS magic resolves peers in the `ts.coupletruffle.com` domain
-- the WebDAV endpoint on `vixen` is only reachable from within this mesh
+- `slayer` runs the NetBird control plane (management, signal, dashboard, coturn) at `nb.coupletruffle.com`
+- authentication is delegated to Pocket ID (OIDC, passkeys) at `id.coupletruffle.com`
+- every other Linux host runs the `netbird` client, enrolling with a shared reusable setup key
+- peers are reachable inside the mesh on `100.64.0.0/10`; SSH, Postgres and Neo4j on `slayer` are only reachable there
+- the WebDAV endpoint on `vixen` is only reachable from the LAN/mesh
 
 ---
 
@@ -624,7 +625,11 @@ Current secret files:
 - `forgejo-password.age`
 - `forgejo-runner-token.age`
 - `frp-token.age`
-- `headscale-auth-key.age`
+- `netbird-setup-key.age`
+- `netbird-management-encryption-key.age`
+- `netbird-turn-secret.age`
+- `netbird-turn-password.age`
+- `pocket-id-encryption-key.age`
 - `opencode-auth.age`
 - `ppd-rsa.age`
 - `private-func.age`
@@ -650,7 +655,11 @@ Recipients are declared in [`secerts/secrets.nix`](./secerts/secrets.nix).
 | `stash-jwt-key.age` | [`programs/stash.nix`](./nix/modules/programs/stash.nix) | JWT signing key |
 | `stash-session-key.age` | [`programs/stash.nix`](./nix/modules/programs/stash.nix) | session store key |
 | `stash-password.age` | [`programs/stash.nix`](./nix/modules/programs/stash.nix) | initial Stash admin password |
-| `headscale-auth-key.age` | [`services/tailscale.nix`](./nix/modules/services/tailscale.nix) | Tailscale auth key for self-hosted Headscale enrollment |
+| `netbird-setup-key.age` | [`features/networking/netbird-client.nix`](./nix/modules/features/networking/netbird-client.nix) | Reusable NetBird setup key for fleet enrollment |
+| `netbird-management-encryption-key.age` | [`features/networking/netbird-server.nix`](./nix/modules/features/networking/netbird-server.nix) | NetBird management datastore encryption key (slayer only) |
+| `netbird-turn-secret.age` | [`features/networking/netbird-server.nix`](./nix/modules/features/networking/netbird-server.nix) | coturn REST auth secret (slayer only) |
+| `netbird-turn-password.age` | [`features/networking/netbird-server.nix`](./nix/modules/features/networking/netbird-server.nix) | coturn TURN user password (slayer only) |
+| `pocket-id-encryption-key.age` | [`features/networking/netbird-server.nix`](./nix/modules/features/networking/netbird-server.nix) | Pocket ID `ENCRYPTION_KEY` (slayer only) |
 | `webdav-password.age` | [`services/webdav.nix`](./nix/modules/services/webdav.nix) | WebDAV htpasswd credential |
 | `dev-rsa.age` | [`hosts/mac/_auto_ssh.nix`](./nix/modules/hosts/mac/_auto_ssh.nix) | SSH key for AutoSSH dev tunnel on `luffy` |
 | `ppd-rsa.age` | [`hosts/mac/_auto_ssh.nix`](./nix/modules/hosts/mac/_auto_ssh.nix) | SSH key for AutoSSH ppd tunnel on `luffy` |
@@ -671,81 +680,73 @@ The repo already includes `agenix` as a flake input and also adds the package in
 
 ---
 
-## Headscale Enrollment
+## NetBird Enrollment
 
-All Linux hosts enroll into a self-hosted Tailscale mesh coordinated by Headscale on `slayer`. This section is the operational runbook for bringing the mesh up on a fresh deployment and for rotating the enrollment key.
+All Linux hosts enroll into a self-hosted NetBird (WireGuard) mesh whose control plane runs on `slayer`. This section is the operational runbook for bringing the mesh up on a fresh deployment and for rotating the enrollment key.
 
-### How Clients Reach The Server
+### Architecture
 
-The wiring is a single shared URL string:
+- [`features/networking/netbird-server.nix`](./nix/modules/features/networking/netbird-server.nix) runs the full self-hosted stack on `slayer` behind nginx with ACME TLS at `nb.coupletruffle.com`: management API, signal, dashboard, and a coturn relay.
+- Authentication is delegated to **Pocket ID**, a passkey-based OIDC provider at `id.coupletruffle.com` (same host). The dashboard and CLI logins use PKCE; servers enroll with setup keys (no IdP interaction).
+- [`features/networking/netbird-client.nix`](./nix/modules/features/networking/netbird-client.nix) enrolls each host with `services.netbird.clients.default.login.setupKeyFile`, reading the shared reusable key from `netbird-setup-key.age` via systemd credentials (the key never touches the Nix store).
+- Server-side datastore: sqlite; the datastore encryption key, TURN secret/password, and the Pocket ID encryption key are agenix secrets restricted to `slayer` in [`secerts/secrets.nix`](./secerts/secrets.nix).
 
-- [`services/headscale.nix`](./nix/modules/services/headscale.nix) sets `server_url = "https://hs.coupletruffle.com"` behind nginx with ACME TLS.
-- [`services/tailscale.nix`](./nix/modules/services/tailscale.nix) sets `--login-server=https://hs.coupletruffle.com` and reads the auth key from `headscale-auth-key.age`.
-- Public DNS resolves `hs.coupletruffle.com` to `slayer`'s public IP; nginx terminates TLS and proxies to headscale on `127.0.0.1:8085`.
-- The headscale CLI talks to the server over the unix socket `/run/headscale/headscale.sock` (via `/etc/headscale/config.yaml`), so root on `slayer` can drive it without a network flag.
+### DNS (Cloudflare)
 
-Because every Linux host imports the same `tailscale` module and the same shared secret, the preauth key must be created **reusable** so all machines can enroll from one secret.
+Both records must be **DNS only (grey cloud)** — the proxy breaks gRPC, TURN, and OIDC discovery:
 
-### Generating The Preauth Key (on `slayer`, as root)
+| Type | Name | Content |
+| --- | --- | --- |
+| `A` | `nb.coupletruffle.com` | slayer public IP |
+| `A` | `id.coupletruffle.com` | slayer public IP |
 
-```bash
-sudo headscale users create default
+ACME (HTTP-01) issues certificates for both on first boot.
 
-# reusable = every host shares the one secret; long expiration; NOT ephemeral
-sudo headscale preauthkeys create --user default --reusable --expiration 87600h
+### First-Time Setup
 
-# confirm reusable=true
-sudo headscale preauthkeys list --user default
-```
+1. **Deploy `slayer`.** Wait for `netbird-management.service` and `pocket-id.service` to be active (`systemctl list-units --failed` should be empty).
+2. **Create the Pocket ID admin** at `https://id.coupletruffle.com/setup` (passkey; the landing page only shows a login form — use `/setup` directly).
+3. **Create the OIDC client** in Pocket ID (OIDC Clients → Add):
+   - Client ID: `netbird` (must match `netbird-server.nix`)
+   - **public** client, **PKCE** enabled
+   - Redirect URIs: `https://nb.coupletruffle.com/auth`, `https://nb.coupletruffle.com/silent-auth`, `http://localhost:53000` (CLI login)
+4. **Log into the dashboard** at `https://nb.coupletruffle.com` (redirects to Pocket ID).
+5. **Create a setup key**: Peers → Setup Keys → Add — name `nixos-fleet`, **reusable**, unlimited uses. Copy it (shown once).
 
-Copy the `tskey-...` value that `preauthkeys create` prints.
-
-### Rotating The Secret
+### Installing The Secret
 
 From any machine whose SSH key is listed under `all` in [`secerts/secrets.nix`](./secerts/secrets.nix):
 
 ```bash
-agenix -e secerts/headscale-auth-key.age
-# paste ONLY the tskey-... value (no trailing newline), save, quit
+agenix -e secerts/netbird-setup-key.age
+# paste ONLY the setup key, save, quit
+git add secerts/netbird-setup-key.age && git commit
 ```
-
-This re-encrypts for every recipient, so all hosts can decrypt the rotated key.
 
 ### Deploying To Clients
 
-The NixOS `tailscale` module auto-runs `tailscale up --auth-key ...` using `authKeyFile` on first boot. After rotating the secret:
+The `netbird-client` module auto-logs-in at service start using the setup key. After installing/rotating the secret:
 
 ```bash
-./scripts/deploy_remote.sh <hostname> switch
-sudo systemctl restart tailscaled   # if a node is already up, re-trigger enrollment
-```
-
-Repeat per host, or deploy the whole fleet:
-
-```bash
-just deploy
+just deploy-<host>          # per host
+sudo systemctl restart netbird-default-login   # only to re-trigger enrollment manually
 ```
 
 ### Verifying
 
 ```bash
-sudo headscale nodes list          # on slayer
-tailscale status                   # on any client
-```
-
-### Optional: API Key For The Web UI
-
-The Headscale web UI at `https://hs.coupletruffle.com/web/` needs an **API key** (separate from the preauth key above). Generate one and paste it into the UI login along with the server URL `https://hs.coupletruffle.com`:
-
-```bash
-sudo headscale apikeys create --expiration 87600h
+netbird status              # on any client
+# dashboard -> Peers        # all hosts listed with their 100.64.x.x mesh IPs
 ```
 
 ### Gotchas
 
-- **Bootstrap ordering on `slayer`:** it runs both headscale and tailscale. On first boot ACME issuance + nginx + headscale take a moment to come up; `tailscaled` retries until the control plane answers, so no systemd ordering change is needed.
-- **Single-use keys break the shared-secret model:** a key created without `--reusable` lets only the first machine to boot enroll. Keep `--reusable` on the shared key.
-- **Metrics exposure:** `metrics_listen_addr = "0.0.0.0:9090"` in [`headscale.nix`](./nix/modules/services/headscale.nix) is reachable on `slayer`'s public IP. Monitoring scrapes it over the mesh at `100.64.0.5:9090`. Bind to `127.0.0.1:9090` if public exposure is unwanted.
+- **Bootstrap ordering on `slayer`:** it runs both the control plane and a client. The client retries until management answers; no systemd ordering change is needed. If `netbird-management.service` hits `start-limit-hit` after a DNS/OIDC outage, run `systemctl reset-failed netbird-management && systemctl restart netbird-management`.
+- **`ManagementURL` format:** the client's `config.json` expects a URL object with an explicit port (`{"Scheme":"https","Host":"nb.coupletruffle.com:443"}`), not a plain string — a string makes the daemon fail to start, and a missing port makes gRPC dials fail.
+- **Single-account mode:** management runs with `singleAccountModeDomain = "netbird"`; all peers land in one account.
+- **Rotating the setup key:** create a new key in the dashboard, `agenix -e` the secret, commit, redeploy. Old peers stay enrolled (the key is only used at enrollment).
+- **Metrics:** management exposes Prometheus metrics on `127.0.0.1:9090` by default; scraping it from `trinity` requires deliberately exposing the port (see the `netbird` job in [`features/monitoring/server.nix`](./nix/modules/features/monitoring/server.nix)).
+- **Cloudflare proxy:** if `id.` or `nb.` is ever switched back to proxied, management fails at startup with `stopped after 10 redirects` fetching the OIDC discovery document, and clients fail TLS/gRPC dials.
 
 ---
 
@@ -788,10 +789,10 @@ This makes the repo more than a homelab bootstrap. It is also a personal worksta
 
 This repo is strong, but it is also visibly in motion. A few facts are worth calling out directly:
 
-- `slayer` is the new Headscale coordination server; all Linux hosts now enroll via it. This means the VPN mesh depends on `slayer` being reachable.
+- `slayer` is the NetBird control plane; all Linux hosts enroll via it. This means the VPN mesh depends on `slayer` being reachable.
 - `trinity` has been substantially stripped down. The AutoSSH tunnels and snapraid/mergerfs storage stack have been removed. It now primarily hosts RustDesk infrastructure.
 - AutoSSH tunnels to AWS Aurora endpoints moved from `trinity` (systemd) to `luffy` (macOS `launchd`). The keys are now managed by agenix rather than being plain files on disk.
-- `rpi2` through `rpi5` are no longer placeholders — all have full NixOS configurations with Tailscale and a home-manager profile. `rpi2` additionally runs the OpenClaw gateway.
+- `rpi2` through `rpi5` are no longer placeholders — all have full NixOS configurations with NetBird and a home-manager profile. `rpi2` additionally runs the OpenClaw gateway.
 - `vixen` carries more than media workloads: Forgejo, Transmission, WAHA, WebDAV, and the rclone sync jobs all run here. The rclone sync writes snapshots of `/mnt/mergefs` to both `divine` and `muse` every 6 hours.
 - `helix` is a new NixOS desktop node, currently targeting Parallels (`aarch64-linux` hardware) but the host file sets `system = "x86_64-linux"`. This may need reconciliation.
 - `deploy_remote.sh` still performs an `rsync` to the remote host even though the active `nh` path is driven from the local flake path; that suggests an unfinished transition between two deployment styles.
@@ -812,7 +813,7 @@ If you are maintaining this repo, the easiest way to think about it is:
 - `nix/modules/hosts/**` is the inventory
 - `scripts/**` is the deployment surface
 - `secerts/**` is the private runtime state
-- `slayer` is the network control plane (Headscale)
+- `slayer` is the network control plane (NetBird)
 - `trinity` is the remote-access control plane (RustDesk)
 
 That framing matches the code that is actually here.

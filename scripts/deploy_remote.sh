@@ -19,16 +19,20 @@ declare -A HOSTS=(
 )
 
 USERNAME="reezpatel"
-while getopts ":u:" opt; do
+# sshd is moving from 22 to 7272 host-by-host; override while migrating:
+#   ./scripts/deploy_remote.sh -p 22 muse switch
+PORT="7272"
+while getopts ":u:p:" opt; do
   case "${opt}" in
     u) USERNAME="${OPTARG}" ;;
-    *) echo "Usage: $0 [-u username] <hostname> [switch|boot|test|build]"; exit 1 ;;
+    p) PORT="${OPTARG}" ;;
+    *) echo "Usage: $0 [-u username] [-p port] <hostname> [switch|boot|test|build]"; exit 1 ;;
   esac
 done
 shift $((OPTIND - 1))
 
 if [[ $# -lt 1 ]]; then
-  echo "Usage: $0 [-u username] <hostname> [switch|boot|test|build]"
+  echo "Usage: $0 [-u username] [-p port] <hostname> [switch|boot|test|build]"
   exit 1
 fi
 
@@ -51,12 +55,13 @@ case "${ACTION}" in
 esac
 
 HOST_IP="${HOSTS[$HOSTNAME]}"
-echo "==> Deploying ${HOSTNAME} → ${USERNAME}@${HOST_IP} (${ACTION})"
+echo "==> Deploying ${HOSTNAME} → ${USERNAME}@${HOST_IP}:${PORT} (${ACTION})"
+export NIX_SSHOPTS="-p ${PORT}"
 
 echo "==> Syncing infra..."
-ssh "${USERNAME}@${HOST_IP}" "if [ -e /infra-nixos ]; then sudo rm -rf /infra-nixos; fi; if [ -e ~/${OLD_REMOTE_FLAKE} ]; then rm -rf ~/${OLD_REMOTE_FLAKE}; fi"
-ssh "${USERNAME}@${HOST_IP}" "mkdir -p ~/${REMOTE_FLAKE}"
-rsync -az --progress --delete \
+ssh -p "${PORT}" "${USERNAME}@${HOST_IP}" "if [ -e /infra-nixos ]; then sudo rm -rf /infra-nixos; fi; if [ -e ~/${OLD_REMOTE_FLAKE} ]; then rm -rf ~/${OLD_REMOTE_FLAKE}; fi"
+ssh -p "${PORT}" "${USERNAME}@${HOST_IP}" "mkdir -p ~/${REMOTE_FLAKE}"
+rsync -az --progress --delete -e "ssh -p ${PORT}" \
   --exclude-from="${FLAKE_DIR}/.gitignore" \
   --exclude='.git' \
   --exclude='.terraform' \
