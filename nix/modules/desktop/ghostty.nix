@@ -88,10 +88,9 @@
         macos-icon = "blueprint";
         macos-icon-frame = "plastic";
 
-        window-decoration = false;
+        window-decoration = true;
         window-padding-x = 12;
         window-padding-y = 12;
-        gtk-titlebar = false;
 
         window-height = 45;
         window-save-state = "always";

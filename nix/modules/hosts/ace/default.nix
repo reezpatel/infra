@@ -9,7 +9,7 @@
 
     modules = with self.modules.darwin; [
       # Aspects
-      mac
+      base
       home
 
       # Identity
@@ -83,6 +83,8 @@
             "zoom"
             "proton-pass"
             "netbird-ui"
+            "netbirdio/tap/netbird-ui"
+            "leapp"
           ];
 
           home-manager.users.${config.username} = {...}: {
@@ -90,14 +92,8 @@
             age.secrets.secrets.file = ../../../../secerts/secrets.age;
 
             imports = with self.modules.homeManager; [
-              shell
-              nvim
-              runtimes
-              devops
-              ollama
-              ghostty
-              zed
-              opencode
+	            ai
+	            editor
             ];
           };
         }

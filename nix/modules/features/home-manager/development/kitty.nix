@@ -3,25 +3,17 @@
     lib,
     pkgs,
     ...
-  }: let
-    isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-  in {
+  }: {
     programs.kitty = {
       enable = true;
       font = {
         name = "JetBrainsMonoNL NFM";
-        size =
-          if isDarwin
-          then 14
-          else 11;
+        size = 11;
       };
       settings = {
         font_features = "JetBrainsMonoNL NFM +liga";
 
-        background_opacity =
-          if isDarwin
-          then 0.7
-          else 1.0;
+        background_opacity = 1;
         dynamic_background_opacity = true;
 
         scrollback_lines = 100000;
@@ -51,16 +43,10 @@
 
         term = "xterm-256color";
 
-        window_padding_width =
-          if isDarwin
-          then 8
-          else 12;
+        window_padding_width = 12;
 
         placement_strategy = "center";
-        hide_window_decorations =
-          if isDarwin
-          then "no"
-          else "yes";
+        hide_window_decorations = "no";
 
         macos_titlebar_color = "background";
         macos_option_as_alt = "left";

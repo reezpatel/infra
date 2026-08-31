@@ -31,8 +31,6 @@
     imports = with self.modules.darwin; [
       darwin-base
       common
-      monitoring-client
-      netbird-client
       home
     ];
 

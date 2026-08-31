@@ -11,23 +11,18 @@
 
     modules = with self.modules.nixos; [
       base
+      desktop
 
       # Features
       nvidia
       gpu-handover
 
       samba
-      kde
       helium
-      whatsapp
-      discord
-      telegram
       gui-common
       windows-apps
       gaming
-      kicad
       mac-keyboard
-      parsec
       ollama
 
       # Host-specific
@@ -51,6 +46,12 @@
         ];
         hostname = "divine";
         nvidiaGpu.enableCuda = true;
+        networking.firewall.allowedTCPPorts = [5173
+        5174
+        5175
+        5176
+        5177];
+
 
         # Pin KWin to the RTX 5050 so the 3090 stays completely free for
         # compute (and VM handover). NVIDIA->NVIDIA cross-GPU PRIME copies are

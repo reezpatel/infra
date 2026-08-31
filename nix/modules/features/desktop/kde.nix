@@ -84,5 +84,17 @@
       system.userActivationScripts.restart-plasma = ''
         ${pkgs.xdg-utils}/bin/xdg-desktop-menu forceupdate
       '';
+
+      # Never sleep/suspend/hibernate - these are always-on workstations.
+      systemd.targets.sleep.enable = false;
+      systemd.targets.suspend.enable = false;
+      systemd.targets.hibernate.enable = false;
+      systemd.targets.hybrid-sleep.enable = false;
+
+      # Power button / lid close must not suspend or power off either.
+      services.logind.settings.Login = {
+        HandlePowerKey = "ignore";
+        HandleLidSwitch = "ignore";
+      };
     };
 }

@@ -1,17 +1,15 @@
-{...}: let
-  parsecModule = {
+{...}: {
+  flake.modules.nixos.parsec = {
     config,
     lib,
     pkgs,
     ...
   }: {
-    # Simply add parsec-bin to all Linux systems
-    environment.systemPackages = lib.mkIf pkgs.stdenv.isLinux [
+    environment.systemPackages =  [
       pkgs.parsec-bin
     ];
 
-    # On NixOS, open firewall ports for Parsec when firewall is enabled
-    networking.firewall = lib.mkIf (pkgs.stdenv.isLinux && config.networking.firewall.enable) {
+    networking.firewall = {
       # Parsec uses these ports:
       # - 8000-8040/tcp for client connections
       # - 5353/udp for discovery
@@ -30,8 +28,5 @@
         }
       ];
     };
-  };
-in {
-  # Register the module only for NixOS since parsec-bin is Linux-only
-  flake.modules.nixos.parsec = parsecModule;
+  }
 }

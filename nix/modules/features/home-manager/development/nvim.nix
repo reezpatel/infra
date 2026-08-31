@@ -18,7 +18,7 @@
 
     xdg.configFile = {
       "nvim".source =
-        if pkgs.stdenv.isDarwin
+        if pkgs.stdenv.hostPlatform.isDarwin
         then config.lib.file.mkOutOfStoreSymlink "/Users/reezpatel/infra/dotfiles/nvim"
         else ../../../../../dotfiles/nvim;
     };

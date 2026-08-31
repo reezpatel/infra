@@ -88,7 +88,16 @@
 
       # Ban brute-forcers at the firewall; watches the sshd journal
       # (port-agnostic).
-      services.fail2ban.enable = true;
+      services.fail2ban = {
+        enable = true;
+
+        # Never ban our own network: LAN and the NetBird mesh (deploys,
+        # rclone sync, monitoring and admin traffic originate there).
+        ignoreIP = [
+          "192.168.2.0/24"
+          "100.64.0.0/10"
+        ];
+      };
 
       systemd.services.dbus.reloadIfChanged = lib.mkForce false;
 

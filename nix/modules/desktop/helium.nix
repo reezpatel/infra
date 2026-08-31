@@ -27,7 +27,7 @@
       helium
     ];
 
-    home-manager.users.${config.username} = lib.mkIf (isSupported && pkgs.stdenv.isLinux) {
+    home-manager.users.${config.username} = lib.mkIf (isSupported && pkgs.stdenv.hostPlatform.isLinux) {
       xdg.configFile."net.imput.helium/WidevineCdm/latest-component-updated-widevine-cdm".text =
         builtins.toJSON {Path = widevineDir;};
     };
