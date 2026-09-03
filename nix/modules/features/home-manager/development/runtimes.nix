@@ -14,6 +14,18 @@
       pnpm
       python3
       uv
+
+      openjdk
+
+      rustc
+      cargo
+    ];
+
+    environment.systemPackages = with pkgs; [
+      # igraph
+      # clang-tools
+      # arduino-cli
+      # docker-compose
     ];
   };
 }

@@ -29,6 +29,10 @@
       url = "github:edouard-claude/homebrew-tap";
       flake = false;
     };
+    homebrew-netbirdio-tap = {
+      url = "github:netbirdio/homebrew-tap";
+      flake = false;
+    };
 
     disko = {
       url = "github:nix-community/disko";

@@ -23,6 +23,7 @@
         "homebrew/homebrew-cask" = inputs.homebrew-cask;
         "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
         "edouard-claude/homebrew-tap" = inputs.homebrew-edouard-claude-tap;
+        "netbirdio/homebrew-tap" = inputs.homebrew-netbirdio-tap;
       };
       mutableTaps = false;
       autoMigrate = true;

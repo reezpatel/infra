@@ -5,18 +5,42 @@
   # zed/vscode (no nvim) can import this module directly to get the servers.
   flake.modules.homeManager.lsp = {pkgs, ...}: {
     home.packages = with pkgs; [
+      # others
       lua-language-server
-      typescript-language-server
       vscode-langservers-extracted
-      tailwindcss-language-server
       bash-language-server
       yaml-language-server
-      gopls
-      terraform-ls
+      stylua
+      beautysh
+      markdownlint-cli
+      sqld
 
-      # nix (also picked up by Zed's language server integration via user PATH)
+      # javascript
+      tailwindcss-language-server
+      typescript-language-server
+      prettierd
+      prettier
+      eslint_d
+
+      # python
+      black
+
+      # golang
+      gopls
+      gotools
+      delve
+      gofumpt
+      golangci-lint
+
+      # terraform
+      terraform-ls
+      tflint
+
+      # nix
       nil
       nixd
+      alejandra
+      nixfmt
     ];
   };
 

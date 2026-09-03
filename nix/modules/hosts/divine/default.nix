@@ -4,26 +4,13 @@
   inputs,
   self,
   ...
-}:
-{
+}: {
   flake.nixosConfigurations.divine = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
 
     modules = with self.modules.nixos; [
-      base
-      desktop
-
-      # Features
-      nvidia
-      gpu-handover
-
+      workstation
       samba
-      helium
-      gui-common
-      windows-apps
-      gaming
-      mac-keyboard
-      ollama
 
       # Host-specific
       inputs.disko.nixosModules.disko
@@ -33,10 +20,10 @@
       ./_storage.nix
       ./_desktop.nix
       ./_pkgs.nix
-      (import ./_home.nix { inherit inputs self; })
+      (import ./_home.nix {inherit inputs self;})
 
       # Identity + feature configuration
-      ({ ... }: {
+      ({...}: {
         nixpkgs.overlays = [
           (_final: prev: {
             nrfutil = prev.nrfutil.override {
@@ -46,12 +33,13 @@
         ];
         hostname = "divine";
         nvidiaGpu.enableCuda = true;
-        networking.firewall.allowedTCPPorts = [5173
-        5174
-        5175
-        5176
-        5177];
-
+        networking.firewall.allowedTCPPorts = [
+          5173
+          5174
+          5175
+          5176
+          5177
+        ];
 
         # Pin KWin to the RTX 5050 so the 3090 stays completely free for
         # compute (and VM handover). NVIDIA->NVIDIA cross-GPU PRIME copies are
@@ -69,11 +57,6 @@
           SUBSYSTEM=="drm", KERNEL=="card[0-9]", ENV{ID_PATH}=="pci-0000:0e:00.0", SYMLINK+="dri/kwin-card"
         '';
         environment.sessionVariables.KWIN_DRM_DEVICES = "/dev/dri/kwin-card";
-        programs.niri.enable = true;
-        macKeyboard.enable = true;
-        windowsApps.enable = true;
-        gaming.enable = true;
-        kicad.enable = true;
 
         # Dynamic GPU/Thunderbolt handover to the Windows VM (NOT static
         # passthrough - host keeps the devices until `virsh start win11`).

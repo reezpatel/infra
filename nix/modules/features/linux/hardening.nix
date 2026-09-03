@@ -1,21 +1,12 @@
-{ ... }: {
-  # Feature: hardening (nixos) — baseline security hardening for every host.
-  #
-  # Wired into `linux-base`, so all hosts get it. Host-specific lockdown
-  # (e.g. slayer's public-VPS rules) stays in the host directory.
-  flake.modules.nixos.hardening = { lib, ... }: {
-    # ── SSH ────────────────────────────────────────────────────────────
-    # Key-only root (mkDefault so a host can still opt back in), and no X11
-    # forwarding unless a host explicitly wants it.
+{...}: {
+  flake.modules.nixos.hardening = {lib, ...}: {
     services.openssh.settings = {
       PermitRootLogin = lib.mkDefault "prohibit-password";
       X11Forwarding = lib.mkDefault false;
     };
 
-    # Escalating fail2ban bans for repeat offenders (default is flat 10m).
     services.fail2ban.bantime-increment.enable = true;
 
-    # ── Kernel/network hardening ───────────────────────────────────────
     boot.kernel.sysctl = {
       # Drop spoofed packets (strict reverse-path filtering)
       "net.ipv4.conf.all.rp_filter" = 1;

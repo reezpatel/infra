@@ -9,7 +9,7 @@
         # Tracks main (moving branch); the fixed-output hash must be updated
         # whenever upstream moves.
         rev = "main";
-        hash = "sha256-Plnq+sftzsk3/CRGZlH3ZNJ49WHsJbVFSACYyJ8jQyo=";
+        hash = "sha256-F2fBWVdsaZXUl0AMf2HwfSX4FRqvXW6d3GJN4nprDUk=";
       };
     };
     power-zoom = pkgs.tmuxPlugins.mkTmuxPlugin {

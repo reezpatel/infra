@@ -8,15 +8,12 @@
     system = "x86_64-linux";
 
     modules = with self.modules.nixos; [
-      # Aspects
       server
-      home
 
-      # Features
-      nvidia
       samba
       webdav
       rclone-sync
+
       jellyfin
       immich
       stash
@@ -32,11 +29,7 @@
 
       # Identity + service configuration
       (
-        {
-          config,
-          pkgs,
-          ...
-        }: {
+        {pkgs, ...}: {
           hostname = "vixen";
 
           nvidiaGpu.enableCuda = true;
@@ -63,22 +56,8 @@
             ];
           };
 
-          virtualisation.docker = {
-            enable = true;
-            enableOnBoot = true;
-            autoPrune.enable = true;
-          };
-
           environment.systemPackages = with pkgs; [
             ffmpeg-full
-          ];
-
-          home-manager.users.${config.username}.imports = with self.modules.homeManager; [
-            shell
-            nvim
-            runtimes
-            devops
-            ollama
           ];
         }
       )

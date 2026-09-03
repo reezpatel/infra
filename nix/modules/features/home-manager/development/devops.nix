@@ -7,6 +7,9 @@
       kubectl
       go-migrate
       gitsign
+      awscli2
+      doctl
+      terraform
     ];
   };
 }

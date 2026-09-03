@@ -1,6 +1,3 @@
-# Aspect: home — wires home-manager (+ agenix) into NixOS / nix-darwin hosts
-# and gives the primary user the `homeManager.core` aspect. Hosts add further
-# aspects via `home-manager.users.<name>.imports`.
 {
   inputs,
   self,

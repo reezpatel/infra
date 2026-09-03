@@ -12,5 +12,6 @@
     claude-code
     codex
     antigravity
+    gemini
   ];
 }

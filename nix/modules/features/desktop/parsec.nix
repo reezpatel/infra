@@ -1,11 +1,6 @@
 {...}: {
-  flake.modules.nixos.parsec = {
-    config,
-    lib,
-    pkgs,
-    ...
-  }: {
-    environment.systemPackages =  [
+  flake.modules.nixos.parsec = {pkgs, ...}: {
+    environment.systemPackages = [
       pkgs.parsec-bin
     ];
 
@@ -28,5 +23,5 @@
         }
       ];
     };
-  }
+  };
 }

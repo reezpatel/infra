@@ -1,5 +1,11 @@
 {self, ...}: {
-  flake.modules.homeManager.editor.imports = with self.modules.homeManager; [
+  flake.modules.homeManager.development.imports = with self.modules.homeManager; [
+    devops
+    kitty
+    lsp
     nvim
+    runtimes
+    tooling
+    ghostty
   ];
 }

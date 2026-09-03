@@ -451,6 +451,22 @@
         "type": "github"
       }
     },
+    "homebrew-netbirdio-tap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787330812,
+        "narHash": "sha256-KDooS36Itm/eYX+ISEsm2qPKDgg51IEsKiske8j++NQ=",
+        "owner": "netbirdio",
+        "repo": "homebrew-tap",
+        "rev": "a9af7e0570ed8d1cd51a3a7199944709976ca94c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "netbirdio",
+        "repo": "homebrew-tap",
+        "type": "github"
+      }
+    },
     "import-tree": {
       "locked": {
         "lastModified": 1784254960,
@@ -755,6 +771,7 @@
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "homebrew-edouard-claude-tap": "homebrew-edouard-claude-tap",
+        "homebrew-netbirdio-tap": "homebrew-netbirdio-tap",
         "import-tree": "import-tree",
         "nfsm-flake": "nfsm-flake",
         "niri": "niri",
