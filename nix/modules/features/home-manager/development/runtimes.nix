@@ -21,11 +21,11 @@
       cargo
     ];
 
-    environment.systemPackages = with pkgs; [
+    # environment.systemPackages = with pkgs; [
       # igraph
       # clang-tools
       # arduino-cli
       # docker-compose
-    ];
+    # ];
   };
 }
