@@ -24,8 +24,9 @@
         "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
         "edouard-claude/homebrew-tap" = inputs.homebrew-edouard-claude-tap;
         "netbirdio/homebrew-tap" = inputs.homebrew-netbirdio-tap;
+        "deskflow/homebrew-tap" = inputs.homebrew-deskflow-tap;
       };
-      mutableTaps = false;
+      mutableTaps = true;
       autoMigrate = true;
     };
   };

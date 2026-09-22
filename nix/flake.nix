@@ -33,6 +33,10 @@
       url = "github:netbirdio/homebrew-tap";
       flake = false;
     };
+    homebrew-deskflow-tap = {
+      url = "github:deskflow/homebrew-tap";
+      flake = false;
+    };
 
     disko = {
       url = "github:nix-community/disko";

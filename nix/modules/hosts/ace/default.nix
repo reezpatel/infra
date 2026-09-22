@@ -21,7 +21,12 @@
           };
 
           homebrew.casks = [
+            "deskflow"
             "kicad"
+          ];
+
+          homebrew.taps = [
+            "deskflow/homebrew-tap"
           ];
         }
       )

@@ -435,6 +435,22 @@
         "type": "github"
       }
     },
+    "homebrew-deskflow-tap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789762325,
+        "narHash": "sha256-wc6Nvs06vnw/z6v2Hqih0OdDHjpvrNXIfNwC3deN8Xw=",
+        "owner": "deskflow",
+        "repo": "homebrew-tap",
+        "rev": "67eb0fc39ad36542f742f4c948597dedfe40085b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "deskflow",
+        "repo": "homebrew-tap",
+        "type": "github"
+      }
+    },
     "homebrew-edouard-claude-tap": {
       "flake": false,
       "locked": {
@@ -770,6 +786,7 @@
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
+        "homebrew-deskflow-tap": "homebrew-deskflow-tap",
         "homebrew-edouard-claude-tap": "homebrew-edouard-claude-tap",
         "homebrew-netbirdio-tap": "homebrew-netbirdio-tap",
         "import-tree": "import-tree",

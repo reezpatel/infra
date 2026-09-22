@@ -36,7 +36,12 @@
 
           homebrew.casks = [
             "1password"
+            "deskflow"
             "postman"
+          ];
+
+          homebrew.taps = [
+            "deskflow/homebrew-tap"
           ];
         }
       )
