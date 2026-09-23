@@ -9,13 +9,16 @@ declare -A HOSTS=(
   [vixen]="192.168.2.4"
   [divine]="192.168.2.5"
   [muse]="192.168.2.6"
-  [helix]="192.168.2.7"
-  [rpi1]="192.168.2.80"
-  [rpi2]="192.168.2.81"
+  [helix]="192.168.2.68"
+  [rpi1]="192.168.2.84"
+  [rpi2]="192.168.2.80"
   [rpi3]="192.168.2.82"
   [rpi4]="192.168.2.83"
-  [rpi5]="192.168.2.84"
+  [rpi5]="192.168.2.93"
+  [rpi6]="192.168.2.88"
+  [rpi7]="192.168.2.81"
   [slayer]="147.93.171.18"
+  [divergent]="192.168.2.7"
 )
 
 USERNAME="reezpatel"
@@ -24,9 +27,12 @@ USERNAME="reezpatel"
 PORT="7272"
 while getopts ":u:p:" opt; do
   case "${opt}" in
-    u) USERNAME="${OPTARG}" ;;
-    p) PORT="${OPTARG}" ;;
-    *) echo "Usage: $0 [-u username] [-p port] <hostname> [switch|boot|test|build]"; exit 1 ;;
+  u) USERNAME="${OPTARG}" ;;
+  p) PORT="${OPTARG}" ;;
+  *)
+    echo "Usage: $0 [-u username] [-p port] <hostname> [switch|boot|test|build]"
+    exit 1
+    ;;
   esac
 done
 shift $((OPTIND - 1))
@@ -46,12 +52,12 @@ if [[ -z "${HOSTS[$HOSTNAME]+x}" ]]; then
 fi
 
 case "${ACTION}" in
-  switch|boot|test|build)
-    ;;
-  *)
-    echo "Error: unsupported action '${ACTION}'. Expected one of: switch boot test build"
-    exit 1
-    ;;
+switch | boot | test | build)
+  ;;
+*)
+  echo "Error: unsupported action '${ACTION}'. Expected one of: switch boot test build"
+  exit 1
+  ;;
 esac
 
 HOST_IP="${HOSTS[$HOSTNAME]}"
@@ -87,7 +93,5 @@ else
   nix run nixpkgs#nh -- os "${ACTION}" ${FLAKE_DIR}/nix#${HOSTNAME} --target-host "${USERNAME}@${HOST_IP}" --build-host "${USERNAME}@${HOST_IP}" --hostname "${HOSTNAME}"
 fi
 
-
-
 # nixos-rebuild switch --flake .#my-nixos \
-  # --target-host root@192.168.4.1 --build-host localhost --verbose
+# --target-host root@192.168.4.1 --build-host localhost --verbose

@@ -1,0 +1,1239 @@
+{
+ "fabric_modules": [],
+ "storage_objects": [
+  {
+   "aio": false,
+   "alua_tpgs": [
+    {
+     "alua_access_state": 0,
+     "alua_access_status": 0,
+     "alua_access_type": 3,
+     "alua_support_active_nonoptimized": 1,
+     "alua_support_active_optimized": 1,
+     "alua_support_offline": 1,
+     "alua_support_standby": 1,
+     "alua_support_transitioning": 1,
+     "alua_support_unavailable": 1,
+     "alua_write_metadata": 0,
+     "implicit_trans_secs": 0,
+     "name": "default_tg_pt_gp",
+     "nonop_delay_msecs": 100,
+     "preferred": 0,
+     "tg_pt_gp_id": 0,
+     "trans_delay_msecs": 0
+    }
+   ],
+   "attributes": {
+    "alua_support": 1,
+    "block_size": 512,
+    "emulate_3pc": 1,
+    "emulate_caw": 1,
+    "emulate_dpo": 1,
+    "emulate_fua_read": 1,
+    "emulate_fua_write": 1,
+    "emulate_model_alias": 1,
+    "emulate_pr": 1,
+    "emulate_rest_reord": 0,
+    "emulate_rsoc": 1,
+    "emulate_tas": 1,
+    "emulate_tpu": 0,
+    "emulate_tpws": 0,
+    "emulate_ua_intlck_ctrl": 0,
+    "emulate_write_cache": 1,
+    "enforce_pr_isids": 1,
+    "force_pr_aptpl": 0,
+    "is_nonrot": 0,
+    "max_unmap_block_desc_count": 1,
+    "max_unmap_lba_count": 8192,
+    "max_write_same_len": 4096,
+    "optimal_sectors": 16384,
+    "pgr_support": 1,
+    "pi_prot_format": 0,
+    "pi_prot_type": 0,
+    "pi_prot_verify": 0,
+    "queue_depth": 128,
+    "submit_type": 0,
+    "unmap_granularity": 1,
+    "unmap_granularity_alignment": 0,
+    "unmap_zeroes_data": 0
+   },
+   "dev": "/workspace/iscsi/rpi-1.img",
+   "name": "rpi-1",
+   "plugin": "fileio",
+   "size": 34359738368,
+   "write_back": true,
+   "wwn": "69caf096-4ff0-480e-91b1-8a20f7e75721"
+  },
+  {
+   "aio": false,
+   "alua_tpgs": [
+    {
+     "alua_access_state": 0,
+     "alua_access_status": 0,
+     "alua_access_type": 3,
+     "alua_support_active_nonoptimized": 1,
+     "alua_support_active_optimized": 1,
+     "alua_support_offline": 1,
+     "alua_support_standby": 1,
+     "alua_support_transitioning": 1,
+     "alua_support_unavailable": 1,
+     "alua_write_metadata": 0,
+     "implicit_trans_secs": 0,
+     "name": "default_tg_pt_gp",
+     "nonop_delay_msecs": 100,
+     "preferred": 0,
+     "tg_pt_gp_id": 0,
+     "trans_delay_msecs": 0
+    }
+   ],
+   "attributes": {
+    "alua_support": 1,
+    "block_size": 512,
+    "emulate_3pc": 1,
+    "emulate_caw": 1,
+    "emulate_dpo": 1,
+    "emulate_fua_read": 1,
+    "emulate_fua_write": 1,
+    "emulate_model_alias": 1,
+    "emulate_pr": 1,
+    "emulate_rest_reord": 0,
+    "emulate_rsoc": 1,
+    "emulate_tas": 1,
+    "emulate_tpu": 0,
+    "emulate_tpws": 0,
+    "emulate_ua_intlck_ctrl": 0,
+    "emulate_write_cache": 1,
+    "enforce_pr_isids": 1,
+    "force_pr_aptpl": 0,
+    "is_nonrot": 0,
+    "max_unmap_block_desc_count": 1,
+    "max_unmap_lba_count": 8192,
+    "max_write_same_len": 4096,
+    "optimal_sectors": 16384,
+    "pgr_support": 1,
+    "pi_prot_format": 0,
+    "pi_prot_type": 0,
+    "pi_prot_verify": 0,
+    "queue_depth": 128,
+    "submit_type": 0,
+    "unmap_granularity": 1,
+    "unmap_granularity_alignment": 0,
+    "unmap_zeroes_data": 0
+   },
+   "dev": "/workspace/iscsi/rpi-2.img",
+   "name": "rpi-2",
+   "plugin": "fileio",
+   "size": 34359738368,
+   "write_back": true,
+   "wwn": "423aae5f-48e0-4ccb-afc9-197defa035a7"
+  },
+  {
+   "aio": false,
+   "alua_tpgs": [
+    {
+     "alua_access_state": 0,
+     "alua_access_status": 0,
+     "alua_access_type": 3,
+     "alua_support_active_nonoptimized": 1,
+     "alua_support_active_optimized": 1,
+     "alua_support_offline": 1,
+     "alua_support_standby": 1,
+     "alua_support_transitioning": 1,
+     "alua_support_unavailable": 1,
+     "alua_write_metadata": 0,
+     "implicit_trans_secs": 0,
+     "name": "default_tg_pt_gp",
+     "nonop_delay_msecs": 100,
+     "preferred": 0,
+     "tg_pt_gp_id": 0,
+     "trans_delay_msecs": 0
+    }
+   ],
+   "attributes": {
+    "alua_support": 1,
+    "block_size": 512,
+    "emulate_3pc": 1,
+    "emulate_caw": 1,
+    "emulate_dpo": 1,
+    "emulate_fua_read": 1,
+    "emulate_fua_write": 1,
+    "emulate_model_alias": 1,
+    "emulate_pr": 1,
+    "emulate_rest_reord": 0,
+    "emulate_rsoc": 1,
+    "emulate_tas": 1,
+    "emulate_tpu": 0,
+    "emulate_tpws": 0,
+    "emulate_ua_intlck_ctrl": 0,
+    "emulate_write_cache": 1,
+    "enforce_pr_isids": 1,
+    "force_pr_aptpl": 0,
+    "is_nonrot": 0,
+    "max_unmap_block_desc_count": 1,
+    "max_unmap_lba_count": 8192,
+    "max_write_same_len": 4096,
+    "optimal_sectors": 16384,
+    "pgr_support": 1,
+    "pi_prot_format": 0,
+    "pi_prot_type": 0,
+    "pi_prot_verify": 0,
+    "queue_depth": 128,
+    "submit_type": 0,
+    "unmap_granularity": 1,
+    "unmap_granularity_alignment": 0,
+    "unmap_zeroes_data": 0
+   },
+   "dev": "/workspace/iscsi/rpi-3.img",
+   "name": "rpi-3",
+   "plugin": "fileio",
+   "size": 34359738368,
+   "write_back": true,
+   "wwn": "e8590705-24c0-4ef2-b0d0-f2453b5fbb10"
+  },
+  {
+   "aio": false,
+   "alua_tpgs": [
+    {
+     "alua_access_state": 0,
+     "alua_access_status": 0,
+     "alua_access_type": 3,
+     "alua_support_active_nonoptimized": 1,
+     "alua_support_active_optimized": 1,
+     "alua_support_offline": 1,
+     "alua_support_standby": 1,
+     "alua_support_transitioning": 1,
+     "alua_support_unavailable": 1,
+     "alua_write_metadata": 0,
+     "implicit_trans_secs": 0,
+     "name": "default_tg_pt_gp",
+     "nonop_delay_msecs": 100,
+     "preferred": 0,
+     "tg_pt_gp_id": 0,
+     "trans_delay_msecs": 0
+    }
+   ],
+   "attributes": {
+    "alua_support": 1,
+    "block_size": 512,
+    "emulate_3pc": 1,
+    "emulate_caw": 1,
+    "emulate_dpo": 1,
+    "emulate_fua_read": 1,
+    "emulate_fua_write": 1,
+    "emulate_model_alias": 1,
+    "emulate_pr": 1,
+    "emulate_rest_reord": 0,
+    "emulate_rsoc": 1,
+    "emulate_tas": 1,
+    "emulate_tpu": 0,
+    "emulate_tpws": 0,
+    "emulate_ua_intlck_ctrl": 0,
+    "emulate_write_cache": 1,
+    "enforce_pr_isids": 1,
+    "force_pr_aptpl": 0,
+    "is_nonrot": 0,
+    "max_unmap_block_desc_count": 1,
+    "max_unmap_lba_count": 8192,
+    "max_write_same_len": 4096,
+    "optimal_sectors": 16384,
+    "pgr_support": 1,
+    "pi_prot_format": 0,
+    "pi_prot_type": 0,
+    "pi_prot_verify": 0,
+    "queue_depth": 128,
+    "submit_type": 0,
+    "unmap_granularity": 1,
+    "unmap_granularity_alignment": 0,
+    "unmap_zeroes_data": 0
+   },
+   "dev": "/workspace/iscsi/rpi-4.img",
+   "name": "rpi-4",
+   "plugin": "fileio",
+   "size": 34359738368,
+   "write_back": true,
+   "wwn": "11c4e497-2555-4b57-af08-4f6e76afbd89"
+  },
+  {
+   "aio": false,
+   "alua_tpgs": [
+    {
+     "alua_access_state": 0,
+     "alua_access_status": 0,
+     "alua_access_type": 3,
+     "alua_support_active_nonoptimized": 1,
+     "alua_support_active_optimized": 1,
+     "alua_support_offline": 1,
+     "alua_support_standby": 1,
+     "alua_support_transitioning": 1,
+     "alua_support_unavailable": 1,
+     "alua_write_metadata": 0,
+     "implicit_trans_secs": 0,
+     "name": "default_tg_pt_gp",
+     "nonop_delay_msecs": 100,
+     "preferred": 0,
+     "tg_pt_gp_id": 0,
+     "trans_delay_msecs": 0
+    }
+   ],
+   "attributes": {
+    "alua_support": 1,
+    "block_size": 512,
+    "emulate_3pc": 1,
+    "emulate_caw": 1,
+    "emulate_dpo": 1,
+    "emulate_fua_read": 1,
+    "emulate_fua_write": 1,
+    "emulate_model_alias": 1,
+    "emulate_pr": 1,
+    "emulate_rest_reord": 0,
+    "emulate_rsoc": 1,
+    "emulate_tas": 1,
+    "emulate_tpu": 0,
+    "emulate_tpws": 0,
+    "emulate_ua_intlck_ctrl": 0,
+    "emulate_write_cache": 1,
+    "enforce_pr_isids": 1,
+    "force_pr_aptpl": 0,
+    "is_nonrot": 0,
+    "max_unmap_block_desc_count": 1,
+    "max_unmap_lba_count": 8192,
+    "max_write_same_len": 4096,
+    "optimal_sectors": 16384,
+    "pgr_support": 1,
+    "pi_prot_format": 0,
+    "pi_prot_type": 0,
+    "pi_prot_verify": 0,
+    "queue_depth": 128,
+    "submit_type": 0,
+    "unmap_granularity": 1,
+    "unmap_granularity_alignment": 0,
+    "unmap_zeroes_data": 0
+   },
+   "dev": "/workspace/iscsi/rpi-5.img",
+   "name": "rpi-5",
+   "plugin": "fileio",
+   "size": 34359738368,
+   "write_back": true,
+   "wwn": "a75ed1a3-5d1b-4590-a3f6-683258c04627"
+  },
+  {
+   "aio": false,
+   "alua_tpgs": [
+    {
+     "alua_access_state": 0,
+     "alua_access_status": 0,
+     "alua_access_type": 3,
+     "alua_support_active_nonoptimized": 1,
+     "alua_support_active_optimized": 1,
+     "alua_support_offline": 1,
+     "alua_support_standby": 1,
+     "alua_support_transitioning": 1,
+     "alua_support_unavailable": 1,
+     "alua_write_metadata": 0,
+     "implicit_trans_secs": 0,
+     "name": "default_tg_pt_gp",
+     "nonop_delay_msecs": 100,
+     "preferred": 0,
+     "tg_pt_gp_id": 0,
+     "trans_delay_msecs": 0
+    }
+   ],
+   "attributes": {
+    "alua_support": 1,
+    "block_size": 512,
+    "emulate_3pc": 1,
+    "emulate_caw": 1,
+    "emulate_dpo": 1,
+    "emulate_fua_read": 1,
+    "emulate_fua_write": 1,
+    "emulate_model_alias": 1,
+    "emulate_pr": 1,
+    "emulate_rest_reord": 0,
+    "emulate_rsoc": 1,
+    "emulate_tas": 1,
+    "emulate_tpu": 0,
+    "emulate_tpws": 0,
+    "emulate_ua_intlck_ctrl": 0,
+    "emulate_write_cache": 1,
+    "enforce_pr_isids": 1,
+    "force_pr_aptpl": 0,
+    "is_nonrot": 0,
+    "max_unmap_block_desc_count": 1,
+    "max_unmap_lba_count": 8192,
+    "max_write_same_len": 4096,
+    "optimal_sectors": 16384,
+    "pgr_support": 1,
+    "pi_prot_format": 0,
+    "pi_prot_type": 0,
+    "pi_prot_verify": 0,
+    "queue_depth": 128,
+    "submit_type": 0,
+    "unmap_granularity": 1,
+    "unmap_granularity_alignment": 0,
+    "unmap_zeroes_data": 0
+   },
+   "dev": "/workspace/iscsi/rpi-6.img",
+   "name": "rpi-6",
+   "plugin": "fileio",
+   "size": 34359738368,
+   "write_back": true,
+   "wwn": "4e99258a-89be-4782-899b-b01417a182cc"
+  },
+  {
+   "aio": false,
+   "alua_tpgs": [
+    {
+     "alua_access_state": 0,
+     "alua_access_status": 0,
+     "alua_access_type": 3,
+     "alua_support_active_nonoptimized": 1,
+     "alua_support_active_optimized": 1,
+     "alua_support_offline": 1,
+     "alua_support_standby": 1,
+     "alua_support_transitioning": 1,
+     "alua_support_unavailable": 1,
+     "alua_write_metadata": 0,
+     "implicit_trans_secs": 0,
+     "name": "default_tg_pt_gp",
+     "nonop_delay_msecs": 100,
+     "preferred": 0,
+     "tg_pt_gp_id": 0,
+     "trans_delay_msecs": 0
+    }
+   ],
+   "attributes": {
+    "alua_support": 1,
+    "block_size": 512,
+    "emulate_3pc": 1,
+    "emulate_caw": 1,
+    "emulate_dpo": 1,
+    "emulate_fua_read": 1,
+    "emulate_fua_write": 1,
+    "emulate_model_alias": 1,
+    "emulate_pr": 1,
+    "emulate_rest_reord": 0,
+    "emulate_rsoc": 1,
+    "emulate_tas": 1,
+    "emulate_tpu": 0,
+    "emulate_tpws": 0,
+    "emulate_ua_intlck_ctrl": 0,
+    "emulate_write_cache": 1,
+    "enforce_pr_isids": 1,
+    "force_pr_aptpl": 0,
+    "is_nonrot": 0,
+    "max_unmap_block_desc_count": 1,
+    "max_unmap_lba_count": 8192,
+    "max_write_same_len": 4096,
+    "optimal_sectors": 16384,
+    "pgr_support": 1,
+    "pi_prot_format": 0,
+    "pi_prot_type": 0,
+    "pi_prot_verify": 0,
+    "queue_depth": 128,
+    "submit_type": 0,
+    "unmap_granularity": 1,
+    "unmap_granularity_alignment": 0,
+    "unmap_zeroes_data": 0
+   },
+   "dev": "/workspace/iscsi/rpi-7.img",
+   "name": "rpi-7",
+   "plugin": "fileio",
+   "size": 34359738368,
+   "write_back": true,
+   "wwn": "e2209e3f-5a2d-45c8-b5f7-fcd683e87e25"
+  }
+ ],
+ "targets": [
+  {
+   "fabric": "iscsi",
+   "parameters": {
+    "cmd_completion_affinity": "-1"
+   },
+   "tpgs": [
+    {
+     "attributes": {
+      "authentication": 0,
+      "cache_dynamic_acls": 0,
+      "default_cmdsn_depth": 64,
+      "default_erl": 0,
+      "demo_mode_discovery": 1,
+      "demo_mode_write_protect": 0,
+      "fabric_prot_type": 0,
+      "generate_node_acls": 0,
+      "login_keys_workaround": 1,
+      "login_timeout": 15,
+      "prod_mode_write_protect": 0,
+      "t10_pi": 0,
+      "tpg_enabled_sendtargets": 1
+     },
+     "enable": true,
+     "luns": [
+      {
+       "alias": "04ea14f43c",
+       "alua_tg_pt_gp_name": "default_tg_pt_gp",
+       "index": 0,
+       "storage_object": "/backstores/fileio/rpi-1"
+      }
+     ],
+     "node_acls": [
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "0bc8b8ae19",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.rpi-1:initiator"
+      },
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "665fcd11ed",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.infra:divergent"
+      }
+     ],
+     "parameters": {
+      "AuthMethod": "CHAP,None",
+      "DataDigest": "CRC32C,None",
+      "DataPDUInOrder": "Yes",
+      "DataSequenceInOrder": "Yes",
+      "DefaultTime2Retain": "20",
+      "DefaultTime2Wait": "2",
+      "ErrorRecoveryLevel": "0",
+      "FirstBurstLength": "65536",
+      "HeaderDigest": "CRC32C,None",
+      "IFMarkInt": "Reject",
+      "IFMarker": "No",
+      "ImmediateData": "Yes",
+      "InitialR2T": "Yes",
+      "MaxBurstLength": "262144",
+      "MaxConnections": "8",
+      "MaxOutstandingR2T": "1",
+      "MaxRecvDataSegmentLength": "8192",
+      "MaxXmitDataSegmentLength": "262144",
+      "OFMarkInt": "Reject",
+      "OFMarker": "No",
+      "TargetAlias": "LIO Target"
+     },
+     "portals": [
+      {
+       "ip_address": "0.0.0.0",
+       "iser": false,
+       "offload": false,
+       "port": 3260
+      }
+     ],
+     "tag": 1
+    }
+   ],
+   "wwn": "iqn.2026-08.local.infra:rpi-1"
+  },
+  {
+   "fabric": "iscsi",
+   "parameters": {
+    "cmd_completion_affinity": "-1"
+   },
+   "tpgs": [
+    {
+     "attributes": {
+      "authentication": 0,
+      "cache_dynamic_acls": 0,
+      "default_cmdsn_depth": 64,
+      "default_erl": 0,
+      "demo_mode_discovery": 1,
+      "demo_mode_write_protect": 0,
+      "fabric_prot_type": 0,
+      "generate_node_acls": 0,
+      "login_keys_workaround": 1,
+      "login_timeout": 15,
+      "prod_mode_write_protect": 0,
+      "t10_pi": 0,
+      "tpg_enabled_sendtargets": 1
+     },
+     "enable": true,
+     "luns": [
+      {
+       "alias": "5dfa2fcb46",
+       "alua_tg_pt_gp_name": "default_tg_pt_gp",
+       "index": 0,
+       "storage_object": "/backstores/fileio/rpi-2"
+      }
+     ],
+     "node_acls": [
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "a1ab2fd3e5",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.rpi-2:initiator"
+      },
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "17dcc7eefb",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.infra:divergent"
+      }
+     ],
+     "parameters": {
+      "AuthMethod": "CHAP,None",
+      "DataDigest": "CRC32C,None",
+      "DataPDUInOrder": "Yes",
+      "DataSequenceInOrder": "Yes",
+      "DefaultTime2Retain": "20",
+      "DefaultTime2Wait": "2",
+      "ErrorRecoveryLevel": "0",
+      "FirstBurstLength": "65536",
+      "HeaderDigest": "CRC32C,None",
+      "IFMarkInt": "Reject",
+      "IFMarker": "No",
+      "ImmediateData": "Yes",
+      "InitialR2T": "Yes",
+      "MaxBurstLength": "262144",
+      "MaxConnections": "8",
+      "MaxOutstandingR2T": "1",
+      "MaxRecvDataSegmentLength": "8192",
+      "MaxXmitDataSegmentLength": "262144",
+      "OFMarkInt": "Reject",
+      "OFMarker": "No",
+      "TargetAlias": "LIO Target"
+     },
+     "portals": [
+      {
+       "ip_address": "0.0.0.0",
+       "iser": false,
+       "offload": false,
+       "port": 3260
+      }
+     ],
+     "tag": 1
+    }
+   ],
+   "wwn": "iqn.2026-08.local.infra:rpi-2"
+  },
+  {
+   "fabric": "iscsi",
+   "parameters": {
+    "cmd_completion_affinity": "-1"
+   },
+   "tpgs": [
+    {
+     "attributes": {
+      "authentication": 0,
+      "cache_dynamic_acls": 0,
+      "default_cmdsn_depth": 64,
+      "default_erl": 0,
+      "demo_mode_discovery": 1,
+      "demo_mode_write_protect": 0,
+      "fabric_prot_type": 0,
+      "generate_node_acls": 0,
+      "login_keys_workaround": 1,
+      "login_timeout": 15,
+      "prod_mode_write_protect": 0,
+      "t10_pi": 0,
+      "tpg_enabled_sendtargets": 1
+     },
+     "enable": true,
+     "luns": [
+      {
+       "alias": "9d77f39018",
+       "alua_tg_pt_gp_name": "default_tg_pt_gp",
+       "index": 0,
+       "storage_object": "/backstores/fileio/rpi-3"
+      }
+     ],
+     "node_acls": [
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "5d3196546d",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.rpi-3:initiator"
+      },
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "1cedbeb3cc",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.infra:divergent"
+      }
+     ],
+     "parameters": {
+      "AuthMethod": "CHAP,None",
+      "DataDigest": "CRC32C,None",
+      "DataPDUInOrder": "Yes",
+      "DataSequenceInOrder": "Yes",
+      "DefaultTime2Retain": "20",
+      "DefaultTime2Wait": "2",
+      "ErrorRecoveryLevel": "0",
+      "FirstBurstLength": "65536",
+      "HeaderDigest": "CRC32C,None",
+      "IFMarkInt": "Reject",
+      "IFMarker": "No",
+      "ImmediateData": "Yes",
+      "InitialR2T": "Yes",
+      "MaxBurstLength": "262144",
+      "MaxConnections": "8",
+      "MaxOutstandingR2T": "1",
+      "MaxRecvDataSegmentLength": "8192",
+      "MaxXmitDataSegmentLength": "262144",
+      "OFMarkInt": "Reject",
+      "OFMarker": "No",
+      "TargetAlias": "LIO Target"
+     },
+     "portals": [
+      {
+       "ip_address": "0.0.0.0",
+       "iser": false,
+       "offload": false,
+       "port": 3260
+      }
+     ],
+     "tag": 1
+    }
+   ],
+   "wwn": "iqn.2026-08.local.infra:rpi-3"
+  },
+  {
+   "fabric": "iscsi",
+   "parameters": {
+    "cmd_completion_affinity": "-1"
+   },
+   "tpgs": [
+    {
+     "attributes": {
+      "authentication": 0,
+      "cache_dynamic_acls": 0,
+      "default_cmdsn_depth": 64,
+      "default_erl": 0,
+      "demo_mode_discovery": 1,
+      "demo_mode_write_protect": 0,
+      "fabric_prot_type": 0,
+      "generate_node_acls": 0,
+      "login_keys_workaround": 1,
+      "login_timeout": 15,
+      "prod_mode_write_protect": 0,
+      "t10_pi": 0,
+      "tpg_enabled_sendtargets": 1
+     },
+     "enable": true,
+     "luns": [
+      {
+       "alias": "6e3ebbbd86",
+       "alua_tg_pt_gp_name": "default_tg_pt_gp",
+       "index": 0,
+       "storage_object": "/backstores/fileio/rpi-4"
+      }
+     ],
+     "node_acls": [
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "4137c476ab",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.rpi-4:initiator"
+      },
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "f8718881f5",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.infra:divergent"
+      }
+     ],
+     "parameters": {
+      "AuthMethod": "CHAP,None",
+      "DataDigest": "CRC32C,None",
+      "DataPDUInOrder": "Yes",
+      "DataSequenceInOrder": "Yes",
+      "DefaultTime2Retain": "20",
+      "DefaultTime2Wait": "2",
+      "ErrorRecoveryLevel": "0",
+      "FirstBurstLength": "65536",
+      "HeaderDigest": "CRC32C,None",
+      "IFMarkInt": "Reject",
+      "IFMarker": "No",
+      "ImmediateData": "Yes",
+      "InitialR2T": "Yes",
+      "MaxBurstLength": "262144",
+      "MaxConnections": "8",
+      "MaxOutstandingR2T": "1",
+      "MaxRecvDataSegmentLength": "8192",
+      "MaxXmitDataSegmentLength": "262144",
+      "OFMarkInt": "Reject",
+      "OFMarker": "No",
+      "TargetAlias": "LIO Target"
+     },
+     "portals": [
+      {
+       "ip_address": "0.0.0.0",
+       "iser": false,
+       "offload": false,
+       "port": 3260
+      }
+     ],
+     "tag": 1
+    }
+   ],
+   "wwn": "iqn.2026-08.local.infra:rpi-4"
+  },
+  {
+   "fabric": "iscsi",
+   "parameters": {
+    "cmd_completion_affinity": "-1"
+   },
+   "tpgs": [
+    {
+     "attributes": {
+      "authentication": 0,
+      "cache_dynamic_acls": 0,
+      "default_cmdsn_depth": 64,
+      "default_erl": 0,
+      "demo_mode_discovery": 1,
+      "demo_mode_write_protect": 0,
+      "fabric_prot_type": 0,
+      "generate_node_acls": 0,
+      "login_keys_workaround": 1,
+      "login_timeout": 15,
+      "prod_mode_write_protect": 0,
+      "t10_pi": 0,
+      "tpg_enabled_sendtargets": 1
+     },
+     "enable": true,
+     "luns": [
+      {
+       "alias": "8fa297d9c7",
+       "alua_tg_pt_gp_name": "default_tg_pt_gp",
+       "index": 0,
+       "storage_object": "/backstores/fileio/rpi-5"
+      }
+     ],
+     "node_acls": [
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "2cd2c7b6a4",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.rpi-5:initiator"
+      },
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "726a0a0cd2",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.infra:divergent"
+      }
+     ],
+     "parameters": {
+      "AuthMethod": "CHAP,None",
+      "DataDigest": "CRC32C,None",
+      "DataPDUInOrder": "Yes",
+      "DataSequenceInOrder": "Yes",
+      "DefaultTime2Retain": "20",
+      "DefaultTime2Wait": "2",
+      "ErrorRecoveryLevel": "0",
+      "FirstBurstLength": "65536",
+      "HeaderDigest": "CRC32C,None",
+      "IFMarkInt": "Reject",
+      "IFMarker": "No",
+      "ImmediateData": "Yes",
+      "InitialR2T": "Yes",
+      "MaxBurstLength": "262144",
+      "MaxConnections": "8",
+      "MaxOutstandingR2T": "1",
+      "MaxRecvDataSegmentLength": "8192",
+      "MaxXmitDataSegmentLength": "262144",
+      "OFMarkInt": "Reject",
+      "OFMarker": "No",
+      "TargetAlias": "LIO Target"
+     },
+     "portals": [
+      {
+       "ip_address": "0.0.0.0",
+       "iser": false,
+       "offload": false,
+       "port": 3260
+      }
+     ],
+     "tag": 1
+    }
+   ],
+   "wwn": "iqn.2026-08.local.infra:rpi-5"
+  },
+  {
+   "fabric": "iscsi",
+   "parameters": {
+    "cmd_completion_affinity": "-1"
+   },
+   "tpgs": [
+    {
+     "attributes": {
+      "authentication": 0,
+      "cache_dynamic_acls": 0,
+      "default_cmdsn_depth": 64,
+      "default_erl": 0,
+      "demo_mode_discovery": 1,
+      "demo_mode_write_protect": 0,
+      "fabric_prot_type": 0,
+      "generate_node_acls": 0,
+      "login_keys_workaround": 1,
+      "login_timeout": 15,
+      "prod_mode_write_protect": 0,
+      "t10_pi": 0,
+      "tpg_enabled_sendtargets": 1
+     },
+     "enable": true,
+     "luns": [
+      {
+       "alias": "6277b6e9e7",
+       "alua_tg_pt_gp_name": "default_tg_pt_gp",
+       "index": 0,
+       "storage_object": "/backstores/fileio/rpi-6"
+      }
+     ],
+     "node_acls": [
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "3725c897ab",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.rpi-6:initiator"
+      },
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "1553ef8a3e",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.infra:divergent"
+      }
+     ],
+     "parameters": {
+      "AuthMethod": "CHAP,None",
+      "DataDigest": "CRC32C,None",
+      "DataPDUInOrder": "Yes",
+      "DataSequenceInOrder": "Yes",
+      "DefaultTime2Retain": "20",
+      "DefaultTime2Wait": "2",
+      "ErrorRecoveryLevel": "0",
+      "FirstBurstLength": "65536",
+      "HeaderDigest": "CRC32C,None",
+      "IFMarkInt": "Reject",
+      "IFMarker": "No",
+      "ImmediateData": "Yes",
+      "InitialR2T": "Yes",
+      "MaxBurstLength": "262144",
+      "MaxConnections": "8",
+      "MaxOutstandingR2T": "1",
+      "MaxRecvDataSegmentLength": "8192",
+      "MaxXmitDataSegmentLength": "262144",
+      "OFMarkInt": "Reject",
+      "OFMarker": "No",
+      "TargetAlias": "LIO Target"
+     },
+     "portals": [
+      {
+       "ip_address": "0.0.0.0",
+       "iser": false,
+       "offload": false,
+       "port": 3260
+      }
+     ],
+     "tag": 1
+    }
+   ],
+   "wwn": "iqn.2026-08.local.infra:rpi-6"
+  },
+  {
+   "fabric": "iscsi",
+   "parameters": {
+    "cmd_completion_affinity": "-1"
+   },
+   "tpgs": [
+    {
+     "attributes": {
+      "authentication": 0,
+      "cache_dynamic_acls": 0,
+      "default_cmdsn_depth": 64,
+      "default_erl": 0,
+      "demo_mode_discovery": 1,
+      "demo_mode_write_protect": 0,
+      "fabric_prot_type": 0,
+      "generate_node_acls": 0,
+      "login_keys_workaround": 1,
+      "login_timeout": 15,
+      "prod_mode_write_protect": 0,
+      "t10_pi": 0,
+      "tpg_enabled_sendtargets": 1
+     },
+     "enable": true,
+     "luns": [
+      {
+       "alias": "0c13ff5794",
+       "alua_tg_pt_gp_name": "default_tg_pt_gp",
+       "index": 0,
+       "storage_object": "/backstores/fileio/rpi-7"
+      }
+     ],
+     "node_acls": [
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "e768334d47",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.rpi-7:initiator"
+      },
+      {
+       "attributes": {
+        "authentication": -1,
+        "dataout_timeout": 3,
+        "dataout_timeout_retries": 5,
+        "default_erl": 0,
+        "nopin_response_timeout": 30,
+        "nopin_timeout": 15,
+        "random_datain_pdu_offsets": 0,
+        "random_datain_seq_offsets": 0,
+        "random_r2t_offsets": 0
+       },
+       "mapped_luns": [
+        {
+         "alias": "3c00edd3df",
+         "index": 0,
+         "tpg_lun": 0,
+         "write_protect": false
+        }
+       ],
+       "node_wwn": "iqn.2026-08.local.infra:divergent"
+      }
+     ],
+     "parameters": {
+      "AuthMethod": "CHAP,None",
+      "DataDigest": "CRC32C,None",
+      "DataPDUInOrder": "Yes",
+      "DataSequenceInOrder": "Yes",
+      "DefaultTime2Retain": "20",
+      "DefaultTime2Wait": "2",
+      "ErrorRecoveryLevel": "0",
+      "FirstBurstLength": "65536",
+      "HeaderDigest": "CRC32C,None",
+      "IFMarkInt": "Reject",
+      "IFMarker": "No",
+      "ImmediateData": "Yes",
+      "InitialR2T": "Yes",
+      "MaxBurstLength": "262144",
+      "MaxConnections": "8",
+      "MaxOutstandingR2T": "1",
+      "MaxRecvDataSegmentLength": "8192",
+      "MaxXmitDataSegmentLength": "262144",
+      "OFMarkInt": "Reject",
+      "OFMarker": "No",
+      "TargetAlias": "LIO Target"
+     },
+     "portals": [
+      {
+       "ip_address": "0.0.0.0",
+       "iser": false,
+       "offload": false,
+       "port": 3260
+      }
+     ],
+     "tag": 1
+    }
+   ],
+   "wwn": "iqn.2026-08.local.infra:rpi-7"
+  }
+ ]
+}

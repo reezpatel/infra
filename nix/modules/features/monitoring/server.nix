@@ -191,21 +191,21 @@
       };
 
       age.secrets.home-assistant-token = {
-        file = ../../../secerts/home-assistant-token.age;
+        file = ../../../../secerts/home-assistant-token.age;
         owner = "prometheus";
         group = "prometheus";
         mode = "0400";
       };
 
       age.secrets.grafana-secret-key = {
-        file = ../../../secerts/grafana-secret-key.age;
+        file = ../../../../secerts/grafana-secret-key.age;
         owner = "grafana";
         group = "grafana";
         mode = "0400";
       };
 
       age.secrets.grafana-admin-password = {
-        file = ../../../secerts/grafana-admin-password.age;
+        file = ../../../../secerts/grafana-admin-password.age;
         owner = "grafana";
         group = "grafana";
         mode = "0400";

@@ -1,4 +1,5 @@
-# rpi3 — Raspberry Pi node on the tailnet.
+# rpi3 — fleet node on full network boot (Pi 4):
+# firmware over TFTP from divergent, root on iSCSI LUN rpi-3.img.
 {
   inputs,
   self,
@@ -9,18 +10,21 @@
 
     modules = with self.modules.nixos; [
       # Aspects
-      rpi-node
+      base
+      rpi-netboot
       home
 
       # Identity
       ({config, ...}: {
         hostname = "rpi3";
-        users.users.reezpatel.linger = true;
 
-        fileSystems."/" = {
-          device = "/dev/disk/by-label/NIXOS_SD";
-          fsType = "ext4";
+        netboot = {
+          serverIp = "192.168.2.7";
+          initiator = "iqn.2026-08.local.rpi-3:initiator";
+          targetName = "iqn.2026-08.local.infra:rpi-3";
         };
+
+        users.users.reezpatel.linger = true;
 
         home-manager.users.${config.username}.imports = with self.modules.homeManager; [
           shell

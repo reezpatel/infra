@@ -158,6 +158,13 @@ deploy-rpi4 action="switch" port="7272":
 deploy-rpi5 action="switch" port="7272":
   ./scripts/deploy_remote.sh -p "{{port}}" rpi5 "{{action}}"
 
+deploy-divergent action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" divergent "{{action}}"
+
+# Install a netbooted node's NixOS into its iSCSI LUN (runs on divergent).
+install-lun node="rpi1" port="7272":
+  ssh -t -p "{{port}}" reezpatel@192.168.2.68 "sudo bash ~/infra/scripts/netboot-install-lun.sh {{node}}"
+
 deploy-slayer action="switch" port="7272":
   NIXOS_NO_CHECK=1 ./scripts/deploy_remote.sh -p "{{port}}" slayer "{{action}}"
 

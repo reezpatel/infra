@@ -15,6 +15,7 @@ let
   rpi5 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG1Cvn5MJCIRlirTQR3Yv+KlquhPS6zEvPGsm7EB225X";
 
   ace = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOfv3oPAe0bdMnsugwBFkLPXgmIZDcluTcQjid6yOb+x";
+  divergent = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBJCrqSJN0GPdR8FUYsBNmexaOu/+D8Rmx19nIhZE6jq";
 
   all = [
     user1
@@ -30,6 +31,7 @@ let
     rpi4
     rpi5
     ace
+    divergent
   ];
 in
 {

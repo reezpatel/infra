@@ -1,4 +1,5 @@
-# trinity — monitoring hub (Prometheus/Loki/Grafana), git host, twodb.
+# trinity (skull @ 192.168.2.2) — monitoring hub, git host, twodb.
+# 2TB Intel NVMe (disko) → /workspace, owned by the primary user.
 {
   inputs,
   self,
@@ -15,11 +16,17 @@
       monitoring-server
 
       # Host-specific
+      inputs.disko.nixosModules.disko
+      ./_disko.nix
       ./_hardware-configuration.nix
 
       # Identity
-      ({...}: {
+      ({config, ...}: {
         hostname = "trinity";
+
+        systemd.tmpfiles.rules = [
+          "d /workspace 0775 ${config.username} users -"
+        ];
       })
     ];
   };

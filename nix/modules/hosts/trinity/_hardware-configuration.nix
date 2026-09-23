@@ -13,33 +13,30 @@
     "xhci_pci"
     "usb_storage"
     "sd_mod"
-    "md_mod"
-    "raid1"
   ];
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-amd"];
   boot.extraModulePackages = [];
 
+  # Fresh install on nvme1n1 (Samsung 512G). UUIDs from the installer's fstab.
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/f7eb8187-242d-440b-a1e8-d1a649cbf377";
+    device = "/dev/disk/by-uuid/cdfbf3e8-407a-4653-a4ab-4345ea455306";
     fsType = "ext4";
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/556A-D76D";
+    device = "/dev/disk/by-uuid/E963-05ED";
     fsType = "vfat";
     options = [
-      "fmask=0022"
-      "dmask=0022"
+      "fmask=0077"
+      "dmask=0077"
     ];
   };
 
-  swapDevices = [];
+  swapDevices = [
+    {device = "/dev/disk/by-uuid/7b20f2ba-1c5a-4c2e-a15f-47f07081d2b5";}
+  ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-  boot.swraid.enable = true;
-  boot.swraid.mdadmConf = ''
-    MAILADDR root
-  '';
 }
