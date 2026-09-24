@@ -145,6 +145,11 @@
       netboot-server.uboot = lib.mkDefault ubootPxe;
       services.dnsmasq = {
         enable = true;
+        # PXE/TFTP only (port = 0 below): without this, the nixpkgs module's
+        # resolveLocalQueries default injects DNS=127.0.0.1 into
+        # systemd-resolved while nothing listens on :53 — killing all DNS on
+        # this host (broke nix builds: source fetches timed out resolving).
+        resolveLocalQueries = false;
         settings = {
           port = 0; # no DNS
           interface = config.netboot-server.interface;

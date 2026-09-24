@@ -3,8 +3,7 @@
   inputs,
   self,
   ...
-}:
-{
+}: {
   flake.nixosConfigurations.divergent = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
 
@@ -18,17 +17,13 @@
       ./_disko.nix
       ./_hardware-configuration.nix
 
-      ({ config, pkgs, ... }: {
+      ({
+        config,
+        pkgs,
+        ...
+      }: {
         hostname = "divergent";
 
-        # Keep the former TFTP address reachable while EEPROMs are migrated
-        # from .68 to the new server address .7.
-        networking.interfaces.eno1.ipv4.addresses = [
-          {
-            address = "192.168.2.68";
-            prefixLength = 24;
-          }
-        ];
         twodb.node.root = "/workspace";
 
         # LIO target config (generated via targetcli, edit + saveconfig to extend)
@@ -37,7 +32,7 @@
         # otherwise leave the target pointing at a root-fs path).
         services.target.enable = true;
         services.target.config = builtins.fromJSON (builtins.readFile ./_target-saveconfig.json);
-        systemd.services.iscsi-target.unitConfig.RequiresMountsFor = [ "/workspace" ];
+        systemd.services.iscsi-target.unitConfig.RequiresMountsFor = ["/workspace"];
 
         # Fleet served over TFTP + PXE proxy DHCP. Pis netboot via
         # EEPROM (BOOT_ORDER network-first, TFTP_PREFIX=1 -> <serial>/ dirs).
@@ -105,7 +100,7 @@
         };
 
         # Builds aarch64 images for the rpis locally
-        boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+        boot.binfmt.emulatedSystems = ["aarch64-linux"];
 
         # For attaching fleet LUNs locally (installs, rescue, fsck).
         environment.systemPackages = [
