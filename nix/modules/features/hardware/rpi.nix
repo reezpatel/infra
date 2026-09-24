@@ -2,7 +2,8 @@
   lib,
   self,
   ...
-}: {
+}:
+{
   flake.modules.nixos.rpi = { pkgs, ... }: {
     boot.loader.systemd-boot.enable = lib.mkForce false;
     boot.loader.grub.enable = lib.mkForce false;
