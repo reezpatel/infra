@@ -104,6 +104,12 @@
       programs.fuse.userAllowOther = true;
 
       systemd.tmpfiles.rules = [
+        # NOTE: tmpfiles creates missing PARENT dirs root-owned — which is how
+        # ~/.local ended up root-owned on fresh servers (via the tmux rule),
+        # breaking home-manager (can't create ~/.local/state/... gcroots).
+        # These two entries (re)own the parents to the primary user.
+        "d /home/${config.username}/.local 0755 ${config.username} users -"
+        "d /home/${config.username}/.local/share 0755 ${config.username} users -"
         "d /home/${config.username}/.local/share/tmux 0700 ${config.username} users -"
         # home-manager activation fails with "Could not find suitable
         # profile directory" when the primary user has never run nix as
