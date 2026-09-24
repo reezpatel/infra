@@ -69,7 +69,7 @@
             TWODB_ROOT = cfg.root;
           };
           serviceConfig = {
-            ExecStart = "${inputs.twodb.packages.${pkgs.system}.twodb-node}/bin/twodb-node";
+            ExecStart = "${inputs.twodb.packages.${pkgs.stdenv.hostPlatform.system}.twodb-node}/bin/twodb-node";
             Restart = "on-failure";
             # Primary user (not DynamicUser) so sessions can read/write the
             # project tree with normal ownership.

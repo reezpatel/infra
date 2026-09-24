@@ -16,7 +16,7 @@
       home
     ];
 
-    environment.systemPackages = [inputs.agenix.packages.${pkgs.stdenv.system}.default];
+    environment.systemPackages = [inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default];
 
     home-manager.users.${config.username}.imports = with self.modules.homeManager; [
       shell
@@ -34,7 +34,7 @@
       home
     ];
 
-    environment.systemPackages = [inputs.agenix.packages.${pkgs.stdenv.system}.default];
+    environment.systemPackages = [inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default];
 
     home-manager.users.${config.username}.imports = with self.modules.homeManager; [
       shell

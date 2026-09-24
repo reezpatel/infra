@@ -18,12 +18,15 @@
   #        agenix -e secerts/twodb-node-token-<host>.age
   #      and re-deploy that host.
   flake.modules.nixos.twodb-server =
-    { ... }:
+    { pkgs, ... }:
     {
       imports = [ inputs.twodb.nixosModules.default ];
 
       services.twodb-server = {
         enable = true;
+        # Pinned explicitly: the upstream default uses the deprecated
+        # `pkgs.system` (eval-warning noise on every rebuild).
+        package = inputs.twodb.packages.${pkgs.stdenv.hostPlatform.system}.twodb-server;
         port = 3001;
         # Unix socket + the trust rule below. The user is explicit: with a
         # userless URL the driver falls back to the OS user, which for a

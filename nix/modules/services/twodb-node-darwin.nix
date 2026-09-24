@@ -47,7 +47,7 @@
         launchd.daemons.twodb-node = {
           serviceConfig = {
             ProgramArguments = [
-              "${inputs.twodb.packages.${pkgs.system}.twodb-node}/bin/twodb-node"
+              "${inputs.twodb.packages.${pkgs.stdenv.hostPlatform.system}.twodb-node}/bin/twodb-node"
             ];
             EnvironmentVariables = {
               TWODB_NODE_URL = cfg.serverUrl;
