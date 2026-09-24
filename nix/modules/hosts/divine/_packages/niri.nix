@@ -1,4 +1,4 @@
-inputs: {pkgs, ...}: {
+inputs: { pkgs, ... }: {
   imports = [
     inputs.niri.homeModules.config
   ];
@@ -18,9 +18,9 @@ inputs: {pkgs, ...}: {
     xwayland-satellite.path = "${pkgs.xwayland-satellite}/bin/xwayland-satellite";
 
     spawn-at-startup = [
-      {sh = "swaybg -i \"$HOME/infra/media/bg-dark.jpg\" -m fill";}
-      {argv = ["noctalia"];}
-      {argv = ["nsticky"];}
+      { sh = "swaybg -i \"$HOME/infra/media/wallpaper.jpg\" -m fill"; }
+      { argv = [ "noctalia" ]; }
+      { argv = [ "nsticky" ]; }
     ];
 
     prefer-no-csd = true;
@@ -54,9 +54,9 @@ inputs: {pkgs, ...}: {
       "Mod+Shift+Space".action.spawn-sh = "noctalia msg panel-toggle launcher";
       "Mod+Shift+V".action.spawn-sh = "noctalia msg panel-toggle clipboard";
       "Mod+Comma".action.spawn-sh = "noctalia msg settings-toggle";
-      "Ctrl+Alt+Super+Space".action.toggle-overview = [];
-      "Mod+Shift+Q".action.close-window = [];
-      "Mod+Shift+E".action.quit = [];
+      "Ctrl+Alt+Super+Space".action.toggle-overview = [ ];
+      "Mod+Shift+Q".action.close-window = [ ];
+      "Mod+Shift+E".action.quit = [ ];
       "Mod+Shift+1".action.spawn = [
         "ndrop"
         "--focus"
@@ -76,17 +76,18 @@ inputs: {pkgs, ...}: {
         "--focus"
         "helium"
       ];
-      "Mod+Shift+4".action.spawn-sh = "filename=\"$HOME/Pictures/screenshot-$(date +%Y-%m-%d-%H%M%S).png\" && grim -g \"$(slurp)\" \"$filename\" && wl-copy < \"$filename\" && notify-send \"Screenshot saved\" \"$(basename \"$filename\")\"";
+      "Mod+Shift+4".action.spawn-sh =
+        "filename=\"$HOME/Pictures/screenshot-$(date +%Y-%m-%d-%H%M%S).png\" && grim -g \"$(slurp)\" \"$filename\" && wl-copy < \"$filename\" && notify-send \"Screenshot saved\" \"$(basename \"$filename\")\"";
 
-      "Mod+Page_Down".action.focus-workspace-down = [];
-      "Mod+Page_Up".action.focus-workspace-up = [];
-      "Mod+Shift+Page_Down".action.move-window-to-workspace-down = [];
-      "Mod+Shift+Page_Up".action.move-window-to-workspace-up = [];
+      "Mod+Page_Down".action.focus-workspace-down = [ ];
+      "Mod+Page_Up".action.focus-workspace-up = [ ];
+      "Mod+Shift+Page_Down".action.move-window-to-workspace-down = [ ];
+      "Mod+Shift+Page_Up".action.move-window-to-workspace-up = [ ];
 
-      "Ctrl+Alt+Super+Left".action.focus-column-left = [];
-      "Ctrl+Alt+Super+Right".action.focus-column-right = [];
-      "Ctrl+Alt+Super+Up".action.focus-window-up = [];
-      "Ctrl+Alt+Super+Down".action.focus-window-down = [];
+      "Ctrl+Alt+Super+Left".action.focus-column-left = [ ];
+      "Ctrl+Alt+Super+Right".action.focus-column-right = [ ];
+      "Ctrl+Alt+Super+Up".action.focus-window-up = [ ];
+      "Ctrl+Alt+Super+Down".action.focus-window-down = [ ];
       "Ctrl+Alt+Super+T".action.spawn = [
         "ndrop"
         "--focus"
@@ -94,20 +95,20 @@ inputs: {pkgs, ...}: {
         "kitty"
         "kitty"
       ];
-      "Ctrl+Alt+Super+Shift+Left".action.move-column-left = [];
-      "Ctrl+Alt+Super+Shift+Right".action.move-column-right = [];
-      "Ctrl+Alt+Super+Shift+Up".action.move-window-up = [];
-      "Ctrl+Alt+Super+Shift+Down".action.move-window-down = [];
+      "Ctrl+Alt+Super+Shift+Left".action.move-column-left = [ ];
+      "Ctrl+Alt+Super+Shift+Right".action.move-column-right = [ ];
+      "Ctrl+Alt+Super+Shift+Up".action.move-window-up = [ ];
+      "Ctrl+Alt+Super+Shift+Down".action.move-window-down = [ ];
       "Ctrl+Alt+Super+F".action.spawn = "nfsm-cli";
-      "Ctrl+Alt+Super+Return".action.toggle-window-floating = [];
-      "Ctrl+Alt+Super+R".action.switch-preset-column-width = [];
-      "Ctrl+Alt+Super+Shift+R".action.switch-preset-window-height = [];
-      "Ctrl+Alt+Super+C".action.consume-window-into-column = [];
-      "Ctrl+Alt+Super+E".action.expel-window-from-column = [];
-      "Ctrl+Alt+Super+Page_Up".action.focus-workspace-up = [];
-      "Ctrl+Alt+Super+Page_Down".action.focus-workspace-down = [];
-      "Ctrl+Alt+Super+Shift+Page_Up".action.move-window-to-workspace-up = [];
-      "Ctrl+Alt+Super+Shift+Page_Down".action.move-window-to-workspace-down = [];
+      "Ctrl+Alt+Super+Return".action.toggle-window-floating = [ ];
+      "Ctrl+Alt+Super+R".action.switch-preset-column-width = [ ];
+      "Ctrl+Alt+Super+Shift+R".action.switch-preset-window-height = [ ];
+      "Ctrl+Alt+Super+C".action.consume-window-into-column = [ ];
+      "Ctrl+Alt+Super+E".action.expel-window-from-column = [ ];
+      "Ctrl+Alt+Super+Page_Up".action.focus-workspace-up = [ ];
+      "Ctrl+Alt+Super+Page_Down".action.focus-workspace-down = [ ];
+      "Ctrl+Alt+Super+Shift+Page_Up".action.move-window-to-workspace-up = [ ];
+      "Ctrl+Alt+Super+Shift+Page_Down".action.move-window-to-workspace-down = [ ];
 
       "XF86AudioRaiseVolume" = {
         action.spawn-sh = "noctalia msg volume-up";
@@ -172,11 +173,11 @@ inputs: {pkgs, ...}: {
         clip-to-geometry = true;
       }
       {
-        matches = [{title = "^Picture in picture$";}];
+        matches = [ { title = "^Picture in picture$"; } ];
         open-floating = true;
       }
       {
-        matches = [{app-id = "dev.noctalia.Noctalia";}];
+        matches = [ { app-id = "dev.noctalia.Noctalia"; } ];
         open-floating = true;
         default-column-width = {
           fixed = 1080;
@@ -189,14 +190,14 @@ inputs: {pkgs, ...}: {
 
     layer-rules = [
       {
-        matches = [{namespace = "^noctalia-wallpaper*";}];
+        matches = [ { namespace = "^noctalia-wallpaper*"; } ];
         place-within-backdrop = true;
       }
       {
-        matches = [{namespace = "^noctalia-(background|launcher-overlay|dock)-.*$";}];
+        matches = [ { namespace = "^noctalia-(background|launcher-overlay|dock)-.*$"; } ];
       }
       {
-        matches = [{namespace = "^noctalia-bar-(top|bottom)-.*$";}];
+        matches = [ { namespace = "^noctalia-bar-(top|bottom)-.*$"; } ];
       }
     ];
 
@@ -213,9 +214,9 @@ inputs: {pkgs, ...}: {
       };
 
       preset-window-heights = [
-        {proportion = 0.33333;}
-        {proportion = 0.5;}
-        {proportion = 0.66667;}
+        { proportion = 0.33333; }
+        { proportion = 0.5; }
+        { proportion = 0.66667; }
       ];
 
       focus-ring = {
@@ -230,7 +231,7 @@ inputs: {pkgs, ...}: {
     overview.workspace-shadow.enable = false;
 
     debug = {
-      honor-xdg-activation-with-invalid-serial = [];
+      honor-xdg-activation-with-invalid-serial = [ ];
     };
   };
 }

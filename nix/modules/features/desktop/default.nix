@@ -9,5 +9,7 @@
     parsec
 
     helium
+
+    kde_desktop
   ];
 }

@@ -77,6 +77,7 @@
 
     home-manager.users.${config.username}.imports = with self.modules.homeManager; [
       labs
+      editors
     ];
   };
 

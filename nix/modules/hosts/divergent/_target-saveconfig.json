@@ -536,7 +536,7 @@
       "ImmediateData": "Yes",
       "InitialR2T": "Yes",
       "MaxBurstLength": "262144",
-      "MaxConnections": "8",
+      "MaxConnections": "1",
       "MaxOutstandingR2T": "1",
       "MaxRecvDataSegmentLength": "8192",
       "MaxXmitDataSegmentLength": "262144",
@@ -546,7 +546,7 @@
      },
      "portals": [
       {
-       "ip_address": "0.0.0.0",
+       "ip_address": "[::0]",
        "iser": false,
        "offload": false,
        "port": 3260
@@ -649,7 +649,7 @@
       "ImmediateData": "Yes",
       "InitialR2T": "Yes",
       "MaxBurstLength": "262144",
-      "MaxConnections": "8",
+      "MaxConnections": "1",
       "MaxOutstandingR2T": "1",
       "MaxRecvDataSegmentLength": "8192",
       "MaxXmitDataSegmentLength": "262144",
@@ -659,7 +659,7 @@
      },
      "portals": [
       {
-       "ip_address": "0.0.0.0",
+       "ip_address": "[::0]",
        "iser": false,
        "offload": false,
        "port": 3260
@@ -762,7 +762,7 @@
       "ImmediateData": "Yes",
       "InitialR2T": "Yes",
       "MaxBurstLength": "262144",
-      "MaxConnections": "8",
+      "MaxConnections": "1",
       "MaxOutstandingR2T": "1",
       "MaxRecvDataSegmentLength": "8192",
       "MaxXmitDataSegmentLength": "262144",
@@ -772,7 +772,7 @@
      },
      "portals": [
       {
-       "ip_address": "0.0.0.0",
+       "ip_address": "[::0]",
        "iser": false,
        "offload": false,
        "port": 3260
@@ -875,7 +875,7 @@
       "ImmediateData": "Yes",
       "InitialR2T": "Yes",
       "MaxBurstLength": "262144",
-      "MaxConnections": "8",
+      "MaxConnections": "1",
       "MaxOutstandingR2T": "1",
       "MaxRecvDataSegmentLength": "8192",
       "MaxXmitDataSegmentLength": "262144",
@@ -885,7 +885,7 @@
      },
      "portals": [
       {
-       "ip_address": "0.0.0.0",
+       "ip_address": "[::0]",
        "iser": false,
        "offload": false,
        "port": 3260
@@ -988,7 +988,7 @@
       "ImmediateData": "Yes",
       "InitialR2T": "Yes",
       "MaxBurstLength": "262144",
-      "MaxConnections": "8",
+      "MaxConnections": "1",
       "MaxOutstandingR2T": "1",
       "MaxRecvDataSegmentLength": "8192",
       "MaxXmitDataSegmentLength": "262144",
@@ -998,7 +998,7 @@
      },
      "portals": [
       {
-       "ip_address": "0.0.0.0",
+       "ip_address": "[::0]",
        "iser": false,
        "offload": false,
        "port": 3260
@@ -1101,7 +1101,7 @@
       "ImmediateData": "Yes",
       "InitialR2T": "Yes",
       "MaxBurstLength": "262144",
-      "MaxConnections": "8",
+      "MaxConnections": "1",
       "MaxOutstandingR2T": "1",
       "MaxRecvDataSegmentLength": "8192",
       "MaxXmitDataSegmentLength": "262144",
@@ -1111,7 +1111,7 @@
      },
      "portals": [
       {
-       "ip_address": "0.0.0.0",
+       "ip_address": "[::0]",
        "iser": false,
        "offload": false,
        "port": 3260
@@ -1214,7 +1214,7 @@
       "ImmediateData": "Yes",
       "InitialR2T": "Yes",
       "MaxBurstLength": "262144",
-      "MaxConnections": "8",
+      "MaxConnections": "1",
       "MaxOutstandingR2T": "1",
       "MaxRecvDataSegmentLength": "8192",
       "MaxXmitDataSegmentLength": "262144",
@@ -1224,7 +1224,7 @@
      },
      "portals": [
       {
-       "ip_address": "0.0.0.0",
+       "ip_address": "[::0]",
        "iser": false,
        "offload": false,
        "port": 3260

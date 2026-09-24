@@ -3,7 +3,8 @@
   inputs,
   self,
   ...
-}: {
+}:
+{
   flake.nixosConfigurations.divergent = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
 
@@ -16,8 +17,17 @@
       ./_disko.nix
       ./_hardware-configuration.nix
 
-      ({config, pkgs, ...}: {
+      ({ config, pkgs, ... }: {
         hostname = "divergent";
+
+        # Keep the former TFTP address reachable while EEPROMs are migrated
+        # from .68 to the new server address .7.
+        networking.interfaces.eno1.ipv4.addresses = [
+          {
+            address = "192.168.2.68";
+            prefixLength = 24;
+          }
+        ];
 
         # LIO target config (generated via targetcli, edit + saveconfig to extend)
         # All fileio backstores live under /workspace/iscsi — don't start the
@@ -25,7 +35,7 @@
         # otherwise leave the target pointing at a root-fs path).
         services.target.enable = true;
         services.target.config = builtins.fromJSON (builtins.readFile ./_target-saveconfig.json);
-        systemd.services.iscsi-target.unitConfig.RequiresMountsFor = ["/workspace"];
+        systemd.services.iscsi-target.unitConfig.RequiresMountsFor = [ "/workspace" ];
 
         # Fleet served over TFTP + PXE proxy DHCP. Pis netboot via
         # EEPROM (BOOT_ORDER network-first, TFTP_PREFIX=1 -> <serial>/ dirs).
@@ -67,6 +77,9 @@
               serial = "7ce2faed";
               mac = "e4:5f:01:82:ae:e4";
               iqn = "iqn.2026-08.local.rpi-5:initiator";
+              # Bypass the failing U-Boot PXE handoff and boot directly
+              # from rpi5's serial-prefixed TFTP directory.
+              firmwareBoot = true;
               toplevel = self.nixosConfigurations.rpi5.config.system.build.toplevel;
             }
             {
@@ -90,27 +103,15 @@
         };
 
         # Builds aarch64 images for the rpis locally
-        boot.binfmt.emulatedSystems = ["aarch64-linux"];
-
-        # Legacy IP alias: every Pi's EEPROM still has TFTP_IP=192.168.2.68
-        # burned in (see docs/add-new-pi.md). Until each EEPROM is updated to
-        # .7, divergent must answer TFTP/DHCP-proxy traffic on .68 as well or
-        # the whole fleet stalls at the firmware stage. `replace` keeps this
-        # idempotent if the alias was also added live.
-        systemd.services.netboot-legacy-alias = {
-          description = "Legacy 192.168.2.68 alias for Pi EEPROM TFTP_IP";
-          after = ["sys-subsystem-net-devices-eno1.device"];
-          wantedBy = ["multi-user.target"];
-          serviceConfig = {
-            Type = "oneshot";
-            RemainAfterExit = true;
-            ExecStart = "${pkgs.iproute2}/bin/ip addr replace 192.168.2.68/24 dev eno1";
-            ExecStop = "${pkgs.iproute2}/bin/ip addr del 192.168.2.68/24 dev eno1";
-          };
-        };
+        boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
         # For attaching fleet LUNs locally (installs, rescue, fsck).
-        environment.systemPackages = [pkgs.openiscsi pkgs.gptfdisk pkgs.e2fsprogs pkgs.parted];
+        environment.systemPackages = [
+          pkgs.openiscsi
+          pkgs.gptfdisk
+          pkgs.e2fsprogs
+          pkgs.parted
+        ];
 
         systemd.tmpfiles.rules = [
           "d /workspace 0755 ${config.username} users -"

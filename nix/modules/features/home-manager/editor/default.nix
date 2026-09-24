@@ -6,6 +6,5 @@
   flake.modules.homeManager.editors.imports = with self.modules.homeManager; [
     vscode
     zed
-    antigravity
   ];
 }

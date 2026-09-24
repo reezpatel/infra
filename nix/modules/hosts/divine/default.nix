@@ -4,7 +4,8 @@
   inputs,
   self,
   ...
-}: {
+}:
+{
   flake.nixosConfigurations.divine = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
 
@@ -20,10 +21,10 @@
       ./_storage.nix
       ./_desktop.nix
       ./_pkgs.nix
-      (import ./_home.nix {inherit inputs self;})
+      (import ./_home.nix { inherit inputs self; })
 
       # Identity + feature configuration
-      ({...}: {
+      ({ ... }: {
         nixpkgs.overlays = [
           (_final: prev: {
             nrfutil = prev.nrfutil.override {
@@ -41,52 +42,36 @@
           5177
         ];
 
-        # Pin KWin to the RTX 5050 so the 3090 stays completely free for
-        # compute (and VM handover). NVIDIA->NVIDIA cross-GPU PRIME copies are
-        # broken in the driver (known upstream bug: "Failed to import NVKMS
-        # memory to GEM object" in nvidia-drm), which made outputs on the
-        # second GPU flicker - so both monitors must be plugged into the 5050.
+        # Run KWin on the RTX 5050 so the RTX 3090 stays available for CUDA
+        # and can later be handed to the Windows VM. Both monitors must be
+        # connected to the 5050's outputs.
         #
         # KWIN_DRM_DEVICES is a colon-separated list, so the /dev/dri/by-path
         # PCI symlink (which contains ':') cannot be used directly - the udev
         # rule below creates a colon-free stable alias for the 5050 instead.
-        # NOTE: ID_PATH is slot-dependent - if the 5050 moves to another slot,
-        # the address must be updated (it was 0d:00.0 in an earlier slot,
-        # 0e:00.0 now).
+        # NOTE: ID_PATH is slot-dependent - update this if the 5050 moves.
+        #
+        # Lessons from debugging (2026-09):
+        # - Do NOT point this at the 3090 as an experiment: KWin's saved
+        #   output config drives the 3090's monitor at 4K@120 HDR, whose FRL
+        #   link training fails; KWin then loses its only device ("no
+        #   outputs") and the session dies to a blank screen.
+        # - The 5050's 4K monitor declares MaxTMDS=280MHz in its EDID, so
+        #   4K@60 REQUIRES HDMI 2.1 FRL. FRL @ 6G/lane is cable-sensitive:
+        #   a marginal cable shows up as intermittent black screens with
+        #   "nvidia-modeset: WARNING: GPU:x: HDMI FRL link training failed"
+        #   in the kernel log. Use a certified Ultra High Speed HDMI cable.
         services.udev.extraRules = ''
           SUBSYSTEM=="drm", KERNEL=="card[0-9]", ENV{ID_PATH}=="pci-0000:0e:00.0", SYMLINK+="dri/kwin-card"
         '';
-        environment.sessionVariables.KWIN_DRM_DEVICES = "/dev/dri/kwin-card";
-
-        # Dynamic GPU/Thunderbolt handover to the Windows VM (NOT static
-        # passthrough - host keeps the devices until `virsh start win11`).
-        gpuHandover = {
-          enable = true;
-          vmName = "win11";
-
-          # Display service stopped before the GPU is unbound and restarted
-          # after the VM exits (display-manager.service aliases whichever DM
-          # is active - sddm here).
-          displayManagerService = "display-manager.service";
-
-          # RTX 3090 + HDMI/DP audio function (confirmed via lspci)
-          gpuPciAddress = "0000:01:00.0";
-          gpuAudioPciAddress = "0000:01:00.1";
-
-          # Host desktop runs ON the 3090: starting the VM stops the niri
-          # session, hands the 3090 to Windows (use a monitor on the 3090's
-          # outputs), and on VM shutdown greetd auto-logs back into niri.
-          #
-          # No PCI handover besides the GPU - mouse/keyboard/speaker are
-          # plain USB hostdevs in win11.xml (auto-attach/detach with the VM).
-          servicesToStop = [
-            "ollama.service"
-            "docker.service"
-          ];
-
-          # 64 GiB for the VM (allocated only while it runs)
-          hugepagesGB = 64;
+        environment.sessionVariables = {
+          KWIN_DRM_DEVICES = "/dev/dri/kwin-card";
         };
+
+        # TODO: dynamic RTX 3090 (+ 0000:01:00.1 audio) handover to the
+        # Windows VM (win11.xml). Desktop runs on the 5050, so unbinding the
+        # 3090 won't disturb the display session - only CUDA users of the
+        # 3090 (ollama, docker) need stopping while the VM runs.
 
         services.upower.enable = true;
         services.power-profiles-daemon.enable = true;

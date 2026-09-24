@@ -4,7 +4,8 @@
   inputs,
   self,
   ...
-}: {
+}:
+{
   flake.nixosConfigurations.rpi4 = inputs.nixpkgs.lib.nixosSystem {
     system = "aarch64-linux";
 
@@ -15,7 +16,7 @@
       home
 
       # Identity
-      ({config, ...}: {
+      ({ config, ... }: {
         hostname = "rpi4";
 
         netboot = {
