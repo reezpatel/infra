@@ -169,7 +169,6 @@ in {
     bolt
     awscli2
     arduino-ide
-    beekeeper-studio
     freedownloadmanager
     basedpyright
     ruff

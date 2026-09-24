@@ -12,6 +12,7 @@
     modules = with self.modules.nixos; [
       workstation
       samba
+      twodb-node
 
       # Host-specific
       inputs.disko.nixosModules.disko

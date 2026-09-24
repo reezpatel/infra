@@ -1,4 +1,4 @@
-# slayer — Contabo VPS: NetBird control plane, public databases.
+# slayer — Contabo VPS: NetBird control plane, public databases, twodb server.
 {
   inputs,
   self,
@@ -16,6 +16,7 @@
       # Services
       postgresql
       neo4j
+      twodb-server
 
       # Host-specific
       ./_hardware-configuration.nix

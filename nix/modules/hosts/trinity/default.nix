@@ -1,4 +1,4 @@
-# trinity (skull @ 192.168.2.2) — monitoring hub, git host, twodb.
+# trinity (skull @ 192.168.2.2) — monitoring hub, git host, twodb node.
 # 2TB Intel NVMe (disko) → /workspace, owned by the primary user.
 {
   inputs,
@@ -12,7 +12,7 @@
       server
 
       samba
-      twodb
+      twodb-node
       monitoring-server
 
       # Host-specific
@@ -23,6 +23,8 @@
       # Identity
       ({config, ...}: {
         hostname = "trinity";
+
+        twodb.node.root = "/workspace";
 
         systemd.tmpfiles.rules = [
           "d /workspace 0775 ${config.username} users -"

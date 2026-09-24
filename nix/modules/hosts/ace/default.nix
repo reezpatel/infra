@@ -9,6 +9,7 @@
 
     modules = with self.modules.darwin; [
       macbook
+      twodb-node
 
       (
         {pkgs, ...}: {

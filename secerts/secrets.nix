@@ -71,9 +71,81 @@ in
     slayer
   ];
 
-  "twodb-postgres-password.age".publicKeys = all;
-  "twodb-garage-rpc-secret.age".publicKeys = all;
-  "twodb-s3-keys.age".publicKeys = all;
+  # TwoDB node agents — per-machine tokens from Settings → Machines in the
+  # twodb web UI (server on slayer). Placeholders until re-encrypted with
+  # the real token: agenix -e secerts/twodb-node-token-<host>.age
+  "twodb-node-token-trinity.age".publicKeys = [
+    user1
+    system1
+    trinity
+  ];
+  "twodb-node-token-divergent.age".publicKeys = [
+    user1
+    system1
+    divergent
+  ];
+  "twodb-node-token-divine.age".publicKeys = [
+    user1
+    system1
+    divine
+  ];
+  "twodb-node-token-vixen.age".publicKeys = [
+    user1
+    system1
+    vixen
+  ];
+  "twodb-node-token-ace.age".publicKeys = [
+    user1
+    system1
+    ace
+  ];
+  "twodb-node-token-luffy.age".publicKeys = [
+    user1
+    system1
+    luffy
+  ];
+  "twodb-node-token-rpi1.age".publicKeys = [
+    user1
+    system1
+    rpi1
+  ];
+  "twodb-node-token-rpi2.age".publicKeys = [
+    user1
+    system1
+    rpi2
+  ];
+  "twodb-node-token-rpi3.age".publicKeys = [
+    user1
+    system1
+    rpi3
+  ];
+  "twodb-node-token-rpi4.age".publicKeys = [
+    user1
+    system1
+    rpi4
+  ];
+  "twodb-node-token-rpi5.age".publicKeys = [
+    user1
+    system1
+    rpi5
+  ];
+  # muse/rpi6/rpi7: real tokens already encrypted (to user1+system1 only),
+  # but their SSH host keys aren't registered above yet. Once each key is
+  # added (as a `muse`/`rpi6`/`rpi7` let-binding at the top + a recipient
+  # below): cd secerts && agenix -r   → rekeys to the host, then enable
+  # twodb-node in the host's modules and deploy.
+  "twodb-node-token-muse.age".publicKeys = [
+    user1
+    system1
+  ];
+  "twodb-node-token-rpi6.age".publicKeys = [
+    user1
+    system1
+  ];
+  "twodb-node-token-rpi7.age".publicKeys = [
+    user1
+    system1
+  ];
 
   "grafana-secret-key.age".publicKeys = all;
   "grafana-admin-password.age".publicKeys = all;

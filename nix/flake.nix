@@ -49,6 +49,11 @@
 
     agenix.url = "github:ryantm/agenix";
 
+    twodb = {
+      url = "github:reezpatel/twodb";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     noctalia = {
       url = "github:noctalia-dev/noctalia";
       inputs.nixpkgs.follows = "nixpkgs";
