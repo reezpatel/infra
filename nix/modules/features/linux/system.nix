@@ -105,6 +105,10 @@
 
       systemd.tmpfiles.rules = [
         "d /home/${config.username}/.local/share/tmux 0700 ${config.username} users -"
+        # home-manager activation fails with "Could not find suitable
+        # profile directory" when the primary user has never run nix as
+        # themselves (fresh servers). Pre-create the per-user profile dir.
+        "d /nix/var/nix/profiles/per-user/${config.username} 0755 ${config.username} users -"
       ];
 
       users.users.root = {
