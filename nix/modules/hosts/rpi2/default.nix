@@ -14,7 +14,7 @@
       base
       rpi-netboot
       home
-      twodb-node
+      twodb-runner
 
       # Identity
       ({ config, ... }: {

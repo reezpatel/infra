@@ -10,7 +10,7 @@
     modules = with self.modules.nixos; [
       base
       netboot-server
-      twodb-node
+      twodb-runner
 
       # Host-specific
       inputs.disko.nixosModules.disko
@@ -23,8 +23,6 @@
         ...
       }: {
         hostname = "divergent";
-
-        twodb.node.root = "/workspace";
 
         # LIO target config (generated via targetcli, edit + saveconfig to extend)
         # All fileio backstores live under /workspace/iscsi — don't start the

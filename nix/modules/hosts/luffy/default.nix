@@ -9,7 +9,7 @@
 
     modules = with self.modules.darwin; [
       macbook
-      twodb-node
+      twodb-runner
 
       ./_auto-ssh.nix
 

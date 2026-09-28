@@ -7,6 +7,34 @@
   # plasma is the session this host boots into.
   services.displayManager.defaultSession = lib.mkForce "plasma";
 
+  # Pin KWin (Plasma) to the RTX 3090 at PCI 0000:01:00.0; the RTX 5050
+  # (0000:0e:00.0) stays display-free. All monitors must be plugged into the
+  # 3090's outputs.
+  #
+  # KWIN_DRM_DEVICES is a colon-separated list, so the /dev/dri/by-path
+  # symlink (which contains ':') cannot be used directly - the udev rule
+  # creates a colon-free stable alias instead. ID_PATH is slot-dependent:
+  # update it if the 3090 moves to another slot.
+  services.udev.extraRules = ''
+    SUBSYSTEM=="drm", KERNEL=="card[0-9]", ENV{ID_PATH}=="pci-0000:01:00.0", SYMLINK+="dri/kwin-card"
+  '';
+  environment.sessionVariables.KWIN_DRM_DEVICES = "/dev/dri/kwin-card";
+
+  # Hardware notes:
+  # - The 4K monitor needs HDMI 2.1 FRL for 4K@60 (its EDID caps TMDS at
+  #   280MHz). FRL is cable-sensitive - use a certified Ultra High Speed
+  #   HDMI cable; a marginal one causes intermittent black screens with
+  #   "nvidia-modeset: WARNING: HDMI FRL link training failed" in dmesg.
+  # - If KWin comes up blank after a GPU swap, clear its saved output state
+  #   (rm -rf ~/.local/share/kscreen) from a TTY: a stale 4K@120 HDR profile
+  #   once wedged the session when FRL failed to train on this GPU.
+
+  # TODO: dynamic GPU handover to the Windows VM (win11.xml,
+  # supplemental/gpu-handover.nix). The desktop now runs on the 3090
+  # (0000:01:00.0/.1), so handing IT to the VM would kill the display
+  # session - the display-free passthrough candidate is the 5050
+  # (0000:0e:00.0/.1); update win11.xml addresses accordingly.
+
   systemd.services.fwupd-refresh.enable = lib.mkForce false;
   systemd.timers.fwupd-refresh.enable = lib.mkForce false;
 

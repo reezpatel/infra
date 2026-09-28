@@ -20,7 +20,7 @@
       forgejo
       transmission
       waha
-      twodb-node
+      twodb-runner
 
       # Host-specific
       inputs.disko.nixosModules.disko

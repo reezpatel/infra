@@ -43,10 +43,6 @@ inputs: { pkgs, ... }: {
       enable = false;
     };
 
-    outputs."DP-5" = {
-      enable = false;
-    };
-
     input.keyboard.xkb.layout = "us";
 
     binds = {

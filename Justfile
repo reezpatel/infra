@@ -128,13 +128,13 @@ deploy-trinity action="switch" port="7272":
 switch-trinity-current:
   ssh -p 7272 -t reezpatel@192.168.2.2 'sudo NIXOS_NO_CHECK=1 /nix/var/nix/profiles/system/bin/switch-to-configuration switch'
 
-deploy-vixen action="switch" port="7272":
+deploy-vixen action="switch" port="22":
   ./scripts/deploy_remote.sh -p "{{port}}" vixen "{{action}}"
 
 deploy-divine action="switch" port="7272":
   ./scripts/deploy_remote.sh -p "{{port}}" divine "{{action}}"
 
-deploy-muse action="switch" port="7272":
+deploy-muse action="switch" port="22":
   ./scripts/deploy_remote.sh -p "{{port}}" muse "{{action}}"
 
 deploy-helix action="switch" port="7272":

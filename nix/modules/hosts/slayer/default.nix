@@ -15,7 +15,7 @@
 
       # Services
       postgresql
-      neo4j
+      memgraph
       twodb-server
 
       # Host-specific
@@ -23,10 +23,15 @@
       ./_networking.nix
 
       # Identity + VPS tuning
-      ({...}: {
+      ({config, ...}: {
         hostname = "slayer";
 
         monitoring.client.lokiUrl = "http://100.64.0.14:3100/loki/api/v1/push";
+
+        # Scratch space owned by the admin user.
+        systemd.tmpfiles.rules = [
+          "d /data 0755 ${config.username} users -"
+        ];
       })
     ];
   };
