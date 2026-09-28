@@ -55,18 +55,12 @@
       };
 
       # The upstream unit only waits for network-online; make sure the
-      # databases are up first. It also doesn't run migrations (the GHCR
-      # container does them on start) and the native package ships no
-      # twodb-migrate wrapper — invoke scripts/migrate.ts directly via tsx.
+      # databases are up first. Migrations are gone (8892cd8) — the server
+      # self-bootstraps its schema on startup (lib/schema.ts, idempotent DDL).
       systemd.services.twodb-server = {
         after = [
           "postgresql.service"
           "memgraph.service"
-        ];
-        serviceConfig.ExecStartPre = lib.concatStringsSep " " [
-          "${pkgs.nodejs_22}/bin/node"
-          "${config.services.twodb-server.package}/libexec/node_modules/tsx/dist/cli.mjs"
-          "${config.services.twodb-server.package}/libexec/scripts/migrate.ts"
         ];
       };
 
