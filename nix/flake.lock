@@ -1009,11 +1009,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790563695,
-        "narHash": "sha256-DBSI+Nxaz3HKDt3HrTFPfD2zP1VhpE7bbcoA76ntBlo=",
+        "lastModified": 1790929003,
+        "narHash": "sha256-MnsbOYIAKEU/wA+5+UV7fM8ywM2UVhgYs//M535vY+I=",
         "owner": "reezpatel",
         "repo": "twodb",
-        "rev": "8aefaae8374335606fb0e6d04c105592161f5815",
+        "rev": "ac33b24a9d6410dcbcdca7fc5fc60766f5169b07",
         "type": "github"
       },
       "original": {
