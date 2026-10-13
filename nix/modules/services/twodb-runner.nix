@@ -87,27 +87,37 @@
         # key at process start instead.
       };
 
+      # The upstream darwinModules.default creates launchd.daemons.twodb-runner
+      # (system domain). System daemons cannot access the user's login
+      # keychain, so tools like `gh` that store tokens in the keychain fail.
+      # Disable the upstream daemon and run as a user agent instead — the GUI
+      # session's Aqua domain unlocks the keychain at login.
       launchd.daemons.twodb-runner.serviceConfig = {
-        # Primary user, not root (see header).
-        UserName = config.username;
-        ProgramArguments = lib.mkForce [
-          (toString (pkgs.writeShellScript "twodb-runner-start" ''
-            set -a
-            . ${config.age.secrets.twodb-runner-key.path}
-            set +a
-            exec ${config.services.twodb-runner.package}/bin/twodb-runner
-          ''))
-        ];
+        KeepAlive = lib.mkForce false;
+        RunAtLoad = lib.mkForce false;
+        ProgramArguments = lib.mkForce [ "/usr/bin/true" ];
       };
 
-      # launchd opens StandardOutPath AS the service user, and /var/log is
-      # root-owned — without this the daemon fails to spawn with EX_CONFIG
-      # (78) and never even creates the log file. Pre-create it user-owned.
-      # (nix-darwin only runs a fixed set of activation script names, so this
-      # must hang off postActivation — a custom name is silently ignored.)
-      system.activationScripts.postActivation.text = lib.mkAfter ''
-        /usr/bin/touch /var/log/twodb-runner.log
-        /usr/sbin/chown ${config.username} /var/log/twodb-runner.log
-      '';
+      launchd.user.agents.twodb-runner = {
+        serviceConfig = {
+          Label = "dev.twodb.runner";
+          ProgramArguments = [
+            (toString (pkgs.writeShellScript "twodb-runner-start" ''
+              set -a
+              . ${config.age.secrets.twodb-runner-key.path}
+              set +a
+              exec ${config.services.twodb-runner.package}/bin/twodb-runner
+            ''))
+          ];
+          EnvironmentVariables = {
+            TWODB_SERVER_URL = config.services.twodb-runner.serverUrl;
+            TWODB_RUNNER_NAME = config.hostname;
+          };
+          RunAtLoad = true;
+          KeepAlive = true;
+          StandardOutPath = "/tmp/twodb-runner.log";
+          StandardErrorPath = "/tmp/twodb-runner.log";
+        };
+      };
     };
 }
