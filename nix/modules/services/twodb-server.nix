@@ -88,6 +88,14 @@
           proxyPass = "http://127.0.0.1:3001";
           # Code sessions / runner + assistant sockets stream over websockets.
           proxyWebsockets = true;
+          # nginx's default proxy_read_timeout is 60 s — idle WebSocket
+          # connections (runners waiting for work) get severed, causing a
+          # perpetual connect/register/1006-disconnect loop. 24 h matches
+          # what recommendedProxySettings would set.
+          extraConfig = ''
+            proxy_read_timeout 86400s;
+            proxy_send_timeout 86400s;
+          '';
         };
       };
     };
