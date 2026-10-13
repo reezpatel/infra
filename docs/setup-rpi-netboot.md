@@ -72,7 +72,7 @@ local disk (ext4, journals, no root-squash headaches).
 ## The moving parts (all in this repo)
 
 | File | What it is |
-|---|---|
+| --- | --- |
 | `nix/modules/features/networking/netboot-server.nix` | **Server side.** dnsmasq (proxy-DHCP + TFTP), firewall, and the `pi-netboot-sync` service that writes the TFTP tree |
 | `nix/modules/features/hardware/rpi-netboot.nix` | **Client side** (`rpi-netboot` aspect): systemd initrd, forced iSCSI modules, `iscsi-root.service` |
 | `nix/modules/features/hardware/rpi.nix` | `rpi` (SD-card boot tweaks) and `rpi-node` (base+rpi) aspects for the SD-based Pis |
@@ -135,7 +135,7 @@ and re-vendor the saved file), then `systemctl restart iscsi-target`.
 Naming convention (note the hyphen!):
 
 | Thing | Name pattern | Example |
-|---|---|---|
+| --- | --- | --- |
 | Backstore image | `/workspace/iscsi/rpi-N.img` | `rpi-1.img` |
 | LIO target | `iqn.2026-08.local.infra:rpi-N` | `…infra:rpi-1` |
 | Pi initiator | `iqn.2026-08.local.rpi-N:initiator` | `…rpi-1:initiator` |
@@ -174,6 +174,11 @@ its EEPROM `TFTP_IP`.
 
 Each Pi's EEPROM needs (set once, see the runbook):
 `BOOT_ORDER=0xf12` (network first, SD fallback) and `TFTP_IP=192.168.2.68`.
+Firmware-direct nodes (rpi5–7) additionally rely on `TFTP_PREFIX=0` —
+serial-number prefix, which is the DEFAULT. **Never set `TFTP_PREFIX=1`**:
+that means "use the (empty) `TFTP_PREFIX_STR`", which silently unprefixed
+rpi6's requests and made it boot u-boot from the TFTP root instead of its
+serial dir (fatal on boards with a broken u-boot Ethernet driver).
 
 ---
 
@@ -181,21 +186,26 @@ Each Pi's EEPROM needs (set once, see the runbook):
 
 ### Updating a node's NixOS
 
+Nodes maintain their own boot files: on every `nixos-rebuild switch` **and**
+every boot, `netboot-boot-push` (in the rpi-netboot aspect) uploads the
+running closure's kernel/initrd/dtb + pxelinux entry (or
+kernel8.img/cmdline.txt for firmware-direct boards) to the node's serial
+dir on divergent, via SSH as the `netboot-push` user. TFTP and LUN can
+never desync — the same running closure writes both sides.
+
 ```sh
-just deploy-divergent          # rebuilds node closures too (they're deps of the sync service)
-                               # → TFTP tree gets new kernel/initrd/cmdline
-just install-lun rpi1          # copies the matching closure into the LUN (incremental)
-# power-cycle the Pi (or, if it's running and reachable: just deploy-rpi1)
+just deploy-rpi4          # build+switch on the Pi; activation pushes boot files
+# done. cold boots from here on use the new closure.
 ```
 
-The order matters: the pxelinux `append` line carries
-`init=/nix/store/<hash>-…/init` — if the LUN doesn't contain that exact
-closure, boot drops to an emergency shell. `install-lun` keeps LUN and TFTP
-pointing at the same closure.
+`install-lun` is only needed for the FIRST install (or offline rescue):
+it copies the closure into the LUN and seeds the TFTP serial dir from the
+same closure so the first netboot works. **Never run it while the Pi is
+powered on** — attaching a mounted LUN from divergent corrupts the ext4.
 
-For a **running** Pi you can skip the LUN dance: `just deploy-rpi1` switches
-it over SSH (it pulls the closure itself); the TFTP tree is only needed at
-the next cold boot.
+`just deploy-divergent` no longer touches node boot files at all; the
+sync only maintains the shared firmware/u-boot baseline and per-node
+directory permissions.
 
 ### Where things live on divergent
 
@@ -222,14 +232,16 @@ page cache to a degree, but expect stalls until it's back).
 ## Gotchas archive (why each weird choice exists)
 
 | Symptom | Root cause | Fix in place |
-|---|---|---|
+| --- | --- | --- |
 | Rainbow splash forever | Firmware can't start 64 MB mainline Image (raw or gzip) | u-boot as `kernel8.img` |
 | `login rejected: target error (03/01)` | IQN typo (`rpi1` vs `rpi-1`) or portal `[::0]` | naming convention + `0.0.0.0` portals |
 | `iscsistart: Portal Group not set` | missing `-g 1` | short flags: `-i … -t … -a … -p 3260 -g 1` |
 | iscsistart "succeeds" but no disk, 90 s timeout | `iscsi_tcp` never loaded (available ≠ loaded) | `boot.initrd.kernelModules` |
 | u-boot waits at `Enter choice:` forever | pxelinux config had no `TIMEOUT` | `timeout 20` + `default <label>` |
 | u-boot TFTP'd from the router (192.168.2.2) | DHCP `next-server` = router | MikroTik `next-server=192.168.2.68` + option 66 |
-| Emergency shell "root account is locked" | LUN closure ≠ pxelinux `init=` path | `install-lun` after every rebuild |
+| Emergency shell "root account is locked" | LUN closure ≠ boot cmdline `init=` | self-healing since the push model: `deploy-rpiN` (or just a boot with network) re-pushes matching boot files; manual: `install-lun` with the Pi OFF |
+| Firmware fetches from TFTP root, never `<serial>/` | `TFTP_PREFIX=1` flashed (means "use empty TFTP_PREFIX_STR") | `TFTP_PREFIX=0` (serial, the default) via rpi-eeprom-config on an SD boot |
+| Board re-flashes its EEPROM on network boot | leftover `pieeprom.upd`/`.sig` in the TFTP tree (ENABLE_SELF_UPDATE=1) | never leave EEPROM update files under tftpboot |
 | `nixos-install` fails cross-arch on the LUN | it builds inside the aarch64 chroot | manual `nix copy` + profile symlink; activation runs at first boot |
 | aarch64 builds on the Mac | no Linux builders on macOS | build on divergent (`boot.binfmt.emulatedSystems`) |
 | Pure-eval can't find `secerts/` | flake is `nix/`, secrets outside it | evaluate from the git repo (rsync with `.git`), or `--impure` |

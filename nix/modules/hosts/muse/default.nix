@@ -3,7 +3,8 @@
   inputs,
   self,
   ...
-}: {
+}:
+{
   flake.nixosConfigurations.muse = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
 
@@ -12,6 +13,7 @@
 
       # Features
       samba
+      kde
 
       # Host-specific
       inputs.disko.nixosModules.disko
@@ -20,7 +22,7 @@
       ./_storage.nix
 
       # Identity
-      ({...}: {
+      ({ ... }: {
         hostname = "muse";
       })
     ];

@@ -134,7 +134,7 @@ deploy-vixen action="switch" port="22":
 deploy-divine action="switch" port="7272":
   ./scripts/deploy_remote.sh -p "{{port}}" divine "{{action}}"
 
-deploy-muse action="switch" port="22":
+deploy-muse action="switch" port="7272":
   ./scripts/deploy_remote.sh -p "{{port}}" muse "{{action}}"
 
 deploy-helix action="switch" port="7272":
@@ -154,6 +154,12 @@ deploy-rpi4 action="switch" port="7272":
 
 deploy-rpi5 action="switch" port="7272":
   ./scripts/deploy_remote.sh -p "{{port}}" rpi5 "{{action}}"
+
+deploy-rpi6 action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" rpi6 "{{action}}"
+
+deploy-rpi7 action="switch" port="7272":
+  ./scripts/deploy_remote.sh -p "{{port}}" rpi7 "{{action}}"
 
 deploy-divergent action="switch" port="7272":
   ./scripts/deploy_remote.sh -p "{{port}}" divergent "{{action}}"

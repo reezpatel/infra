@@ -8,11 +8,12 @@ let
   slayer = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHcq+2xoMBxwrYB/7TL2C9TpdNBeAjSfnthTsaK8MVDk";
   trinity = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIHIG8bZ8l2+scXENBHqLDaSqUWerl3yylUoTy6iSh87";
 
-  rpi1 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDmkHvuXuPmQDnsmGrPRF03iDHRKU7nL4Me8G3189b9o";
-  rpi2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKDOKB6C/gz8j0HTmNCvww2K7eigZ3kdAxMtQktaRIZd";
-  rpi3 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuqEXwtdeVgAP0K5o6GgG59JtdEIXf2f1hL/8VyZIUo";
-  rpi4 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILAqkWdBFrOWfh8TDHfuMcQg/SfNBEHc1YGbQoiWsHLz";
-  rpi5 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG1Cvn5MJCIRlirTQR3Yv+KlquhPS6zEvPGsm7EB225X";
+  rpi1 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMW+jVaH/CTeLW+F2gP4dskl99G77JEH/yjT/+WhRHVo";
+  rpi2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYJ/TR5rzkLd+exqX0Cc+DN2tUAHpRfs1/2YkfR4PXO";
+  rpi3 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMXpSE3oy/yGyPjGyAYAxD5xpfTsqK8oY3L9gVs6Mhlf";
+  rpi4 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKRuDRGTyWdDKpLRWSaigxRBys6v2KX++gBdq/7G82Kx";
+  rpi5 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIpenGWpYDxkqDK7+20aPu1Q8Q4gaQA5hBiiSZ8tLx1f";
+  rpi6 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOtn8IWY7V+CGQU2icQwcg9B59cPRheW0eOaL09pQ0Gj";
 
   ace = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG9wquTRSKBWywElJnndnbzNTnRcVLYCWCOOUlooAWCC";
   divergent = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBJCrqSJN0GPdR8FUYsBNmexaOu/+D8Rmx19nIhZE6jq";
@@ -30,6 +31,7 @@ let
     rpi3
     rpi4
     rpi5
+    rpi6
     ace
     divergent
   ];
@@ -95,6 +97,21 @@ in
     rpi3
     rpi4
     rpi5
+  ];
+
+  # Netboot fleet push key — private half lives on the netbooted Pis
+  # (agenix), public half in netboot-server.pushAuthorizedKeys on
+  # divergent. Used by rpi-netboot's netboot-boot-push to upload each
+  # node's own kernel/initrd/boot config to the TFTP tree.
+  "netboot-push-key.age".publicKeys = [
+    user1
+    system1
+    rpi1
+    rpi2
+    rpi3
+    rpi4
+    rpi5
+    rpi6
   ];
 
   "grafana-secret-key.age".publicKeys = all;

@@ -49,7 +49,7 @@ number everywhere. Total time: ~30–45 min (mostly waiting on builds).
 Every Pi has two identifiers you'll need:
 
 | Identifier | Where to find it | Example |
-|---|---|---|
+| --- | --- | --- |
 | **Serial** (last 8 chars) | put any Linux SD card in the Pi, boot, run `grep Serial /proc/cpuinfo` — take the **last 8 characters** | `b4f64b8d` |
 | **MAC** (ethernet) | same Linux: `ip link` → the `en*`/`eth0` address, lowercase | `dc:a6:32:d8:81:bb` |
 
@@ -67,6 +67,7 @@ sudo targetcli ls /iscsi
 ```
 
 You should see `iqn.2026-08.local.infra:rpi-2` with:
+
 - a **portal** `0.0.0.0:3260`
 - a **LUN 0** → fileio `rpi-2` (`/workspace/iscsi/rpi-2.img`)
 - **two ACLs**: `iqn.2026-08.local.rpi-2:initiator` and `iqn.2026-08.local.infra:divergent`
@@ -142,16 +143,15 @@ In `nix/modules/hosts/divergent/default.nix`, add to `netboot-server.nodes`:
 ```nix
 nodes = [
   { id = "rpi1"; serial = "b4f64b8d"; mac = "dc:a6:32:d8:81:bb";
-    iqn = "iqn.2026-08.local.rpi-1:initiator";
-    toplevel = self.nixosConfigurations.rpi1.config.system.build.toplevel; }
+    iqn = "iqn.2026-08.local.rpi-1:initiator"; }
   { id = "rpi2"; serial = "<SERIAL>"; mac = "<MAC>";               # ← add this
-    iqn = "iqn.2026-08.local.rpi-2:initiator";
-    toplevel = self.nixosConfigurations.rpi2.config.system.build.toplevel; }
+    iqn = "iqn.2026-08.local.rpi-2:initiator"; }
 ];
 ```
 
 The `mac` makes u-boot fetch a per-Pi boot menu (`pxelinux.cfg/01-<mac>`)
-so every Pi gets its own kernel cmdline.
+so every Pi gets its own kernel cmdline. Boot-file content is pushed by
+the Pis themselves — this list only seeds directories and permissions.
 
 ### Step 5 — Build and deploy the server
 
@@ -163,7 +163,8 @@ git add -A .            # flake sources come from the git tree — new files mus
 just deploy-divergent
 ```
 
-Verify the boot files appeared:
+Verify the baseline appeared (kernel/initrd are seeded by install-lun in
+step 6, and maintained by the Pi itself after that):
 
 ```sh
 ssh -p 7272 reezpatel@192.168.2.68 \
@@ -190,14 +191,18 @@ EEPROM setting that survives everything):
 
 ```sh
 ssh reezpatel@<pi-ip>   # the SD Linux
-printf 'BOOT_ORDER=0xf12\nTFTP_IP=192.168.2.68\n' > /tmp/eeprom.cfg
+printf 'BOOT_ORDER=0xf12\nTFTP_IP=192.168.2.68\nTFTP_PREFIX=0\n' > /tmp/eeprom.cfg
 sudo rpi-eeprom-config --apply /tmp/eeprom.cfg
 sudo reboot
 ```
 
 What these mean: `BOOT_ORDER=0xf12` = *try network first, SD card as
 fallback* (so a broken network still boots the SD rescue system);
-`TFTP_IP` = where the firmware fetches boot files.
+`TFTP_IP` = where the firmware fetches boot files; `TFTP_PREFIX=0` =
+*prefix TFTP requests with the serial number* (`<serial>/` dirs). 0 is the
+default — it is written explicitly because **`TFTP_PREFIX=1` does NOT mean
+serial** (it selects the empty `TFTP_PREFIX_STR` → unprefixed root
+requests); two fleet boards lost a day to that typo.
 
 > The EEPROM flash needs **two** power cycles: the first applies the update,
 > the second actually boots with it.
@@ -213,6 +218,7 @@ sudo reboot
 ```
 
 Gotchas hit in practice:
+
 - `recovery.bin` must land on the **vfat firmware partition**
   (`mmcblk0p1`), not the ext4 root — on NixOS SDs that partition often isn't
   even mounted.
@@ -259,12 +265,14 @@ the Pi now runs with no SD card.
 
 - **Secrets**: the first boot generated *new* SSH host keys, so agenix
   secrets (netbird key, etc.) encrypted to the old key won't decrypt:
+
   ```sh
   ssh -p 7272 reezpatel@<pi-ip> 'cat /etc/ssh/ssh_host_ed25519_key.pub'   # new key
   # add it as the rpi2 entry in secerts/secrets.nix, then:
   cd secerts && agenix -r && cd ..
   just deploy-rpi2
   ```
+
 - Update the IP in `scripts/deploy_remote.sh`'s HOSTS map and the README
   fleet table.
 
@@ -273,7 +281,7 @@ the Pi now runs with no SD card.
 ## Troubleshooting by symptom
 
 | What you see | Meaning | Fix |
-|---|---|---|
+| --- | --- | --- |
 | Rainbow splash forever | Firmware couldn't load/run u-boot | Is `/workspace/tftpboot/kernel8.img` (u-boot) present on divergent? Re-run `just deploy-divergent` |
 | Diagnostics screen, then Debian boots | EEPROM didn't flash yet, or BOOT_ORDER not set | Power-cycle once more; check `rpi-eeprom-config` output on the SD Linux |
 | u-boot: `ARP Retry count exceeded` / TFTP from wrong IP | u-boot got the wrong boot server from DHCP | Router `next-server=192.168.2.68` set? (MikroTik command in the infra doc) |
@@ -281,7 +289,8 @@ the Pi now runs with no SD card.
 | u-boot: `TFTP error … not found` for pxelinux.cfg paths ending in `default` | normal fallback probing, **not** an error | — (it eventually finds `01-<mac>` or `default`) |
 | `[FAILED] Failed to start Attach iSCSI root LUN` | iscsistart failed (IQN typo? server down?) | Check IQNs in the host config vs `targetcli ls /iscsi`; note `rpi-2` hyphen |
 | `Timed out waiting for device /dev/disk/by-label/NIXOS_ISCSI` | iSCSI attach didn't produce the disk | Same as above; also check LIO session: `sudo targetcli ls /iscsi` on divergent |
-| Emergency mode after root mount | LUN has a different closure than the boot cmdline | Run `just install-lun rpi2` again after every rebuild, then power-cycle |
+| Emergency mode after root mount | LUN has a different closure than the boot cmdline | Power off, run `just install-lun rpi2`, power on. (Once the node has booted the push-enabled closure once, this class of failure self-heals: every switch/boot re-pushes matching boot files) |
+| Firmware logs show root-path TFTP fetches (no `<serial>/` prefix) on a firmware-direct board | `TFTP_PREFIX=1` in EEPROM (means "use empty TFTP_PREFIX_STR") | Boot the SD, `rpi-eeprom-config --apply` with `TFTP_PREFIX=0` |
 | Emergency shell says root account locked | same as above — nothing to log into | fix the mismatch, power-cycle |
 | `error 15 - session exists` during install-lun | old zombie session on divergent | `sudo systemctl restart iscsi-target` on divergent, or reboot divergent |
 
@@ -294,7 +303,7 @@ More background on each failure mode: [setup-rpi-netboot.md](./setup-rpi-netboot
 Fill this in as you onboard Pis (rpi1 is live):
 
 | Host | IP | Serial (8) | MAC | LUN | Status |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | rpi1 | 192.168.2.84 | b4f64b8d | dc:a6:32:d8:81:bb | rpi-1.img | **netbooting NixOS** |
 | rpi2 | 192.168.2.80 | cf9a1868 | 88:a2:9e:22:2c:45 | rpi-2.img | **netbooting NixOS** |
 | rpi3 | 192.168.2.82 | 09068024 | dc:a6:32:d8:9e:18 | rpi-3.img | **netbooting NixOS** |

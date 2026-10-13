@@ -1,17 +1,15 @@
 { ... }: {
   flake.modules.nixos.postgresql = { pkgs, ... }: {
-    # Default credentials: postgres / postgres (TCP, scram-sha-256).
-    # The password is only applied on first cluster init (initialScript runs
-    # when the data directory is created), so it can be changed later via CLI:
-    #   sudo -u postgres psql -c "ALTER ROLE postgres WITH PASSWORD '<new>';"
+    # Credentials are NOT managed here. No initialScript: it only runs when the
+    # data directory is first created, so it never applied to the existing
+    # cluster and would silently do nothing on re-deploy. Roles are set
+    # out-of-band instead, which is also how they survive a rebuild:
+    #   sudo -u postgres psql -c "ALTER ROLE <role> WITH PASSWORD '<pw>';"
+    # (root -> postgres works via the `local all postgres peer` rule below.)
     services.postgresql = {
       enable = true;
       package = pkgs.postgresql_17;
       enableTCPIP = true; # listen_addresses = "*"
-
-      initialScript = pkgs.writeText "postgres-init" ''
-        ALTER ROLE postgres WITH PASSWORD 'postgres';
-      '';
 
       # Inserted above the default rules (peer for local sockets, scram-sha-256
       # for TCP on localhost). Restricted to the NetBird mesh (100.64.0.0/10):

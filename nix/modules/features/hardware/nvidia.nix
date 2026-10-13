@@ -89,17 +89,6 @@
         };
 
         nixpkgs.config.cudaSupport = cfg.enableCuda;
-
-        # Official CUDA binary cache (run by the NixOS cuda-maintainers team) -
-        # cache.nixos.org doesn't build CUDA packages (unfree), so without this
-        # everything CUDA-enabled would compile from source. Merged with the
-        # global substituters from features/linux/system.nix.
-        nix.settings = lib.mkIf cfg.enableCuda {
-          substituters = [ "https://cache.nixos-cuda.org" ];
-          trusted-public-keys = [
-            "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
-          ];
-        };
       };
     };
 }

@@ -20,12 +20,17 @@
             config.username
           ];
           substituters = [
+            # Keep the CUDA cache global rather than enabling it conditionally
+            # with a host's new configuration. Remote builders must know this
+            # cache before they can build that configuration for the first time.
+            "https://cache.nixos-cuda.org"
             "https://noctalia.cachix.org"
             "https://nix-community.cachix.org"
             "https://cache.nixos.org"
             "https://cache.flox.dev"
           ];
           trusted-public-keys = [
+            "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
             "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
             "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
             "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="

@@ -6,7 +6,8 @@
   inputs,
   self,
   ...
-}: {
+}:
+{
   flake.nixosConfigurations.rpi6 = inputs.nixpkgs.lib.nixosSystem {
     system = "aarch64-linux";
 
@@ -17,13 +18,15 @@
       home
 
       # Identity
-      ({config, ...}: {
+      ({ config, ... }: {
         hostname = "rpi6";
 
         netboot = {
           serverIp = "192.168.2.7";
           initiator = "iqn.2026-08.local.rpi-6:initiator";
           targetName = "iqn.2026-08.local.infra:rpi-6";
+          # Firmware-direct board (broken u-boot genet driver).
+          firmwareBoot = true;
         };
 
         users.users.reezpatel.linger = true;

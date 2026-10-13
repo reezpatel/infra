@@ -24,6 +24,9 @@
           serverIp = "192.168.2.7";
           initiator = "iqn.2026-08.local.rpi-5:initiator";
           targetName = "iqn.2026-08.local.infra:rpi-5";
+          # Firmware-direct board (broken u-boot PXE handoff) — pushes
+          # kernel8.img/cmdline.txt instead of a pxelinux entry.
+          firmwareBoot = true;
         };
 
         users.users.reezpatel.linger = true;

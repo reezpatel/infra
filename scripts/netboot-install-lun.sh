@@ -13,6 +13,9 @@
 #     2. on first run: partition + mkfs; on re-runs: keep the filesystem
 #     3. nix copy the node's closure into the LUN store (incremental)
 #     4. point /nix/var/nix/profiles/system at the closure
+#     5. seed the node's TFTP boot files from the SAME closure (serial dir
+#        + pxelinux entry / firmware-direct files), so first netboots work.
+#        After that the node maintains its own boot files (netboot-boot-push).
 #   The first boot then runs activation itself (the kernel cmdline's init=
 #   points straight at the closure in the LUN).
 set -euo pipefail
@@ -26,26 +29,29 @@ LABEL="${LABEL:-NIXOS_ISCSI}"
 FLAKE="${FLAKE:-/home/reezpatel/infra/nix}"
 MNT="/mnt/${NODE}-install"
 
-echo "==> installing $NODE into LUN $TARGET (flake $FLAKE)"
+echo "==> installing $NODE into LUN $TARGET"
 
 if [ "$(id -u)" -ne 0 ]; then
-  echo "must run as root" >&2
-  exit 1
+	echo "must run as root" >&2
+	exit 1
 fi
 
-TL="$(cd "$FLAKE" && nix path-info --impure ".#nixosConfigurations.${NODE}.config.system.build.toplevel")"
+# Build the node's toplevel on this host first (since the netboot-server
+# decoupling, node toplevels are no longer part of divergent's closure).
+echo "==> building $NODE toplevel (flake $FLAKE)"
+TL="$(cd "$FLAKE" && nix build --impure --no-link --print-out-paths ".#nixosConfigurations.${NODE}.config.system.build.toplevel")"
 echo "==> closure: $TL"
 
 dev=""
 cleanup() {
-  set +e
-  if mountpoint -q "$MNT"; then umount -R "$MNT"; fi
-  rmdir "$MNT" 2>/dev/null
-  if [ -n "$dev" ]; then
-    "$ISC_BIN/iscsiadm" -m node -T "$TARGET" -p "${SERVER_IP}:3260" -u >/dev/null 2>&1
-    udevadm settle
-    echo "==> iscsi session detached"
-  fi
+	set +e
+	if mountpoint -q "$MNT"; then umount -R "$MNT"; fi
+	rmdir "$MNT" 2>/dev/null
+	if [ -n "$dev" ]; then
+		"$ISC_BIN/iscsiadm" -m node -T "$TARGET" -p "${SERVER_IP}:3260" -u >/dev/null 2>&1
+		udevadm settle
+		echo "==> iscsi session detached"
+	fi
 }
 trap cleanup EXIT
 
@@ -62,16 +68,16 @@ pgrep -x iscsid >/dev/null 2>&1 || "$ISC_BIN/iscsid" 2>/dev/null || true
 # Identify the LUN via its stable by-path link (no lsblk before/after races).
 dev=""
 for _ in $(seq 1 30); do
-  link="$(find /dev/disk/by-path -maxdepth 1 -name "ip-${SERVER_IP}:3260-iscsi-${TARGET}-lun-0" 2>/dev/null | head -n1 || true)"
-  if [ -n "$link" ] && [ -b "$link" ]; then
-    dev="$(readlink -f "$link")"
-    break
-  fi
-  sleep 1
+	link="$(find /dev/disk/by-path -maxdepth 1 -name "ip-${SERVER_IP}:3260-iscsi-${TARGET}-lun-0" 2>/dev/null | head -n1 || true)"
+	if [ -n "$link" ] && [ -b "$link" ]; then
+		dev="$(readlink -f "$link")"
+		break
+	fi
+	sleep 1
 done
 if [ -z "$dev" ] || [ ! -b "$dev" ]; then
-  echo "LUN did not appear as a block device" >&2
-  exit 1
+	echo "LUN did not appear as a block device" >&2
+	exit 1
 fi
 echo "==> LUN attached as $dev ($(lsblk -ndo SIZE "$dev"))"
 
@@ -82,19 +88,19 @@ part="${dev}1"
 mkdir -p "$MNT"
 RESUME=0
 if mount "$part" "$MNT" 2>/dev/null && [ "$(ls "$MNT/nix/store" 2>/dev/null | wc -l)" -gt 100 ]; then
-  echo "==> existing install found, refreshing (no re-format)"
-  RESUME=1
+	echo "==> existing install found, refreshing (no re-format)"
+	RESUME=1
 else
-  umount "$MNT" 2>/dev/null || true
-  wipefs -a "$dev"
-  sgdisk -Z "$dev" >/dev/null
-  sgdisk -n 1:0:0 -t 1:8300 -c 1:"root" "$dev" >/dev/null
-  partprobe "$dev"
-  udevadm settle
-  part="${dev}1"
-  [ -b "$part" ] || part="${dev}p1"
-  mkfs.ext4 -F -L "$LABEL" "$part"
-  mount "$part" "$MNT"
+	umount "$MNT" 2>/dev/null || true
+	wipefs -a "$dev"
+	sgdisk -Z "$dev" >/dev/null
+	sgdisk -n 1:0:0 -t 1:8300 -c 1:"root" "$dev" >/dev/null
+	partprobe "$dev"
+	udevadm settle
+	part="${dev}1"
+	[ -b "$part" ] || part="${dev}p1"
+	mkfs.ext4 -F -L "$LABEL" "$part"
+	mount "$part" "$MNT"
 fi
 
 # --- install the closure ----------------------------------------------------
@@ -105,8 +111,57 @@ mkdir -p "$MNT/nix/var/nix/profiles" "$MNT/etc" "$MNT/run" "$MNT/boot" "$MNT/etc
 ln -sfn "$TL" "$MNT/nix/var/nix/profiles/system"
 touch "$MNT/etc/NIXOS"
 
-if [ "$RESUME" -eq 1 ]; then
-  echo "==> $NODE refreshed; next reboot picks up the new closure"
+# --- seed the node's TFTP boot files from the same closure -----------------
+# The node pushes updates itself from then on (rpi-netboot netboot-boot-push);
+# this baseline exists so the FIRST netboot (and any rescue state) works.
+TFTPROOT="${TFTPROOT:-/workspace/tftpboot}"
+DTB_NAME="${DTB_NAME:-bcm2711-rpi-4-b.dtb}"
+NODE_JSON="$(cd "$FLAKE" && nix eval --impure --json ".#nixosConfigurations.divergent.config.netboot-server.nodes" |
+	jq -e --arg id "$NODE" '.[] | select(.id == $id)')"
+SERIAL="$(jq -r '.serial' <<<"$NODE_JSON")"
+MAC="$(jq -r '.mac // empty' <<<"$NODE_JSON")"
+FWBOOT="$(jq -r '.firmwareBoot' <<<"$NODE_JSON")"
+
+dir="$TFTPROOT/$SERIAL"
+mkdir -p "$dir" "$TFTPROOT/pxelinux.cfg"
+echo "==> seeding boot files in $dir (firmwareBoot=$FWBOOT)"
+install -m 0644 "$TL/kernel" "$dir/Image"
+install -m 0644 "$TL/initrd" "$dir/initrd"
+# Kernel-matching dtb: toplevel dtbs are sorted into per-vendor subdirs
+# (broadcom/bcm2711-rpi-4-b.dtb).
+dtb_src="$(find -L "$TL/dtbs" -name "$DTB_NAME" -print -quit)"
+if [ -n "$dtb_src" ]; then
+	install -m 0644 "$dtb_src" "$dir/$DTB_NAME"
 else
-  echo "==> $NODE installed; first boot runs activation itself"
+	echo "warning: no $DTB_NAME under $TL/dtbs — node pushes its own dtb on first boot" >&2
+fi
+
+PARAMS="$(cat "$TL/kernel-params")"
+if [ -n "$MAC" ]; then
+	# PXE MAC files are dash-separated: 01-88-a2-9e-22-2c-45
+	mac_fmt="$(echo "$MAC" | tr ':' '-')"
+	cat >"$TFTPROOT/pxelinux.cfg/01-$mac_fmt" <<PXEEOF
+menu title netboot fleet
+default $NODE
+timeout 20
+label $NODE
+  menu label NixOS $NODE
+  kernel /$SERIAL/Image
+  initrd /$SERIAL/initrd
+  fdt /$SERIAL/$DTB_NAME
+  append $PARAMS init=$TL/init systemConfig=$TL
+PXEEOF
+fi
+if [ "$FWBOOT" = "true" ]; then
+	cp "$dir/Image" "$dir/kernel8.img"
+	printf '%s\n' "$PARAMS init=$TL/init systemConfig=$TL" >"$dir/cmdline.txt"
+fi
+# Hand the seeded files to the push user so the node can replace them.
+chown -R netboot-push:netboot-push "$dir" 2>/dev/null || true
+[ -n "$MAC" ] && chown netboot-push:netboot-push "$TFTPROOT/pxelinux.cfg/01-$mac_fmt" 2>/dev/null || true
+
+if [ "$RESUME" -eq 1 ]; then
+	echo "==> $NODE refreshed; next reboot picks up the new closure"
+else
+	echo "==> $NODE installed; first boot runs activation itself"
 fi
