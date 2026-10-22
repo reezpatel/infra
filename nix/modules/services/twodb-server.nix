@@ -1,8 +1,9 @@
-{ inputs, ... }:
+{ ... }:
 {
-  # TwoDB server — runs on slayer. Web UI at / + API under /api in one
-  # process (port 3001); state in postgres + memgraph (Kysely migrations run
-  # via ExecStartPre on every boot).
+  # TwoDB server — runs on slayer as a rootful podman oci-container
+  # (ghcr.io/reezpatel/twodb:latest). Web UI at / + API under /api in one
+  # process (port 3001); state in postgres + memgraph. The server applies
+  # its own migrations on startup (kysely, in-image) — no separate step.
   #
   # Exposure:
   #   - Humans: nginx vhost https://app.twodb.io → 127.0.0.1:3001 (ACME).
@@ -13,6 +14,8 @@
   # the world-readable store:
   #   agenix -e secerts/twodb-server-env.age
   # with content:  BETTER_AUTH_SECRET=<openssl rand -hex 32>
+  # (rootful podman reads the env-file as root, so default agenix root:0400
+  # perms are fine.)
   #
   # Post-deploy (one time):
   #   1. Point app.twodb.io at slayer's public IP (147.93.171.18) so ACME
@@ -21,43 +24,61 @@
   #   3. Settings → Runners — create an access key per runner machine, then:
   #        agenix -e secerts/twodb-node-token-<host>.age
   #      and re-deploy that host.
+  #
+  # Note: the container image is NOT tied to the flake-locked twodb rev —
+  # it tracks :latest. If the DB was ever migrated by newer code than the
+  # running image (e.g. a stale :latest after a failed CI image build), the
+  # server refuses to boot: "corrupted migrations: ... is missing".
   flake.modules.nixos.twodb-server =
-    { config, lib, pkgs, ... }:
+    { config, ... }:
     {
-      imports = [ inputs.twodb.nixosModules.default ];
-
-      # Holds BETTER_AUTH_SECRET (see header). systemd reads EnvironmentFile
-      # as root before dropping to the DynamicUser, so the default agenix
-      # root:0400 perms are fine.
+      # Holds BETTER_AUTH_SECRET (see header).
       age.secrets.twodb-server-env.file = ../../../secerts/twodb-server-env.age;
 
-      services.twodb-server = {
-        enable = true;
-        package = inputs.twodb.packages.${pkgs.stdenv.hostPlatform.system}.twodb-server; # native systemd mode; null = GHCR container
-        port = 3001;
+      # Requires podman, which the memgraph module (a hard dependency of
+      # twodb anyway) already enables.
+      virtualisation.oci-containers.containers.twodb-server = {
+        image = "ghcr.io/reezpatel/twodb:latest";
+        autoStart = true;
+        # oci-containers hardcodes --pull=missing otherwise: once an image
+        # is cached under :latest it is NEVER refreshed, silently running
+        # stale code forever. "newer" re-pulls when the registry has a newer
+        # :latest and falls back to the local cache when it's unreachable.
+        pull = "newer";
+
+        # Host networking: reach postgres/memgraph on host loopback and
+        # publish 3001 directly — no port mapping needed. Exposure posture is
+        # unchanged: the NixOS firewall only allows 3001 on nb-default and
+        # humans go through nginx on 443.
+        extraOptions = [
+          "--network=host"
+          "--health-cmd=curl -fsS http://localhost:3001/api/health || exit 1"
+        ];
+
         environment = {
-          # Unix socket + the trust rule below. The user is explicit: with a
-          # userless URL the driver falls back to the OS user, which for a
-          # DynamicUser unit is the unit name ("twodb-server") — a role that
-          # doesn't exist. (Peer auth can't identify dynamic users; single-
-          # host, no network exposure — postgres itself stays mesh-only per
-          # the postgresql service module.)
+          # Postgres over its unix socket, bind-mounted into the container
+          # (below), so the `local twodb twodb trust` pg_hba rule keeps
+          # working with no password in the URL and no extra secret. The user
+          # in the URL is explicit: with a userless URL the driver falls back
+          # to the container's OS user (root) — a role that doesn't exist.
           TWODB_DATABASE_URL = "postgres://twodb@/twodb?host=/run/postgresql";
           # Memgraph runs on the same host (memgraph service module) and
-          # publishes Bolt on loopback only.
+          # publishes Bolt on loopback only; reachable via the host network.
           MEMGRAPH_URL = "bolt://127.0.0.1:7687";
           # Public origin (the nginx vhost below). better-auth issues session
           # cookies/magic links against it and passkeys bind to the rpID.
           BETTER_AUTH_URL = "https://app.twodb.io";
           PASSKEY_RP_ID = "app.twodb.io";
         };
-        environmentFile = config.age.secrets.twodb-server-env.path;
+        environmentFiles = [ config.age.secrets.twodb-server-env.path ];
+
+        # Postgres unix socket inside the container (see TWODB_DATABASE_URL).
+        volumes = [ "/run/postgresql:/run/postgresql" ];
       };
 
-      # The upstream unit only waits for network-online; make sure the
-      # databases are up first. Migrations are gone (8892cd8) — the server
-      # self-bootstraps its schema on startup (lib/schema.ts, idempotent DDL).
-      systemd.services.twodb-server = {
+      # The oci-containers unit only waits for network-online; make sure the
+      # databases are up first.
+      systemd.services.podman-twodb-server = {
         after = [
           "postgresql.service"
           "memgraph.service"
@@ -100,3 +121,4 @@
       };
     };
 }
+
