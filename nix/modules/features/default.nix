@@ -13,6 +13,7 @@
       common
       monitoring-client
       netbird-client
+      komodo-periphery
       home
     ];
 

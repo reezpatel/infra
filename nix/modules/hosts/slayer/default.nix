@@ -17,6 +17,7 @@
       postgresql
       memgraph
       twodb-server
+      komodo-core
 
       # Host-specific
       ./_hardware-configuration.nix

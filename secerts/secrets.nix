@@ -102,6 +102,14 @@ in
     rpi5
   ];
 
+  # Komodo Server Onboarding Key — ONE shared key for every periphery agent
+  # (Settings → Server Onboarding Keys in the Komodo UI on slayer). Lets each
+  # host register itself as a Server on first outbound connect. The file is
+  # the raw key, no KEY= prefix: agenix -e secerts/komodo-onboarding-key.age
+  # Consumed by every NixOS host (periphery ships in the `base` aspect), so
+  # `all` minus the darwin-only keys.
+  "komodo-onboarding-key.age".publicKeys = all;
+
   # Netboot fleet push key — private half lives on the netbooted Pis
   # (agenix), public half in netboot-server.pushAuthorizedKeys on
   # divergent. Used by rpi-netboot's netboot-boot-push to upload each

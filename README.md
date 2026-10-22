@@ -474,6 +474,8 @@ The flake currently exports these reusable `home-manager` modules:
 | --- | --- | --- |
 | [`features/networking/netbird-server.nix`](./nix/modules/features/networking/netbird-server.nix) | Self-hosted NetBird control plane (management/signal/dashboard/coturn) + Pocket ID OIDC behind nginx with ACME TLS | `slayer` |
 | [`features/networking/netbird-client.nix`](./nix/modules/features/networking/netbird-client.nix) | NetBird mesh client with agenix setup-key enrollment | all Linux hosts |
+| [`services/komodo-core.nix`](./nix/modules/services/komodo-core.nix) | Komodo Core — container/stack management UI on port `9120`, mesh-only, with its own mongo container ([docs](./docs/komodo.md)) | `slayer` |
+| [`services/komodo-periphery.nix`](./nix/modules/services/komodo-periphery.nix) | Komodo Periphery agent, outbound to Core over NetBird, driving podman's Docker-compat socket | all NixOS hosts (via `base`) |
 | [`services/home_assistant.nix`](./nix/modules/services/home_assistant.nix) | Home Assistant base setup | `rpi1` |
 | [`services/ollama.nix`](./nix/modules/services/ollama.nix) | local LLM endpoint using `ollama-cuda` | `divine` |
 | [`services/samba.nix`](./nix/modules/services/samba.nix) | SMB share with macOS-friendly `fruit` tuning and password bootstrapping | `divine`, `muse`, `vixen`, `trinity` |
@@ -523,6 +525,7 @@ All Linux hosts now participate in a self-hosted NetBird mesh (WireGuard):
 - authentication is delegated to Pocket ID (OIDC, passkeys) at `id.coupletruffle.com`
 - every other Linux host runs the `netbird` client, enrolling with a shared reusable setup key
 - peers are reachable inside the mesh on `100.64.0.0/10`; SSH, Postgres and Neo4j on `slayer` are only reachable there
+- the Komodo UI on `slayer` (`http://slayer.netbird:9120`) is mesh-only too, and every host's Periphery agent dials out to it
 - the WebDAV endpoint on `vixen` is only reachable from the LAN/mesh
 
 ---
@@ -625,6 +628,7 @@ Current secret files:
 - `forgejo-password.age`
 - `forgejo-runner-token.age`
 - `frp-token.age`
+- `komodo-onboarding-key.age`
 - `netbird-setup-key.age`
 - `netbird-management-encryption-key.age`
 - `netbird-turn-secret.age`
@@ -660,6 +664,7 @@ Recipients are declared in [`secerts/secrets.nix`](./secerts/secrets.nix).
 | `netbird-turn-secret.age` | [`features/networking/netbird-server.nix`](./nix/modules/features/networking/netbird-server.nix) | coturn REST auth secret (slayer only) |
 | `netbird-turn-password.age` | [`features/networking/netbird-server.nix`](./nix/modules/features/networking/netbird-server.nix) | coturn TURN user password (slayer only) |
 | `pocket-id-encryption-key.age` | [`features/networking/netbird-server.nix`](./nix/modules/features/networking/netbird-server.nix) | Pocket ID `ENCRYPTION_KEY` (slayer only) |
+| `komodo-onboarding-key.age` | [`services/komodo-periphery.nix`](./nix/modules/services/komodo-periphery.nix) | Shared Komodo Server Onboarding Key; lets each host self-register with Core (opt-in via `komodo.periphery.onboarding.enable`) |
 | `webdav-password.age` | [`services/webdav.nix`](./nix/modules/services/webdav.nix) | WebDAV htpasswd credential |
 | `dev-rsa.age` | [`hosts/mac/_auto_ssh.nix`](./nix/modules/hosts/mac/_auto_ssh.nix) | SSH key for AutoSSH dev tunnel on `luffy` |
 | `ppd-rsa.age` | [`hosts/mac/_auto_ssh.nix`](./nix/modules/hosts/mac/_auto_ssh.nix) | SSH key for AutoSSH ppd tunnel on `luffy` |
