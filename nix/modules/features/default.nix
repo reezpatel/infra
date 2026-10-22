@@ -86,6 +86,12 @@
       base
     ];
 
+    # Manage ~/.ssh/authorized_keys from the global array (features/common/
+    # core.nix) — the darwin counterpart of the NixOS wiring in
+    # features/linux/system.nix. nix-darwin writes the file only when the
+    # list is non-empty, and core.nix always defines the base keys.
+    users.users.${config.username}.openssh.authorizedKeys.keys = config.authorizedKeys;
+
     home-manager.users.${config.username}.imports = with self.modules.homeManager; [
       ai
       development

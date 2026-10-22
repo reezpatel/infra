@@ -17,6 +17,7 @@ let
 
   ace = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG9wquTRSKBWywElJnndnbzNTnRcVLYCWCOOUlooAWCC";
   divergent = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBJCrqSJN0GPdR8FUYsBNmexaOu/+D8Rmx19nIhZE6jq";
+  atomata = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH/Bro4DGNIOzffDNTA05+H2FsXg77251+r7Bm//qfGm";
 
   all = [
     user1
@@ -34,6 +35,7 @@ let
     rpi6
     ace
     divergent
+    atomata
   ];
 in
 {
@@ -92,6 +94,7 @@ in
     trinity
     divergent
     ace
+    atomata
     rpi1
     rpi2
     rpi3

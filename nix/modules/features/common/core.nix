@@ -43,6 +43,8 @@ let
         authorizedKeys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINulqFShpHuaL3ngPQ9/tvxYNwYbsNEAsImMEMi7CKq8 reezpatel@Reezs-MacBook-Pro.local"
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGK+XhnFOsJjoHqNmJ/NMyASsCsz7bkFoj3UpEP0hVQc reezpatel@divine"
+          # atomata — the main access portal; trusted on every host.
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP8s8pRmY1CexVAI9uk7aN0HnxstR8nuWeLX8yxoPYlP reezpatel@atomata"
         ];
 
         networking = {
