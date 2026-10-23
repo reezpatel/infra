@@ -2,6 +2,11 @@
   flake.modules.homeManager.vim = {pkgs, ...}: {
     programs.vim = {
       enable = true;
+      # home-manager's default here is pkgs.vim-full, which drags in a GTK2
+      # X11 gvim — unbuildable on aarch64-darwin (clang vs gtk2 headers, not
+      # in cache either) and pointless for this terminal-only config.
+      # Plain pkgs.vim is the same customizable vim, no GUI deps.
+      packageConfigurable = pkgs.vim;
       plugins = with pkgs.vimPlugins; [
         vim-airline
         vim-airline-themes
