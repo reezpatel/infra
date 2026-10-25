@@ -40,11 +40,11 @@
         # which isn't defined on hosts whose hardware-configuration doesn't
         # set it (the netboot rpis) — pkgs.stdenv.hostPlatform always is.
         package = lib.mkDefault inputs.twodb.packages.${pkgs.stdenv.hostPlatform.system}.twodb-runner;
-        # Public nginx endpoint (TLS) — the runner rides 443 like any other
-        # client; port 3001 itself is mesh-only. The server is a public VPS
-        # anyway, so the mesh would only add DNS fragility. Mesh-direct if
-        # ever wanted: "http://slayer.netbird:3001" (or the 100.x mesh IP).
-        serverUrl = "https://app.twodb.io";
+        # Mesh-direct: every NixOS host runs netbird-client, and slayer
+        # opens 3001 exclusively on nb-default (see twodb-server.nix), so
+        # runners ride WireGuard instead of the public nginx vhost. Plain
+        # http is fine — the mesh is encrypted end to end.
+        serverUrl = "http://slayer.lan.nb:3001";
         environmentFile = config.age.secrets.twodb-runner-key.path;
       };
 
@@ -79,6 +79,9 @@
         enable = true;
         # Pinned explicitly — see the nixos module above for why.
         package = lib.mkDefault inputs.twodb.packages.${pkgs.stdenv.hostPlatform.system}.twodb-runner;
+        # Public nginx endpoint: unlike the NixOS runners (mesh-direct to
+        # slayer.lan.nb:3001) the Macs have no netbird client, so they ride
+        # 443 like any other external client.
         serverUrl = "https://app.twodb.io";
         # Deliberately NOT upstream's environmentFile: it builtins.readFile's
         # the secret at eval time — inlining it into the world-readable
@@ -102,12 +105,14 @@
         serviceConfig = {
           Label = "dev.twodb.runner";
           ProgramArguments = [
-            (toString (pkgs.writeShellScript "twodb-runner-start" ''
-              set -a
-              . ${config.age.secrets.twodb-runner-key.path}
-              set +a
-              exec ${config.services.twodb-runner.package}/bin/twodb-runner
-            ''))
+            (toString (
+              pkgs.writeShellScript "twodb-runner-start" ''
+                set -a
+                . ${config.age.secrets.twodb-runner-key.path}
+                set +a
+                exec ${config.services.twodb-runner.package}/bin/twodb-runner
+              ''
+            ))
           ];
           EnvironmentVariables = {
             TWODB_SERVER_URL = config.services.twodb-runner.serverUrl;

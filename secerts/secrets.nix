@@ -1,12 +1,12 @@
 let
   user1 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINulqFShpHuaL3ngPQ9/tvxYNwYbsNEAsImMEMi7CKq8";
-  system1 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJhPJ2G4JeyE5Dk/IR3bU/XsxpySTn47UPhnvdUpPSd8";
 
   vixen = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH7s63dj6iFQWPXx7fue8u20uBGhNPuQa42BkOAfHV5A";
   divine = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH9ksh2iBB268LT9xO88448WRKcAd7GzPb3Zc02tQKAv";
   luffy = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC7AvUYoeuj82EzveXi06zzDRgBiJujjpVbx+QIbPtfI";
   slayer = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHcq+2xoMBxwrYB/7TL2C9TpdNBeAjSfnthTsaK8MVDk";
   trinity = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIHIG8bZ8l2+scXENBHqLDaSqUWerl3yylUoTy6iSh87";
+  muse = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJhPJ2G4JeyE5Dk/IR3bU/XsxpySTn47UPhnvdUpPSd8";
 
   rpi1 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMW+jVaH/CTeLW+F2gP4dskl99G77JEH/yjT/+WhRHVo";
   rpi2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYJ/TR5rzkLd+exqX0Cc+DN2tUAHpRfs1/2YkfR4PXO";
@@ -21,7 +21,7 @@ let
 
   all = [
     user1
-    system1
+    muse
     vixen
     divine
     luffy
@@ -56,22 +56,22 @@ in
   "netbird-setup-key.age".publicKeys = all;
   "netbird-management-encryption-key.age".publicKeys = [
     user1
-    system1
+    muse
     slayer
   ];
   "netbird-turn-secret.age".publicKeys = [
     user1
-    system1
+    muse
     slayer
   ];
   "netbird-turn-password.age".publicKeys = [
     user1
-    system1
+    muse
     slayer
   ];
   "pocket-id-encryption-key.age".publicKeys = [
     user1
-    system1
+    muse
     slayer
   ];
 
@@ -82,12 +82,21 @@ in
     slayer
   ];
 
+  # Komodo Core initial admin password — consumed only on slayer via
+  # KOMODO_INIT_ADMIN_PASSWORD_FILE; used once at startup to create the
+  # admin user while the users collection is empty (a no-op afterwards).
+  # Rotate in the UI after first login: agenix -e secerts/komodo-admin-password.age
+  "komodo-admin-password.age".publicKeys = [
+    user1
+    slayer
+  ];
+
   # TwoDB runner — ONE shared access key for all runners (Settings →
   # Runners in the twodb web UI, server on slayer). Replaces the old
   # per-machine twodb-node tokens. Rotate: agenix -e secerts/twodb-runner-key.age
   "twodb-runner-key.age".publicKeys = [
     user1
-    system1
+    muse
     vixen
     divine
     luffy
@@ -116,7 +125,7 @@ in
   # node's own kernel/initrd/boot config to the TFTP tree.
   "netboot-push-key.age".publicKeys = [
     user1
-    system1
+    muse
     rpi1
     rpi2
     rpi3

@@ -4,7 +4,8 @@
   inputs,
   self,
   ...
-}: {
+}:
+{
   flake.nixosConfigurations.rpi7 = inputs.nixpkgs.lib.nixosSystem {
     system = "aarch64-linux";
 
@@ -15,7 +16,7 @@
       home
 
       # Identity
-      ({config, ...}: {
+      ({ config, ... }: {
         hostname = "rpi7";
 
         netboot = {
@@ -28,6 +29,12 @@
           # not in secrets.nix) — enable after adding it there + rekey.
           push.enable = false;
         };
+
+        # Same missing host key: the shared Komodo onboarding key
+        # (recipients = `all`) is not decryptable here. Register this
+        # Server by hand in the UI, or drop this after adding rpi7 to
+        # secrets.nix and rekeying.
+        komodo.periphery.onboarding.enable = false;
 
         users.users.reezpatel.linger = true;
 

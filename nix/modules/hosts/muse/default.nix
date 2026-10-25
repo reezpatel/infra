@@ -15,6 +15,9 @@
       samba
       kde
 
+      # Services
+      twodb-runner
+
       # Host-specific
       inputs.disko.nixosModules.disko
       ./_disko.nix

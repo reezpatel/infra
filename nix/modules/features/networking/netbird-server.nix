@@ -67,6 +67,12 @@
         management = {
           singleAccountModeDomain = "netbird";
 
+          # Peer DNS domain: hosts resolve as <hostname>.lan.nb
+          # (divine.lan.nb, slayer.lan.nb, ...). The dashboard rejects a
+          # bare single label like "nb", hence the two-label form; the
+          # default "netbird.selfhosted" is silently used when unset.
+          dnsDomain = "lan.nb";
+
           oidcConfigEndpoint = "${idpUrl}/.well-known/openid-configuration";
 
           settings = {

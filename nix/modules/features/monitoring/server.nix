@@ -13,19 +13,18 @@
 
       # All hosts are scraped over the NetBird mesh: node-exporter (9100) is
       # mesh-only fleet-wide (monitoring.client.publicFirewall defaults false).
-      nodeTargets =
-        map (host: "${host}.netbird.selfhosted:9100") [
-          "trinity"
-          "vixen"
-          "divine"
-          "muse"
-          "rpi1"
-          "rpi2"
-          "rpi3"
-          "rpi4"
-          "rpi5"
-          "slayer"
-        ];
+      nodeTargets = map (host: "${host}.lan.nb:9100") [
+        "trinity"
+        "vixen"
+        "divine"
+        "muse"
+        "rpi1"
+        "rpi2"
+        "rpi3"
+        "rpi4"
+        "rpi5"
+        "slayer"
+      ];
 
       instanceRelabel = [
         {
@@ -107,7 +106,7 @@
             # NOTE: management binds metrics on 127.0.0.1:9090 by default -
             # this job will fail until that is deliberately exposed.
             job_name = "netbird";
-            static_configs = [ { targets = [ "slayer.netbird.selfhosted:9090" ]; } ];
+            static_configs = [ { targets = [ "slayer.lan.nb:9090" ]; } ];
             relabel_configs = [
               {
                 source_labels = [ "__address__" ];
