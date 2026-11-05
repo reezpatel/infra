@@ -36,13 +36,14 @@
         hostname = "divine";
         nvidiaGpu.enableCuda = true;
         # Vite dev-server defaults (5173 + --port increments) + a broad dev
-        # range, opened on the LAN NICs only (kernel names: enp8s0 / wlp9s0 —
-        # NOTE iptables -i takes a glob, so enp* also matches enp8s0; do NOT
-        # add suffixes). NOT opened on the wildcard/public interface, so dev
-        # servers stay reachable from the Macs but not from beyond the LAN.
-        # NB: merges with _desktop.nix's NFS ports on the default interface.
+        # range, opened on the LAN NICs only. Interface globs use IPTABLES
+        # syntax — trailing '+' (enp+/wlp+), NOT '*' (which is matched
+        # literally and never hits enp8s0/wlp9s0). NOT opened on the
+        # wildcard/public interface, so dev servers stay reachable from the
+        # Macs but not from beyond the LAN. NB: merges with _desktop.nix's
+        # NFS ports on the default interface.
         networking.firewall.interfaces = {
-          "enp*".allowedTCPPorts = [
+          "enp+".allowedTCPPorts = [
             5173
             5174
             5175
@@ -50,7 +51,7 @@
             5177
           ]
           ++ lib.range 6100 6900;
-          "wlp*".allowedTCPPorts = [
+          "wlp+".allowedTCPPorts = [
             5173
             5174
             5175
