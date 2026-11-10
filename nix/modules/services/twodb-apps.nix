@@ -21,6 +21,11 @@
   #     (/api/auth, /registry, /orchestrator, /apps/<slug>/*).
   #   - twodb-cli from other machines: NetBird mesh only — port 4000 is
   #     opened exclusively on nb-default, never publicly.
+  #   - Apps postgres: also mesh-only — published as host port 5433 (host
+  #     postgres already owns 5432) and opened exclusively on nb-default,
+  #     so you can psql in over NetBird:  psql postgres://twodb:<pw>@slayer:5433/twodb
+  #     (docker's postgres image defaults to scram-sha-256 for host conns,
+  #     and POSTGRES_PASSWORD from the env secret is the password).
   #
   # Requires (already present via the memgraph/monolith stack):
   #   virtualisation.podman.enable + the rootful podman.socket unit.
@@ -85,6 +90,9 @@
       virtualisation.oci-containers.containers.twodb-apps-postgres = {
         image = "docker.io/library/postgres:17-alpine";
         autoStart = true;
+        # Published on 5433 (host postgres owns 5432) so it's reachable over
+        # the NetBird mesh — the firewall only opens 5433 on nb-default.
+        ports = [ "5433:5432" ];
         extraOptions = [
           "--network=${network}"
           "--health-cmd=pg_isready -U twodb -d twodb"
@@ -163,8 +171,12 @@
         "d ${dataDir}/control-plane 0750 root root -"
       ];
 
-      # twodb-cli from mesh machines only; humans go through nginx on 443.
-      networking.firewall.interfaces."nb-default".allowedTCPPorts = [ 4000 ];
+      # Mesh-only exposure (humans go through nginx on 443):
+      #   4000 = gateway for twodb-cli, 5433 = apps postgres.
+      networking.firewall.interfaces."nb-default".allowedTCPPorts = [
+        4000
+        5433
+      ];
 
       services.nginx.virtualHosts.${domain} = {
         forceSSL = true;
