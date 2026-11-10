@@ -17,6 +17,7 @@
       postgresql
       memgraph
       twodb-server
+      twodb-apps
       komodo-core
 
       # Host-specific

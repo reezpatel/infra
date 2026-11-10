@@ -82,6 +82,14 @@ in
     slayer
   ];
 
+  # TwoDB apps cluster environment (AUTH_SECRET, POSTGRES_PASSWORD,
+  # TWODB_PG_ADMIN_URL) — consumed via environmentFiles by the
+  # twodb-apps-postgres + twodb-control-plane containers on slayer.
+  "twodb-apps-env.age".publicKeys = [
+    user1
+    slayer
+  ];
+
   # Komodo Core initial admin password — consumed only on slayer via
   # KOMODO_INIT_ADMIN_PASSWORD_FILE; used once at startup to create the
   # admin user while the users collection is empty (a no-op afterwards).
