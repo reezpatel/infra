@@ -40,7 +40,9 @@
   #   TWODB_PG_ADMIN_URL=postgres://twodb:<same password>@twodb-apps-postgres:5432/twodb
   #
   # Post-deploy (one time):
-  #   1. Point hub.twodb.io at slayer's public IP (147.93.171.18) for ACME.
+  #   1. Point hub.twodb.io at slayer's public IP (147.93.171.18) so humans
+  #      can reach it (the cert itself is the *.twodb.io wildcard, issued
+  #      via Cloudflare DNS-01 — no public A record needed for ACME).
   #   2. Open https://hub.twodb.io — register the first user via passkey.
   #   3. Apps tab → Install the apps you want (images pull from
   #      ghcr.io/reezpatel/app-<slug>:latest; cut a repo tag vX.Y.Z to
@@ -61,6 +63,25 @@
     {
       # Holds AUTH_SECRET / POSTGRES_PASSWORD / TWODB_PG_ADMIN_URL (see header).
       age.secrets.twodb-apps-env.file = ../../../secerts/twodb-apps-env.age;
+
+      # Cloudflare API token (Zone.DNS edit on twodb.io) for the wildcard
+      # cert below. Content: CF_DNS_API_TOKEN=<token>
+      age.secrets.cloudflare-dns-token.file = ../../../secerts/cloudflare-dns-token.age;
+
+      # Wildcard cert for *.twodb.io via DNS-01 (Let's Encrypt doesn't issue
+      # wildcards over HTTP-01). twodb.io DNS is on Cloudflare; lego creates
+      # and cleans up the _acme-challenge TXT record via the API — no public
+      # A record or port 80 needed for issuance. Any *.twodb.io vhost can use
+      # it with `useACMEHost = "twodb.io"`; readable by nginx via the group.
+      # (security.acme.acceptTerms/defaults.email are set globally by the
+      # netbird-server module.)
+      security.acme.certs."twodb.io" = {
+        domain = "*.twodb.io";
+        extraDomainNames = [ "twodb.io" ];
+        dnsProvider = "cloudflare";
+        environmentFile = config.age.secrets.cloudflare-dns-token.path;
+        group = config.services.nginx.group;
+      };
 
       # Rootful podman docker-compat socket the control plane orchestrates
       # through. (virtualisation.podman.enable itself comes from the
@@ -180,7 +201,9 @@
 
       services.nginx.virtualHosts.${domain} = {
         forceSSL = true;
-        enableACME = true;
+        # Wildcard *.twodb.io cert (DNS-01, above) — no per-host HTTP-01,
+        # so no public DNS dependency for cert issuance/renewal.
+        useACMEHost = "twodb.io";
         locations."/" = {
           proxyPass = "http://127.0.0.1:4000";
           # core-async LISTEN/NOTIFY is server-side, but the explorer's

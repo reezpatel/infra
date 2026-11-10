@@ -90,6 +90,13 @@ in
     slayer
   ];
 
+  # Cloudflare API token (Zone.DNS edit on twodb.io) for the *.twodb.io
+  # wildcard cert (lego DNS-01) on slayer. Content: CF_DNS_API_TOKEN=<token>
+  "cloudflare-dns-token.age".publicKeys = [
+    user1
+    slayer
+  ];
+
   # Komodo Core initial admin password — consumed only on slayer via
   # KOMODO_INIT_ADMIN_PASSWORD_FILE; used once at startup to create the
   # admin user while the users collection is empty (a no-op afterwards).
