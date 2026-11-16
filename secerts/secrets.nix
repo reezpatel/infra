@@ -82,16 +82,9 @@ in
     slayer
   ];
 
-  # TwoDB apps cluster environment (AUTH_SECRET, POSTGRES_PASSWORD,
-  # TWODB_PG_ADMIN_URL) — consumed via environmentFiles by the
-  # twodb-apps-postgres + twodb-control-plane containers on slayer.
-  "twodb-apps-env.age".publicKeys = [
-    user1
-    slayer
-  ];
-
   # Cloudflare API token (Zone.DNS edit on twodb.io) for the *.twodb.io
-  # wildcard cert (lego DNS-01) on slayer. Content: CF_DNS_API_TOKEN=<token>
+  # wildcard cert (lego DNS-01) on slayer — used by the nginx catch-all
+  # vhost in the slayer host config. Content: CF_DNS_API_TOKEN=<token>
   "cloudflare-dns-token.age".publicKeys = [
     user1
     slayer
@@ -110,6 +103,27 @@ in
   # Runners in the twodb web UI, server on slayer). Replaces the old
   # per-machine twodb-node tokens. Rotate: agenix -e secerts/twodb-runner-key.age
   "twodb-runner-key.age".publicKeys = [
+    user1
+    muse
+    vixen
+    divine
+    luffy
+    trinity
+    divergent
+    ace
+    atomata
+    rpi1
+    rpi2
+    rpi3
+    rpi4
+    rpi5
+  ];
+
+  # two-runner (Dispatch agent) enrollment token — ONE shared token for every
+  # machine (Dispatch → Enrollment tokens). The file is the bare
+  # `twodbenroll_…` token, no KEY= prefix. Same host set as twodb-runner-key.
+  # Rotate: agenix -e secerts/twodb-enroll.age
+  "twodb-enroll.age".publicKeys = [
     user1
     muse
     vixen

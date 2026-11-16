@@ -109,11 +109,15 @@
           proxyPass = "http://127.0.0.1:3001";
           # Code sessions / runner + assistant sockets stream over websockets.
           proxyWebsockets = true;
-          # nginx's default proxy_read_timeout is 60 s — idle WebSocket
-          # connections (runners waiting for work) get severed, causing a
-          # perpetual connect/register/1006-disconnect loop. 24 h matches
-          # what recommendedProxySettings would set.
+          # Original Host + forwarded headers (nginx default would send
+          # Host: 127.0.0.1:3001). At location level because
+          # proxyWebsockets sets Upgrade/Connection, which stops nginx
+          # inheriting headers from outer blocks.
           extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Proto https;
             proxy_read_timeout 86400s;
             proxy_send_timeout 86400s;
           '';

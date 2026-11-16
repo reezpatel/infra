@@ -13,6 +13,7 @@
     modules = with self.modules.darwin; [
       macbook
       twodb-runner
+      two-runner
 
       (
         { ... }: {

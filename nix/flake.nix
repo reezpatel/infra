@@ -54,6 +54,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Deliberately NOT following our nixpkgs: moon's own pinned nixpkgs/crane/
+    # rust-overlay are what its Cachix cache was built against — following
+    # ours would change the derivation hash and force a from-source Rust build.
+    moon.url = "github:moonrepo/moon";
+
     noctalia = {
       url = "github:noctalia-dev/noctalia";
       inputs.nixpkgs.follows = "nixpkgs";

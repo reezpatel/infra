@@ -13,6 +13,7 @@
 
       samba
       twodb-runner
+      two-runner
       monitoring-server
 
       # Host-specific

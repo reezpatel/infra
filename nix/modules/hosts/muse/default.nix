@@ -17,6 +17,7 @@
 
       # Services
       twodb-runner
+      two-runner
 
       # Host-specific
       inputs.disko.nixosModules.disko
@@ -27,6 +28,8 @@
       # Identity
       ({ ... }: {
         hostname = "muse";
+        # Host Firecracker microvms for Dispatch (kvm-amd loaded in hardware config).
+        services.two-runner.microvm = true;
       })
     ];
   };

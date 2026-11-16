@@ -13,6 +13,7 @@
       workstation
       samba
       twodb-runner
+      two-runner
 
       # Host-specific
       inputs.disko.nixosModules.disko
@@ -35,6 +36,8 @@
         ];
         hostname = "divine";
         nvidiaGpu.enableCuda = true;
+        # Host Firecracker microvms for Dispatch (kvm-amd loaded in hardware config).
+        services.two-runner.microvm = true;
         # Vite dev-server defaults (5173 + --port increments) + a broad dev
         # range, opened on the LAN NICs only. Interface globs use IPTABLES
         # syntax — trailing '+' (enp+/wlp+), NOT '*' (which is matched

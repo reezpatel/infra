@@ -15,6 +15,7 @@
       rpi-netboot
       home
       twodb-runner
+      two-runner
 
       # Identity
       ({ config, ... }: {

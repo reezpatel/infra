@@ -21,6 +21,7 @@
       transmission
       waha
       twodb-runner
+      two-runner
 
       # Host-specific
       inputs.disko.nixosModules.disko
