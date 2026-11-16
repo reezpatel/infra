@@ -112,5 +112,76 @@
         # Default /var/lib/two-runner is unusual on macOS.
         stateDir = "/Users/${config.username}/.two-runner";
       };
+
+      # Run as a launchd USER AGENT, not the upstream system daemon.
+      #
+      # System daemons live outside the GUI login session and cannot read the
+      # user's login keychain, so tools Dispatch runs (gh, git credential
+      # helpers, ...) that keep tokens there fail. A user agent runs in the
+      # Aqua session, which unlocks the keychain at login — same reasoning and
+      # pattern as twodb-runner. It also avoids the daemon's /var/log problem
+      # (root:wheel 755, so a non-root UserName can't open its log: EX_CONFIG).
+      #
+      # Neutralise the upstream daemon so it never spawns (it would otherwise
+      # fight the agent for the same runner key / state dir).
+      launchd.daemons.two-runner.serviceConfig = {
+        KeepAlive = lib.mkForce false;
+        RunAtLoad = lib.mkForce false;
+        ProgramArguments = lib.mkForce [ "/usr/bin/true" ];
+      };
+
+      launchd.user.agents.two-runner =
+        let
+          cfg = config.services.two-runner;
+        in
+        {
+          serviceConfig = {
+            Label = "dev.twodb.two-runner";
+            # Same invocation as upstream's daemon.
+            ProgramArguments = [
+              "${cfg.package}/bin/two-runner"
+              "--gateway"
+              cfg.gateway
+              "--name"
+              cfg.name
+              "--state"
+              cfg.stateDir
+              "--enroll-file"
+              (toString cfg.enrollTokenFile)
+            ]
+            ++ cfg.extraArgs;
+            EnvironmentVariables = {
+              # Real $HOME is kept (upstream points it at stateDir) so tools
+              # find ~/.config/gh, ~/.gitconfig, the keychain, etc.
+              PATH = lib.concatStringsSep ":" [
+                (lib.makeBinPath (
+                  with pkgs;
+                  [
+                    bashInteractive
+                    coreutils
+                    findutils
+                    gnugrep
+                    gnused
+                    git
+                  ]
+                  ++ cfg.extraPackages
+                ))
+                "/etc/profiles/per-user/${config.username}/bin"
+                "/run/current-system/sw/bin"
+                "/opt/homebrew/bin"
+                "/usr/local/bin"
+                "/usr/bin"
+                "/bin"
+                "/usr/sbin"
+                "/sbin"
+              ];
+            };
+            RunAtLoad = true;
+            KeepAlive = true;
+            # stateDir is user-owned 0700 (upstream activation script).
+            StandardOutPath = "${cfg.stateDir}/two-runner.log";
+            StandardErrorPath = "${cfg.stateDir}/two-runner.log";
+          };
+        };
     };
 }
