@@ -2,11 +2,11 @@
   mkStashBin = pkgs:
     pkgs.stdenv.mkDerivation rec {
       pname = "stash";
-      version = "0.31.1";
+      version = "0.32.0";
 
       src = pkgs.fetchurl {
         url = "https://github.com/stashapp/stash/releases/download/v${version}/stash-linux";
-        hash = "sha256-X3E5Grx866/VuS97MlCWJzDIvj5/EvI/2YAph4slaMA=";
+        hash = "sha256-PNzttyFC7q3oaAdOIQkMAul1ZUAnJfFythbRiUs98E8=";
       };
 
       dontUnpack = true;
